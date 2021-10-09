@@ -24,10 +24,6 @@ app.use(express.static(path.join(__dirname + "../public")));
 
 /* TODO: Router Use */
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World</h1>')
-})
-
 // Catching 404 Not Found Error
 app.use(function (req, res, next) {
   res.status(404);
@@ -46,9 +42,8 @@ app.use(function (err, req, res, next) {
   });
 });
 
-var io = require("socket.io")(http, {
+const io = require("socket.io")(http, {
   transports: ["websocket"],
-  cors: corsOptions,
 });
 SocketServer(io);
 
