@@ -51,9 +51,8 @@ app.use(function (err, req, res, next) {
   });
 });
 
-var io = require("socket.io")(http, {
+const io = require("socket.io")(http, {
   transports: ["websocket"],
-  cors: corsOptions,
 });
 SocketServer(io);
 
