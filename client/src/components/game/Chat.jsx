@@ -6,7 +6,7 @@ const Chat = () => {
       <div className="p-6 border-2">Chat Messages</div>
       <div className="m-4">
         <input
-          class="shadow appearance-none border rounded w-2/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="w-2/3 px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
           id="username"
           type="text"
           placeholder="Type a message"
