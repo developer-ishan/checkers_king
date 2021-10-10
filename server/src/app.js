@@ -7,6 +7,10 @@ var express = require("express");
 var app = express();
 var http = require("http").createServer(app);
 var { SocketServer } = require("./socket/server");
+const keys = require("./config/keys");
+const authRouter = require("./routes/authRouter");
+
+require('./config/mongo');
 
 var corsOptions = {
   origin: "*",
@@ -15,7 +19,6 @@ var corsOptions = {
 };
 
 /* TODO: Router Imports */
-
 app.use(cors(corsOptions));
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
@@ -27,6 +30,8 @@ app.use(express.static(path.join(__dirname + "../public")));
 app.get('/', (req, res) => {
   res.send('<h1>Hello World</h1>')
 })
+
+app.use('/api/auth', authRouter);
 
 // Catching 404 Not Found Error
 app.use(function (req, res, next) {
@@ -52,7 +57,7 @@ var io = require("socket.io")(http, {
 });
 SocketServer(io);
 
-var PORT = process.env.PORT || 8000;
+var PORT = keys.PORT;
 http.listen(PORT, () => {
   console.log(`server listening at port ${PORT}`);
 });
