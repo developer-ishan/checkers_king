@@ -61,57 +61,12 @@ passport.use(
     {
       clientID: keys.oauth.facebook.clientID,
       clientSecret: keys.oauth.facebook.clientSecret,
-      passReqToCallback: true,
+      callbackURL: "/api/auth/oauth/facebook/callback",
+      profileFields: ['id', 'displayName', 'picture.type(large)', 'emails', 'first_name', 'last_name', 'middle_name']
     },
-    async (req, accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log("profile", profile);
-        console.log("accessToken", accessToken);
-        console.log("refreshToken", refreshToken);
-
-        if (req.user) {
-          // We're already logged in, time for linking account!
-          // Add Facebook's data to an existing account
-          req.user.methods.push("facebook");
-          req.user.facebook = {
-            id: profile.id,
-            email: profile.emails[0].value,
-          };
-          await req.user.save();
-          return done(null, req.user);
-        } else {
-          // We're in the account creation process
-          let existingUser = await User.findOne({ "facebook.id": profile.id });
-          if (existingUser) {
-            return done(null, existingUser);
-          }
-
-          // Check if we have someone with the same email
-          existingUser = await User.findOne({
-            "local.email": profile.emails[0].value,
-          });
-          if (existingUser) {
-            // We want to merge facebook's data with local auth
-            existingUser.methods.push("facebook");
-            existingUser.facebook = {
-              id: profile.id,
-              email: profile.emails[0].value,
-            };
-            await existingUser.save();
-            return done(null, existingUser);
-          }
-
-          const newUser = new User({
-            methods: ["facebook"],
-            facebook: {
-              id: profile.id,
-              email: profile.emails[0].value,
-            },
-          });
-
-          await newUser.save();
-          done(null, newUser);
-        }
+        done(null, profile);
       } catch (error) {
         done(error, false, error.message);
       }

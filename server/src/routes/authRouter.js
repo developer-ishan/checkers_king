@@ -54,10 +54,19 @@ authRouter.get(
   userController.signIn
 );
 
-authRouter.post(
+authRouter.get(
   "/oauth/facebook",
   passport.authenticate("facebookToken", { session: false }),
-  userController.facebookOAuth
+  userController.facebookOAuth,
+);
+authRouter.get(
+  "/oauth/facebook/callback",
+  passport.authenticate("facebookToken", {
+    session: false,
+    assignProperty: 'profile',
+  }),
+  userController.facebookOAuth,
+  userController.signIn
 );
 
 authRouter.get("/dashboard", passportJWT, userController.dashboard);

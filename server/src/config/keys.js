@@ -8,8 +8,8 @@ module.exports = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
     facebook: {
-      clientID: 'number',
-      clientSecret: 'string',
+      clientID: process.env.FB_CLIENT_ID,
+      clientSecret: process.env.FB_CLIENT_SECRET,
     },
   },
 };
