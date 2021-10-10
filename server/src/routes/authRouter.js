@@ -30,7 +30,7 @@ authRouter.post(
       if (err || !user)
         return res
           .status(401)
-          .json({ success: false, msg: "email and password does not match" });
+          .json({ success: false, err: "email and password does not match" });
       req.user = user;
       next();
     })(req, res, next);
