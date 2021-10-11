@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
 import Game from "./components/game/Game";
+import Home from "./components/Landing/Home";
 import Main from "./components/Main";
 
 function App() {
@@ -36,11 +37,7 @@ function App() {
       <Switch>
         <Route exact path="/">
           <div className="h-full bg-gradient-to-r from-green-400 to-blue-500">
-            <header>
-              <p className="text-4xl text-center text-white capitalize">
-                hello peter
-              </p>
-            </header>
+            <Home />
             {socket !== null && (
               <Main
                 socket={socket}
