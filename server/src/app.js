@@ -10,7 +10,7 @@ var { SocketServer } = require("./socket/server");
 const keys = require("./config/keys");
 const authRouter = require("./routes/authRouter");
 
-require('./config/mongo');
+require("./config/mongo");
 
 var corsOptions = {
   origin: "*",
@@ -27,11 +27,11 @@ app.use(express.static(path.join(__dirname + "../public")));
 
 /* TODO: Router Use */
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World</h1>')
-})
+app.get("/", (req, res) => {
+  res.send("<h1>Hello World</h1>");
+});
 
-app.use('/api/auth', authRouter);
+app.use("/api/auth", authRouter);
 
 // Catching 404 Not Found Error
 app.use(function (req, res, next) {

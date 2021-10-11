@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
+
+import { SocketContext } from "./context/SocketContext";
+import { GameContext } from "./context/GameContext";
 import Game from "./components/game/Game";
 import Main from "./components/Main";
+import { API } from "./config/backend";
 
-function App() {
-  const [socket, setSocket] = useState(null);
+const App = () => {
+  const [socket, setSocket] = useContext(SocketContext);
   const [games, setGames] = useState([]);
   const [gameId, setGameId] = useState(null);
-  const [game, setGame] = useState({ board: [] });
-  const [color, setColor] = useState(null);
+  const { gameValue, colorValue } = useContext(GameContext);
 
-  useEffect(() => {
-    const gm = games.find((g) => g.id === gameId);
-    console.log("gm", gm);
-    console.log("game", game);
-    if (gm !== undefined) {
-      setGame({ board: gm.board });
-      setColor(gm.color);
-    }
-  }, [gameId, games]);
+  const [game, setGame] = gameValue;
+  const [color, setColor] = colorValue;
 
+  // connecting socket-client to the socket server for communication
   useEffect(() => {
-    const clientSocket = io("http://localhost:8000", {
+    const clientSocket = io(API, {
       transports: ["websocket"],
     });
     setSocket(clientSocket);
-    return () => {
-      clientSocket.disconnect();
-    };
-  }, []);
+  }, [setSocket]);
+
+  // updating the game state to the current game user is in
+  useEffect(() => {
+    const gm = games.find((g) => g.id === gameId);
+    if (gm !== undefined) setGame({ board: gm.board, turn: gm.turn });
+  }, [gameId, games]);
 
   return (
     <BrowserRouter>
@@ -43,22 +43,22 @@ function App() {
             </header>
             {socket !== null && (
               <Main
-                socket={socket}
                 games={games}
-                setGameId={setGameId}
                 setGames={setGames}
+                setGameId={setGameId}
+                setColor={setColor}
               />
             )}
           </div>
         </Route>
         <Route exact path="/game">
           <div className="h-full bg-gradient-to-r from-green-400 to-blue-500">
-            <Game game={game} color={color} />
+            <Game />
           </div>
         </Route>
       </Switch>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

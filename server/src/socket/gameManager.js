@@ -12,14 +12,14 @@ MojoAlpha
 var nextGameId = 0;
 const games = [];
 
-const getGameForPlayer = (UserSocket) => {
+const getGameForPlayer = (player) => {
   return games.find((game) => {
-    game.players.find((player) => player.socket === UserSocket);
+    return game.players.find((p) => p.socket === player);
   });
 };
 
 exports.getGameByID = (GameId) => {
-  games.find((game) => game.id === GameId);
+  return games.find((g) => g.id === GameId);
 };
 
 exports.getGames = () => {
