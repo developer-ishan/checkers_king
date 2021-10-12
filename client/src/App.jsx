@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
 
 import { SocketContext } from "./context/SocketContext";
-import { GameContext } from "./context/GameContext";
 import Game from "./components/game/Game";
 import Main from "./components/Main";
 import { API } from "./config/backend";
@@ -11,11 +10,6 @@ import { API } from "./config/backend";
 const App = () => {
   const [socket, setSocket] = useContext(SocketContext);
   const [games, setGames] = useState([]);
-  const [gameId, setGameId] = useState(null);
-  const { gameValue, colorValue } = useContext(GameContext);
-
-  const [game, setGame] = gameValue;
-  const [color, setColor] = colorValue;
 
   // connecting socket-client to the socket server for communication
   useEffect(() => {
@@ -24,12 +18,6 @@ const App = () => {
     });
     setSocket(clientSocket);
   }, [setSocket]);
-
-  // updating the game state to the current game user is in
-  useEffect(() => {
-    const gm = games.find((g) => g.id === gameId);
-    if (gm !== undefined) setGame({ board: gm.board, turn: gm.turn });
-  }, [gameId, games]);
 
   return (
     <BrowserRouter>
@@ -41,14 +29,7 @@ const App = () => {
                 hello peter
               </p>
             </header>
-            {socket !== null && (
-              <Main
-                games={games}
-                setGames={setGames}
-                setGameId={setGameId}
-                setColor={setColor}
-              />
-            )}
+            {socket !== null && <Main games={games} setGames={setGames} />}
           </div>
         </Route>
         <Route exact path="/game">

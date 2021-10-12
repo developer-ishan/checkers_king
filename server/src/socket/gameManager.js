@@ -25,7 +25,7 @@ exports.getGameByID = (GameId) => {
 exports.getGames = () => {
   let res = [];
   games.map((g) => {
-    const { players, ...game } = g;
+    const { players, board, ...game } = g;
     res.push({
       ...game,
       playerCount: players.length,
@@ -57,7 +57,8 @@ exports.createNewGame = ({ player, name }) => {
 
 exports.movePiece = ({ player, selectedPiece, destination }) => {
   const game = getGameForPlayer(player);
-  movePiece({ game, destination, selectedPiece });
+  if (game !== undefined) movePiece({ game, destination, selectedPiece });
+  return game;
 };
 
 exports.addPlayerToGame = ({ player, gameId }) => {
@@ -72,12 +73,14 @@ exports.addPlayerToGame = ({ player, gameId }) => {
 exports.endGame = ({ player, winner }) => {
   const game = getGameForPlayer(player);
   // players might disconnect while in the lobby
-  if (!game) return;
-  games.splice(games.indexOf(game), 1);
-  game.players.forEach((currentPlayer) => {
-    if (player !== currentPlayer.socket) currentPlayer.socket.emit("end-game");
-    if (winner) currentPlayer.socket.emit("winner", winner);
-  });
+  if (game) {
+    games.splice(games.indexOf(game), 1);
+    game.players.forEach((currentPlayer) => {
+      if (winner) currentPlayer.socket.emit("winner", winner);
+    });
+    return game.id;
+  }
+  return null;
 };
 
 exports.isGameOver = ({ player }) => {
@@ -96,9 +99,9 @@ exports.isGameOver = ({ player }) => {
     }
   }
   if (redCount === 0) {
-    return "black";
+    return "Black";
   } else if (blackCount === 0) {
-    return "red";
+    return "Red";
   } else {
     return false;
   }

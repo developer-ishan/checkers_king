@@ -10,7 +10,9 @@ var { SocketServer } = require("./socket/server");
 const keys = require("./config/keys");
 const authRouter = require("./routes/authRouter");
 
-require("./config/mongo");
+const { instrument } = require("@socket.io/admin-ui");
+
+// require("./config/mongo");
 
 var corsOptions = {
   origin: "*",
@@ -53,6 +55,12 @@ app.use(function (err, req, res, next) {
 
 const io = require("socket.io")(http, {
   transports: ["websocket"],
+  cors: {
+    origin: "*",
+  },
+});
+instrument(io, {
+  auth: false,
 });
 SocketServer(io);
 

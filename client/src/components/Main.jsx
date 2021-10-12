@@ -1,22 +1,14 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
 
-function Main({ games, setGames, setColor, setGameId }) {
+function Main({ games, setGames }) {
   let history = useHistory();
   const [socket, setSocket] = useContext(SocketContext);
+  const [joinGameField, setJoinGameField] = useState(0);
+  const [createGameField, setCreateGameField] = useState("");
 
   useEffect(() => {
-    // receiving the color of our pieces on the board
-    socket.on("color", (color) => {
-      setColor(color);
-    });
-
-    // receiving the created game id on 'create-game' event
-    socket.on("your-game-created", (gameId) => {
-      setGameId(gameId);
-    });
-
     // receiving the ongoing games information
     socket.on("games", (games) => {
       setGames(games);
@@ -24,48 +16,74 @@ function Main({ games, setGames, setColor, setGameId }) {
   }, []);
 
   // creates a new and redirects us to the game board
-  const createGame = (name) => {
-    socket.emit("create-game", name);
+  const createGame = () => {
+    socket.emit("create-game", createGameField);
     history.push("/game");
   };
 
   // joins us to the game with game_id 0 for now
+  // TODO: catching error on joining non-existent gaem
   const joinGame = (e) => {
-    socket.emit("join-game", 0);
-    setGameId(0);
+    socket.emit("join-game", joinGameField);
     history.push("/game");
   };
 
   return (
     <div className="p-6 m-6 text-center text-white">
       <h1>This is Main Component</h1>
-      <h1>Ongoing Games</h1>
-      {games !== null &&
-        games.map((game, ind) => (
-          <div className="flex p-8 m-4" key={ind}>
-            <h1 className="m-2">{game.name}</h1>
-            <h2 className="m-2">{game.id}</h2>
-            <h2 className="m-2">Players :- {game.playerCount} / 2</h2>
-          </div>
-        ))}
-      <Link
-        className="block w-1/4 px-4 py-2 m-4 font-semibold border border-white rounded hover:text-blue-500 hover:bg-white"
-        to="/game"
-      >
-        Let's Go
-      </Link>
-      <button
-        className="block px-10 py-3 m-4 font-semibold border border-white rounded hover:text-blue-500 hover:bg-white"
-        onClick={() => createGame("default")}
-      >
-        Create New Game
-      </button>
-      <button
-        className="block px-10 py-3 m-4 font-semibold text-white border border-white rounded hover:text-blue-500 hover:bg-white"
-        onClick={joinGame}
-      >
-        Join Game With ID 0
-      </button>
+      <div className="flex flex-col w-3/4">
+        <h1>Ongoing Games</h1>
+        {games !== null &&
+          games.map((game, ind) => (
+            <div className="flex p-8 m-4" key={ind}>
+              <h1 className="m-2">Title :- {game.name}</h1>
+              <h2 className="m-2">ID :- {game.id}</h2>
+              <h2 className="m-2">Players :- {game.playerCount} / 2</h2>
+            </div>
+          ))}
+      </div>
+
+      <div className="flex flex-col w-1/2">
+        <Link
+          className="block w-1/4 px-4 py-2 m-4 font-semibold border border-white rounded hover:text-blue-500 hover:bg-white"
+          to="/game"
+        >
+          Let's Go
+        </Link>
+      </div>
+
+      <div className="flex flex-col w-1/2">
+        <input
+          type="text"
+          className="p-1 mx-2 text-black"
+          value={createGameField}
+          onChange={(e) => {
+            setCreateGameField(e.target.value);
+          }}
+        />
+        <button
+          className="block px-10 py-3 m-4 font-semibold border border-white rounded hover:text-blue-500 hover:bg-white"
+          onClick={() => createGame()}
+        >
+          Create New Game
+        </button>
+      </div>
+      <div className="flex flex-col w-1/2">
+        <input
+          type="number"
+          className="p-1 mx-2 text-black"
+          value={joinGameField}
+          onChange={(e) => {
+            setJoinGameField(e.target.value);
+          }}
+        />
+        <button
+          className="block px-10 py-3 m-4 font-semibold text-white border border-white rounded hover:text-blue-500 hover:bg-white"
+          onClick={joinGame}
+        >
+          Join Game With ID {joinGameField}
+        </button>
+      </div>
     </div>
   );
 }

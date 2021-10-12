@@ -1,15 +1,16 @@
 const { movePiece, isGameOver, endGame } = require("../gameManager");
-const sendGames = require("../helpers/sendGames");
+const sendGameStatus = require("../helpers/sendGameStatus");
 
 module.exports =
   ({ io, socket }) =>
   ({ selectedPiece, destination }) => {
-    movePiece({
+    const game = movePiece({
       player: socket,
       selectedPiece,
       destination,
     });
+    if (game === undefined) return;
     const winner = isGameOver({ player: socket });
     if (winner !== false) endGame({ player: socket, winner });
-    sendGames(io);
+    sendGameStatus({ socket, gameId: game.id });
   };

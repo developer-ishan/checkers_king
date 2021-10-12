@@ -15,6 +15,7 @@ export const GameProvider = (props) => {
       [0, 2, 0, 2, 0, 2, 0, 2],
     ],
     turn: null,
+    id: null,
   });
   const [color, setColor] = useState(null);
 
