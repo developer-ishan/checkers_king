@@ -8,8 +8,8 @@ const CreateGame = () => {
         className="absolute transform inset-x-2/4 inset-y-2/4 -translate-x-2/4 -translate-y-2/4"
         alt="game image"
       />
-      <div className="absolute z-10 rounded inset-1 opacity-70 bg-gradient-to-br from-purple-600 via-indigo-500 to-teal-400"></div>
-      <div className="z-20">
+      <div className="absolute rounded inset-1 opacity-70 bg-gradient-to-br from-purple-600 via-indigo-500 to-teal-400"></div>
+      <div className="">
         <a
           href="#"
           className="block table p-2 p-4 mx-auto text-white capitalize transform border-4 border-dashed rounded-full hover:scale-150 active:scale-150 align place-content-center"

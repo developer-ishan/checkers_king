@@ -13,7 +13,8 @@ const JoinGame = () => {
         <input
           type="text"
           id="game-id"
-          class="border-dashed border-4 w-full border-yellow-300 active:ring-yellow-300 focus:border-yellow-300 focus:ring-yellow-300"
+          placeholder="enter game code"
+          class="placeholder-gray-600 focus:placeholder-gray-400 border-dashed border-4 w-full border-yellow-300 active:ring-yellow-300 focus:border-yellow-300 focus:ring-yellow-300"
         />
         <br />
         <button class="bg-indigo-500 text-white p-2 rounded capitalize my-3 w-full">
