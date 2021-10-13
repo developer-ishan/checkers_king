@@ -4,6 +4,7 @@ import io from "socket.io-client";
 
 import { SocketContext } from "./context/SocketContext";
 import Game from "./components/game/Game";
+import Home from "./components/Landing/Home";
 import Main from "./components/Main";
 import { API } from "./config/backend";
 
@@ -24,11 +25,7 @@ const App = () => {
       <Switch>
         <Route exact path="/">
           <div className="h-full bg-gradient-to-r from-green-400 to-blue-500">
-            <header>
-              <p className="text-4xl text-center text-white capitalize">
-                hello peter
-              </p>
-            </header>
+            <Home />
             {socket !== null && <Main games={games} setGames={setGames} />}
           </div>
         </Route>
