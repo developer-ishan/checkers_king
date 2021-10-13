@@ -5,7 +5,8 @@ import HomeSong from "../../static/home.mp3";
 const Home = () => {
   const [music] = useState(new Audio(HomeSong));
   const playMusic = () => {
-    music.play();
+    // music.play();
+    //TODO:later turn it on
   };
 
   // playMusic();
