@@ -7,6 +7,7 @@ function Main({ games, setGames }) {
   const [socket, setSocket] = useContext(SocketContext);
   const [joinGameField, setJoinGameField] = useState(0);
   const [createGameField, setCreateGameField] = useState("");
+  const [isBot, setIsBot] = useState(false);
 
   useEffect(() => {
     // receiving the ongoing games information
@@ -17,7 +18,7 @@ function Main({ games, setGames }) {
 
   // creates a new and redirects us to the game board
   const createGame = () => {
-    socket.emit("create-game", createGameField);
+    socket.emit("create-game", createGameField, isBot);
     history.push("/game");
   };
 
@@ -53,14 +54,30 @@ function Main({ games, setGames }) {
       </div>
 
       <div className="flex flex-col w-1/2">
-        <input
-          type="text"
-          className="p-1 mx-2 text-black"
-          value={createGameField}
-          onChange={(e) => {
-            setCreateGameField(e.target.value);
-          }}
-        />
+        <div>
+          Game Title
+          <input
+            type="text"
+            className="p-1 mx-2 text-black"
+            value={createGameField}
+            onChange={(e) => {
+              setCreateGameField(e.target.value);
+            }}
+          />
+          {createGameField}
+        </div>
+        <div>
+          <input
+            className="p-1 mx-2"
+            type="checkbox"
+            checked={isBot}
+            onChange={() => {
+              setIsBot(!isBot);
+            }}
+          />
+          Play With Bot
+          {isBot}
+        </div>
         <button
           className="block px-10 py-3 m-4 font-semibold border border-white rounded hover:text-blue-500 hover:bg-white"
           onClick={() => createGame()}

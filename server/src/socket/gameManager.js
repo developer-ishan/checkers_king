@@ -34,30 +34,38 @@ exports.getGames = () => {
   return res;
 };
 
-exports.createNewGame = ({ player, name }) => {
+exports.createNewGame = ({ player, name, isBot }) => {
   const game = {
     name,
     turn: "Red",
     players: [{ socket: player, color: "Red" }],
     id: nextGameId++,
     board: [
-      [1, 0, 1, 0, 1, 0, 1, 0],
-      [0, 1, 0, 1, 0, 1, 0, 1],
-      [1, 0, 1, 0, 1, 0, 1, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 2, 0, 0, 0, 2, 0, 2],
-      [2, 0, 2, 0, 2, 0, 2, 0],
-      [0, 2, 0, 2, 0, 2, 0, 2],
+      [0, 0, 1, 0, 0, 0, 0, 0],
+      [0, 2, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
     ],
+    isBot,
   };
   games.push(game);
   return game;
 };
 
 exports.movePiece = ({ player, selectedPiece, destination }) => {
+  console.log("inside move piece function...");
+  console.log({ selectedPiece, destination });
   const game = getGameForPlayer(player);
-  if (game !== undefined) movePiece({ game, destination, selectedPiece });
+  if (game !== undefined)
+    movePiece({
+      game,
+      destination,
+      selectedPiece,
+    });
   return game;
 };
 
@@ -75,9 +83,14 @@ exports.endGame = ({ player, winner }) => {
   // players might disconnect while in the lobby
   if (game) {
     games.splice(games.indexOf(game), 1);
-    game.players.forEach((currentPlayer) => {
-      if (winner) currentPlayer.socket.emit("winner", winner);
-    });
+    if (winner) {
+      console.log("endgame insiders.... ", winner);
+      // player.to(game.id).emit("winner", winner);
+      // player.emit("winner", winner);
+    }
+    // game.players.forEach((currentPlayer) => {
+    //   if (winner) currentPlayer.socket.emit("winner", winner);
+    // });
     return game.id;
   }
   return null;

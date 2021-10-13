@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 export const GameContext = createContext();
 
@@ -18,6 +18,10 @@ export const GameProvider = (props) => {
     id: null,
   });
   const [color, setColor] = useState(null);
+
+  useEffect(() => {
+    console.log("game provider loaded...");
+  }, []);
 
   return (
     <GameContext.Provider

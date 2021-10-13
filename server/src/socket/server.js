@@ -2,7 +2,7 @@ const createGame = require("./handlers/createGame");
 const joinGame = require("./handlers/joinGame");
 const movePiece = require("./handlers/onMovePiece");
 const onDisconnect = require("./handlers/onDisconnect");
-const leaveGame = require("./handlers/leaveGame");
+const onQuitGame = require("./handlers/onQuitGame");
 
 const sendGames = require("./helpers/sendGames");
 
@@ -19,7 +19,7 @@ exports.SocketServer = (io) => {
 
     socket.on("move-piece", movePiece({ io, socket }));
 
-    socket.on("leave-game", leaveGame({ io, socket }));
+    socket.on("quit-game", onQuitGame({ io, socket }));
 
     socket.on("leave-room", ({ roomId }) => {
       console.log("caught leave room ", roomId);
