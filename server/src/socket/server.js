@@ -3,9 +3,11 @@ const joinGame = require("./handlers/joinGame");
 const movePiece = require("./handlers/onMovePiece");
 const onDisconnect = require("./handlers/onDisconnect");
 const leaveGame = require("./handlers/leaveGame");
-
 const sendGames = require("./helpers/sendGames");
 const saveChat = require("./handlers/saveChat");
+const offerDraw = require("./handlers/offerDraw");
+const rejectDraw = require("./handlers/rejectDraw");
+const acceptDraw = require("./handlers/acceptDraw");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
@@ -22,6 +24,16 @@ exports.SocketServer = (io) => {
 
     socket.on("leave-game", leaveGame({ io, socket }));
 
+    socket.on("draw-offered", ({ gameId }) => {
+      offerDraw({ gameId, io, socket });
+    });
+
+    socket.on("draw-rejected", ({ gameId }) => {
+      rejectDraw({ gameId, io, socket });
+    });
+    socket.on("draw-accepted", ({ gameId }) => {
+      acceptDraw({ gameId, io, socket });
+    });
     socket.on("leave-room", ({ roomId }) => {
       console.log("caught leave room ", roomId);
       socket.leave(roomId);
