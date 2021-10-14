@@ -33,13 +33,7 @@ const playerMoves = {
   ],
 };
 
-const BoardComponent = ({
-  board,
-  color,
-  turn,
-  movePiece,
-  quitGame,
-}) => {
+const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
   const [selectedPiece, setSelectedPiece] = useState({ i: -1, j: -1 });
   const [possibleMoves, setPossibleMoves] = useState([]);
 
@@ -162,9 +156,7 @@ const BoardComponent = ({
       <div className="flex">
         <button
           className="p-2 pl-5 pr-5 text-lg text-gray-100 bg-red-500 border-red-300 rounded-lg focus:border-4"
-          onClick={() => {
-            alert("leave game clicked");
-          }}
+          onClick={quitGame}
         >
           Leave Game
         </button>

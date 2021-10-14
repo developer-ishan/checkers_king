@@ -20,8 +20,8 @@ module.exports =
       console.log("inside onMovePiece, winner ", gameId);
       console.log("emitting winner event...");
       io.to(game.id).emit("winner", winner);
-      io.socketsLeave(gameId);
       sendGames(io);
+      io.socketsLeave(gameId);
     }
 
     // playing against bot
