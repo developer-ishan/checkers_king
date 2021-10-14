@@ -38,7 +38,6 @@ const BoardComponent = ({
   color,
   turn,
   movePiece,
-  leaveRoom,
   quitGame,
 }) => {
   const [selectedPiece, setSelectedPiece] = useState({ i: -1, j: -1 });
@@ -164,8 +163,7 @@ const BoardComponent = ({
         <button
           className="p-2 pl-5 pr-5 text-lg text-gray-100 bg-red-500 border-red-300 rounded-lg focus:border-4"
           onClick={() => {
-            if (color === null) leaveRoom();
-            else quitGame();
+            alert("leave game clicked");
           }}
         >
           Leave Game

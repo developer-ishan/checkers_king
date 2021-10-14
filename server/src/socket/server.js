@@ -5,6 +5,7 @@ const onDisconnect = require("./handlers/onDisconnect");
 const onQuitGame = require("./handlers/onQuitGame");
 
 const sendGames = require("./helpers/sendGames");
+const onLeaveRoom = require("./handlers/onLeaveRoom");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
@@ -20,11 +21,6 @@ exports.SocketServer = (io) => {
     socket.on("move-piece", movePiece({ io, socket }));
 
     socket.on("quit-game", onQuitGame({ io, socket }));
-
-    socket.on("leave-room", ({ roomId }) => {
-      console.log(socket.id + " caught leave room ", roomId);
-      socket.leave(roomId);
-    });
 
     socket.on("disconnect", onDisconnect({ io, socket }));
   });

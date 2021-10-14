@@ -12,19 +12,10 @@ const Game = () => {
 
   const [game, setGame] = gameValue;
   const [color, setColor] = colorValue;
-  const [gameId, setGameId] = useState(null);
   let history = useHistory();
 
   const movePiece = ({ selectedPiece, destination }) => {
     socket.emit("move-piece", { selectedPiece, destination });
-  };
-
-  const leaveRoom = () => {
-    socket.emit("leave-room", { roomId: gameId });
-    if (game.id != null) {
-      console.log("goBack() called...");
-      history.goBack();
-    }
   };
 
   const quitGame = () => {
@@ -34,7 +25,6 @@ const Game = () => {
   useEffect(() => {
     socket.on("game-status", (game) => {
       setGame(game);
-      setGameId(game.id);
     });
 
     socket.on("color", (color) => {
@@ -43,35 +33,23 @@ const Game = () => {
 
     socket.on("winner", (winner) => {
       console.log("winner event caught...");
-      alert("Winner of the game is ", winner);
-      leaveRoom();
+      console.log("Winner of the game is ", winner);
     });
-  }, []);
 
-  useEffect(() => {
     socket.on("end-game", () => {
       console.log("end-game event caught...");
-      leaveRoom();
     });
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      setGameId(null);
-      setColor(null);
-    };
   }, []);
 
   return (
     <div className="text-center text-white">
       <h1>This is a Game</h1>
-      <p>Game ID :- {gameId}</p>
+      <p>Game ID :- {game.id}</p>
       <BoardComponent
         board={game.board}
         color={color}
         turn={game.turn}
         movePiece={movePiece}
-        leaveRoom={leaveRoom}
         quitGame={quitGame}
       />
       <Chat />

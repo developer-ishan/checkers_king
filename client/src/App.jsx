@@ -17,7 +17,7 @@ const App = () => {
       transports: ["websocket"],
     });
     setSocket(clientSocket);
-  }, [setSocket]);
+  }, []);
 
   return (
     <BrowserRouter>
