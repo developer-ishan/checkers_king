@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
 const Chat = ({ sendChatMsg, chats }) => {
   const [msg, setMsg] = useState("");
+  //refrence to the daummy element present at the end of chats
+  const messagesEndRef = React.createRef();
+  //this function will bring that div in focuse
+  //resulting in scroll
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+  //so the ides is whenever there is change in chat
+  //run the scroll to bottom
+  useEffect(() => {
+    scrollToBottom();
+  }, [chats]);
+
   const handleMsg = () => {
     const userMsg = msg;
     setMsg("");
@@ -39,6 +52,7 @@ const Chat = ({ sendChatMsg, chats }) => {
             why so serious? typeout something..
           </p>
         )}
+        <div ref={messagesEndRef} />
       </div>
       <input
         className="w-full px-3 py-2 text-xs leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
