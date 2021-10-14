@@ -37,9 +37,11 @@ app.get("/", (req, res) => {
 
 const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
+const chatRouter = require("./routes/chatRouter");
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/chat", chatRouter);
 
 // Catching 404 Not Found Error
 app.use(function (req, res, next) {
