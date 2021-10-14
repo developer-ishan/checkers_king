@@ -43,8 +43,8 @@ exports.createNewGame = ({ player, name, isBot }) => {
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 1, 0, 0, 0, 0, 0],
-      [0, 2, 0, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -79,6 +79,7 @@ exports.addPlayerToGame = ({ player, gameId }) => {
 };
 
 exports.endGame = ({ player, winner }) => {
+  // TODO: save the information of the game into the db
   const game = getGameForPlayer(player);
   // players might disconnect while in the lobby
   if (game) {

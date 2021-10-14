@@ -22,7 +22,7 @@ exports.SocketServer = (io) => {
     socket.on("quit-game", onQuitGame({ io, socket }));
 
     socket.on("leave-room", ({ roomId }) => {
-      console.log("caught leave room ", roomId);
+      console.log(socket.id + " caught leave room ", roomId);
       socket.leave(roomId);
     });
 

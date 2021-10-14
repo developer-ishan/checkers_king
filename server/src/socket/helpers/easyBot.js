@@ -5,6 +5,12 @@ const BLACK_QUEEN = 4;
 const TOP_ROW = 0;
 const BOTTOM_ROW = 7;
 
+const ATTACK_POINTS = 3 + Math.floor(Math.random() * 6);
+const DEFENSE_POINTS = 3 + Math.floor(Math.random() * 5);
+const EMPTY_POINTS = 1 + Math.floor(Math.random() * 4);
+const DANGER_POINTS = 2 + Math.floor(Math.random() * 3);
+const QUEEN_POINTS = 2 + Math.floor(Math.random() * 6);
+
 const player = {
   0: "Empty",
   1: "Red", // pawn
@@ -55,42 +61,46 @@ const evaluatePosition = ({ board, tposi, tposj, boardPiece }) => {
     (boardPiece === RED_PAWN && tposi === BOTTOM_ROW) ||
     (boardPiece === BLACK_PAWN && tposj === TOP_ROW)
   )
-    calculatedValue += 6;
+    calculatedValue += QUEEN_POINTS;
 
   for (let i = 0; i < 4; ++i) {
     let tmpi = tposi + diagonalCells[i].i,
       tmpj = tposj + diagonalCells[i].j;
     if (!isValid(tmpi, tmpj)) continue;
 
-    if (board[tmpi][tmpj] === 0) calculatedValue += 2;
-    if (player[board[tmpi][tmpj]] === player[boardPiece]) calculatedValue += 3;
-    else calculatedValue -= 1;
+    if (board[tmpi][tmpj] === 0) calculatedValue += EMPTY_POINTS;
+    if (player[board[tmpi][tmpj]] === player[boardPiece])
+      calculatedValue += DEFENSE_POINTS;
+    else calculatedValue -= DANGER_POINTS;
+    if (board[tmpi][tmpj] === 3 || board[tmpi][tmpj] === 4)
+      calculatedValue -= Math.floor(Math.random() * 3);
   }
   console.log(
     "newPosi " + tposi + " newPosj " + tposj + " value ",
     calculatedValue
   );
-  return calculatedValue;
+  return calculatedValue + Math.floor(Math.random() * 4);
 };
 
 const calculateBestPossibleMoves = ({ board, posi, posj }) => {
   console.log("posi " + posi + " posj " + posj);
   let pieceValue = -100,
     pieceMove = null;
+
   let boardPiece = board[posi][posj]; // board piece
   let movesSet = playerMoves[boardPiece];
   console.log("bp ", boardPiece);
 
   for (let i = 0; i < movesSet.length; ++i) {
+    if (movesSet[i] === undefined) continue;
     let tposi = posi + movesSet[i].i;
     let tposj = posj + movesSet[i].j;
+    if (tposi === undefined || tposj === undefined || !isValid(tposi, tposj))
+      continue;
     let tposBoardPiece = board[tposi][tposj];
 
     console.log("tposi " + tposi + " tposj " + tposj);
-    if (
-      isValid(tposi, tposj) &&
-      player[boardPiece] !== player[tposBoardPiece]
-    ) {
+    if (player[boardPiece] !== player[tposBoardPiece]) {
       if (tposBoardPiece === 0) {
         board[posi][posj] = 0;
         board[tposi][tposj] = boardPiece;
@@ -103,7 +113,7 @@ const calculateBestPossibleMoves = ({ board, posi, posj }) => {
         board[posi][posj] = boardPiece;
         board[tposi][tposj] = 0;
 
-        console.log("tposi" + tposi + "tposj" + tposj, tmp1);
+        console.log("tposi - " + tposi + "; tposj - " + tposj, tmp1);
         if (tmp1 > pieceValue) {
           pieceValue = tmp1;
           pieceMove = {
@@ -118,13 +128,15 @@ const calculateBestPossibleMoves = ({ board, posi, posj }) => {
           board[posi][posj] = 0;
           board[ttposi][ttposj] = boardPiece;
           let tmp2 =
-            6 +
+            ATTACK_POINTS +
             evaluatePosition({
               board,
               tposi: ttposi,
               tposj: ttposj,
               boardPiece,
             });
+          if (board[tposi][tposj] === 3 || board[tposi][tposj] === 4)
+            tmp2 += Math.floor(Math.random() * 4);
           board[posi][posj] = boardPiece;
           board[ttposi][ttposj] = 0;
 
