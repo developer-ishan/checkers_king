@@ -4,14 +4,24 @@ const Schema = mongoose.Schema;
 var generateName = require("sillyname");
 
 // Create a schema
-const chatSchema = new Schema({
-  users:[String],
-  match:String,
-  messages: []
+const matchSchema = new Schema({
+  players: [
+    {
+      userId: String,
+      delta: Number,
+    },
+  ],
+  matchId: {
+    type: String,
+    required: true,
+  },
+  moves: [{ type: String }],
+  startTime: Date,
+  endTime: Date,
 });
 
 // Create a model
-const Chat = mongoose.model("user", chatSchema);
+const Match = mongoose.model("match", matchSchema);
 
 // Export the model
-module.exports = Chat;
+module.exports = Match;

@@ -38,10 +38,12 @@ app.get("/", (req, res) => {
 const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
 const chatRouter = require("./routes/chatRouter");
+const matchRouter = require("./routes/matchRouter");
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api/match", matchRouter);
 
 // Catching 404 Not Found Error
 app.use(function (req, res, next) {

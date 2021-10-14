@@ -18,14 +18,21 @@ const EloRating = (Ra, Rb) => {
   return { winnerNew: round(Ra), loserNew: round(Rb) };
 };
 
-const updateRating = async(winnerId, loserId) => {
+const updateRating = async (winnerId, loserId) => {
   const winner = await User.findById(winnerId);
   const loser = await User.findById(loserId);
   const { winnerNew, loserNew } = EloRating(winner.rating, loser.rating);
+  const deltaWinner = winnerNew - winner.rating;
+  const deltaLoser = loserNew - loser.rating;
+
   winner.rating = winnerNew;
   loser.rating = loserNew;
   return {
     updatedWinner: await winner.save(),
-    updatedLoser: await winner.save()
-  }
+    updatedLoser: await winner.save(),
+    deltaLoser,
+    deltaWinner,
+  };
 };
+
+module.exports = updateRating;
