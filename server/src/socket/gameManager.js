@@ -50,6 +50,7 @@ exports.createNewGame = ({ player, name }) => {
       [2, 0, 2, 0, 2, 0, 2, 0],
       [0, 2, 0, 2, 0, 2, 0, 2],
     ],
+    chat: [],
   };
   games.push(game);
   return game;

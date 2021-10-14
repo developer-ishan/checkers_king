@@ -152,27 +152,7 @@ const BoardComponent = ({ board, color, turn, movePiece, leaveGame }) => {
     }
   };
   return (
-    <div className="p-8">
-      <div className="flex">
-        <button
-          class="p-2 pl-5 pr-5 bg-red-500 text-gray-100 text-lg rounded-lg focus:border-4 border-red-300"
-          onClick={() => leaveGame()}
-        >
-          Leave Game
-        </button>
-      </div>
-      {color !== null ? (
-        <h1 className="m-2">YOUR COLOR :- {color}</h1>
-      ) : (
-        <h1 className="m-2">SPECTATOR</h1>
-      )}
-      <h1 className="m-2">PLAYER TURN :- {turn}</h1>
-
-      {turn === color ? (
-        <h1>Your Turn To Move A Piece...</h1>
-      ) : (
-        <h1>Waiting For Opponent To Move...</h1>
-      )}
+    <div className="">
       {/* board start*/}
       <div
         style={{ height: "90vmin", width: "90vmin" }}

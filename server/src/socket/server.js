@@ -5,6 +5,7 @@ const onDisconnect = require("./handlers/onDisconnect");
 const leaveGame = require("./handlers/leaveGame");
 
 const sendGames = require("./helpers/sendGames");
+const saveChat = require("./handlers/saveChat");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
@@ -26,6 +27,10 @@ exports.SocketServer = (io) => {
       socket.leave(roomId);
     });
 
+    socket.on("send-msg", ({ gameId, msg }) => {
+      saveChat({ gameId, msg, io, socket });
+    });
+    // socket.on("send-msg", saveChat({ io, socket }));
     socket.on("disconnect", onDisconnect({ io, socket }));
   });
 };
