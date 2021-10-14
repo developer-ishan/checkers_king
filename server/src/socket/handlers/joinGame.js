@@ -8,6 +8,7 @@ module.exports =
     console.log("for socket ", socket.id);
     gameId = parseInt(gameId);
     const game = getGameByID(gameId);
+    // TODO: return error on undefined game
     if (game === undefined) return;
     console.log("got the game");
     socket.join(gameId);
