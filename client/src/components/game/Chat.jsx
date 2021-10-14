@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 const Chat = ({ sendChatMsg, chats }) => {
   const [msg, setMsg] = useState("");
   const handleMsg = () => {
@@ -6,6 +6,14 @@ const Chat = ({ sendChatMsg, chats }) => {
     setMsg("");
     sendChatMsg(userMsg);
   };
+
+  const handleEnterKey = (event) => {
+    if (event.code === "Enter" || event.code === "NumpadEnter") {
+      event.preventDefault();
+      handleMsg();
+    }
+  };
+
   return (
     <div className="flex flex-col p-8 space-y-2 text-black bg-white">
       <div className="w-full p-2 text-center border-2">Chat Messages</div>
@@ -38,6 +46,7 @@ const Chat = ({ sendChatMsg, chats }) => {
         type="text"
         value={msg}
         onChange={(e) => setMsg(e.target.value)}
+        onKeyDown={(e) => handleEnterKey(e)}
         placeholder="Type a message"
       />
       <button
