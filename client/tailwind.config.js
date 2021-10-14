@@ -16,7 +16,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      borderColor: ["active"],
+    },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

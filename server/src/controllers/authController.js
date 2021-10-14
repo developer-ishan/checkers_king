@@ -1,6 +1,6 @@
 const JWT = require("jsonwebtoken");
 const User = require("../models/User");
-const { JWT_SECRET } = require("../config/keys");
+const { JWT_SECRET, UI_BASE } = require("../config/keys");
 
 signToken = (user) => {
   return JWT.sign(
@@ -58,10 +58,23 @@ module.exports = {
     res.status(200).json({ success: true, token: token });
   },
 
-  signIn: async (req, res, next) => {
+  signInSendCookie: async (req, res, next) => {
     // Generate token
     const token = signToken(req.user);
-    res.status(200).json({ success: true, token: token });
+    let options = {
+      maxAge: 1000 * 60 * 60 * 24 * 30, // would expire after 30 days
+      httpOnly: false, // The cookie only accessible by the web server
+      signed: false, // Indicates if the cookie should be signed
+    };
+
+    // Set cookie
+    res.cookie("token", token, options); // options is optional
+    res.cookie("userId", req.user._id.toString(), options); // options is optional
+    res.redirect(UI_BASE);
+  },
+  signInSendToken: async (req, res, next) => {
+    const token = signToken(req.user);
+    res.status(200).json({ success: true, caution: "set the token in cookie for uniformity", token: token, userId:req.user._id });
   },
 
   signOut: async (req, res, next) => {
@@ -85,14 +98,14 @@ module.exports = {
         name: profile.name,
         photo: profile.photos[0].value,
       };
-       req.user = await req.user.save();
-       return next();
+      req.user = await req.user.save();
+      return next();
     } else {
       // We're in the account creation process
       let existingUser = await User.findOne({ "google.id": profile.id });
       if (existingUser) {
-         req.user = existingUser;
-         return next();
+        req.user = existingUser;
+        return next();
       }
 
       // Check if we have someone with the same email
@@ -108,8 +121,8 @@ module.exports = {
           name: profile.name,
           photo: profile.photos[0].value,
         };
-         req.user = await existingUser.save();
-         return next();
+        req.user = await existingUser.save();
+        return next();
       }
 
       const newUser = new User({
@@ -122,13 +135,13 @@ module.exports = {
         },
       });
 
-       req.user = await newUser.save();
-       return next();
+      req.user = await newUser.save();
+      return next();
     }
   },
 
   facebookOAuth: async (req, res, next) => {
-     // Generate token
+    // Generate token
     // Could get accessed in two ways:
     // 1) When registering for the first time
     // 2) When linking account to the existing one
@@ -142,18 +155,18 @@ module.exports = {
         name: profile.name,
         photo: profile.photos[0].value,
       };
-       req.user = await req.user.save();
-       return next();
+      req.user = await req.user.save();
+      return next();
     } else {
       // We're in the account creation process
       let existingUser = await User.findOne({ "facebook.id": profile.id });
       if (existingUser) {
-         req.user = existingUser;
-         return next();
+        req.user = existingUser;
+        return next();
       }
 
       // Check if we have someone with the same email
-      if(profile.emails)
+      if (profile.emails)
         existingUser = await User.findOne({
           "local.email": profile.emails[0].value,
         });
@@ -165,8 +178,8 @@ module.exports = {
           name: profile.name,
           photo: profile.photos[0].value,
         };
-         req.user = await existingUser.save();
-         return next();
+        req.user = await existingUser.save();
+        return next();
       }
 
       const newUser = new User({
@@ -178,8 +191,8 @@ module.exports = {
         },
       });
 
-       req.user = await newUser.save();
-       return next();
+      req.user = await newUser.save();
+      return next();
     }
   },
 
