@@ -131,18 +131,22 @@ const BoardComponent = ({ board, color, turn, movePiece, leaveGame }) => {
       case 0:
         return;
       case 1:
-        return <div className="z-20 w-5/6 bg-red-500 rounded-full h-5/6"></div>; //red pawn
+        return (
+          <div className="absolute w-5/6 bg-red-500 rounded-full h-5/6"></div>
+        ); //red pawn
       case 2:
-        return <div className="z-20 w-5/6 bg-black rounded-full h-5/6"></div>; //black pawn
+        return (
+          <div className="absolute w-5/6 bg-black rounded-full h-5/6"></div>
+        ); //black pawn
       case 3:
         return (
-          <div className="z-20 grid w-5/6 text-yellow-500 bg-red-500 rounded-full place-content-center h-5/6">
+          <div className="grid w-5/6 text-yellow-500 bg-red-500 rounded-full place-content-center h-5/6">
             Q
           </div>
         ); //red queen
       case 4:
         return (
-          <div className="z-20 grid w-5/6 text-yellow-500 bg-black rounded-full place-content-center h-5/6">
+          <div className="grid w-5/6 text-yellow-500 bg-black rounded-full place-content-center h-5/6">
             Q
           </div>
         ); //black queen
@@ -168,9 +172,6 @@ const BoardComponent = ({ board, color, turn, movePiece, leaveGame }) => {
                 className={getStyle(i, j)}
                 onClick={() => clickCell(i, j)}
               >
-                {/* putting the playing piece */}
-                {piece !== 0 && getPiece(board[i][j])}
-
                 {/* if current box is highligted then putting a overlay on the box*/}
                 {isHighlighted({ i, j }) !== undefined && (
                   <div className="absolute inset-0 bg-green-500 border-4 border-green-800"></div>
@@ -178,8 +179,10 @@ const BoardComponent = ({ board, color, turn, movePiece, leaveGame }) => {
 
                 {/*if current box is selected then putting a overlay on the box*/}
                 {isSelected(i, j) && (
-                  <div className="absolute inset-0 z-10 bg-yellow-500 border-4 border-yellow-800"></div>
+                  <div className="absolute inset-0 bg-yellow-500 border-4 border-yellow-800"></div>
                 )}
+                {/* putting the playing piece */}
+                {piece !== 0 && getPiece(board[i][j])}
               </div>
             ))}
           </div>
