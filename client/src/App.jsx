@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
+import Cookies from 'js-cookie';
 
 import { SocketContext } from "./context/SocketContext";
 import Game from "./components/game/Game";

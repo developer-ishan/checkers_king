@@ -1,39 +1,55 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
+var generateName = require("sillyname");
 
 // Create a schema
 const userSchema = new Schema({
   methods: {
     type: [String],
-    required: true
+    required: true,
   },
   local: {
     email: {
       type: String,
-      lowercase: true
+      lowercase: true,
     },
     password: {
-      type: String
-    }
+      type: String,
+    },
   },
   google: {
-    type: Object
+    type: Object,
   },
   facebook: {
-    type: Object
+    type: Object,
+  },
+  username: {
+    type: String,
+    default: generateName().split(" ").join(""),
+  },
+  desc: {
+    type: String,
+  },
+  active: {
+    type: Boolean,
+    default: true,
+  },
+  rating: {
+    type: Number,
+    default: 800
   }
 });
 
-userSchema.pre('save', async function (next) {
+userSchema.pre("save", async function (next) {
   try {
-    if (!this.methods.includes('local')) {
+    if (!this.methods.includes("local")) {
       next();
     }
     //the user schema is instantiated
     const user = this;
     //check if the user has been modified to know if the password has already been hashed
-    if (!user.isModified('local.password')) {
+    if (!user.isModified("local.password")) {
       next();
     }
     // Generate a salt
@@ -54,10 +70,10 @@ userSchema.methods.isValidPassword = async function (newPassword) {
   } catch (error) {
     throw new Error(error);
   }
-}
+};
 
 // Create a model
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model("user", userSchema);
 
 // Export the model
 module.exports = User;

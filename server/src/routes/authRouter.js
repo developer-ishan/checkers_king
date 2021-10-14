@@ -1,10 +1,9 @@
 const authRouter = require("express").Router();
 const { check } = require("express-validator");
 const passport = require("passport");
-require("../config/passport");
-const userController = require("../controllers/user");
-const validator = require("../controllers/validator");
-const passportJWT = passport.authenticate("jwt", { session: false });
+const authController = require("../controllers/authController");
+const validator = require("../middleware/validator");
+const userAuth = require("../middleware/userAuth");
 
 authRouter.post(
   "/signup",
@@ -13,7 +12,7 @@ authRouter.post(
     check("password").isLength({ min: 8 }).withMessage("Password too short..."),
   ],
   validator,
-  userController.signUp
+  authController.signUp
 );
 
 authRouter.post(
@@ -35,10 +34,10 @@ authRouter.post(
       next();
     })(req, res, next);
   },
-  userController.signIn
+  authController.signInSendToken
 );
 
-authRouter.get("/signout", passportJWT, userController.signOut);
+authRouter.get("/signout", userAuth, authController.signOut);
 
 authRouter.get(
   "/oauth/google",
@@ -50,14 +49,14 @@ authRouter.get(
     session: false,
     assignProperty: "profile",
   }),
-  userController.googleOAuth,
-  userController.signIn
+  authController.googleOAuth,
+  authController.signInSendCookie
 );
 
 authRouter.get(
   "/oauth/facebook",
   passport.authenticate("facebookToken", { session: false }),
-  userController.facebookOAuth,
+  authController.facebookOAuth,
 );
 authRouter.get(
   "/oauth/facebook/callback",
@@ -65,12 +64,12 @@ authRouter.get(
     session: false,
     assignProperty: 'profile',
   }),
-  userController.facebookOAuth,
-  userController.signIn
+  authController.facebookOAuth,
+  authController.signInSendCookie
 );
 
-authRouter.get("/dashboard", passportJWT, userController.dashboard);
+authRouter.get("/dashboard", userAuth, authController.dashboard);
 
-authRouter.get("/status", passportJWT, userController.checkAuth);
+authRouter.get("/status", userAuth, authController.checkAuth);
 
 module.exports = authRouter;

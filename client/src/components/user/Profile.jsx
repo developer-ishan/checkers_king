@@ -9,7 +9,7 @@ const Profile = () => {
   return (
     <div className="p-3 space-y-3 bg-gray-100">
       {/*TODO:either set the navbar global or do something of it  */}
-      {/* <Navbar /> */}
+      <Navbar />
       <UserInfo userId={userId} />
       <PreviousMatches userId={userId} />
     </div>

@@ -1,4 +1,5 @@
 import BASE from "../config";
+import Cookies from 'js-cookie';
 
 export const register = (user) => {
   return fetch(`${BASE}/api/auth/signup`, {
@@ -37,7 +38,9 @@ export const login = (user) => {
 
 export const authenticate = (data, next) => {
   if (typeof Window !== "undefined") {
-    localStorage.setItem("token", JSON.stringify(data));
+    Cookies.set("token",data.token)
+    Cookies.set("userId",data.userId)
+    // localStorage.setItem("token", JSON.stringify(data));
     next();
   }
 };
@@ -48,7 +51,8 @@ export const signout = (next) => {
       method: "GET",
     })
       .then((response) => {
-        localStorage.removeItem("jwt");
+        Cookies.remove("token");
+        Cookies.remove("userId");
         console.log("signout successful");
         next();
       })
@@ -60,9 +64,10 @@ export const signout = (next) => {
 };
 
 export const isAuthenticated = () => {
+  const token = Cookies.get("token");
   if (typeof Window !== "undefined") {
-    if (localStorage.getItem("token")) {
-      return JSON.parse(localStorage.getItem("token"));
+    if (token) {
+      return token;
     }
     return false;
   } else return false;

@@ -8,11 +8,13 @@ var app = express();
 var http = require("http").createServer(app);
 var { SocketServer } = require("./socket/server");
 const keys = require("./config/keys");
-const authRouter = require("./routes/authRouter");
 
 const { instrument } = require("@socket.io/admin-ui");
+const passport = require("passport");
 
-// require("./config/mongo");
+require("./config/mongo");
+require("./config/passport");
+app.use(passport.initialize());
 
 var corsOptions = {
   origin: "*",
@@ -33,7 +35,11 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>");
 });
 
+const authRouter = require("./routes/authRouter");
+const userRouter = require("./routes/userRouter");
+
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 
 // Catching 404 Not Found Error
 app.use(function (req, res, next) {

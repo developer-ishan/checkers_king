@@ -7,6 +7,7 @@ const LoginSignUpForm = ({
   password,
   setPassword,
   handleLogIn,
+  handleSignup,
 }) => {
   return (
     <>
@@ -56,6 +57,7 @@ const LoginSignUpForm = ({
       <button
         type="submit"
         className="px-4 py-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-indigo-500 border-l-2 border-r-2 rounded shadow outline-none active:bg-teal-600 hover:shadow-md focus:outline-none ease"
+        onClick={(e) => handleSignup(e)}
       >
         signup
       </button>
