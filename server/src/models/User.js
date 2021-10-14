@@ -26,6 +26,7 @@ const userSchema = new Schema({
   },
   username: {
     type: String,
+    unique: true,
     default: generateName().split(" ").join(""),
   },
   desc: {

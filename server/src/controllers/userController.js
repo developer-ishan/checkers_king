@@ -9,6 +9,20 @@ exports.deleteUser = async (req, res, next) => {
     res.status(500).json(err);
   }
 };
+exports.updateUser = async (req, res, next) => {
+  try {
+    const { desc, username } = req.body;
+    const present = await User.findOne({ username: username });
+    if (present && present._id.toString() != req.user._id.toString())
+      return res.status(400).json({ success: false, msg: "Username taken" });
+    req.user.username = username;
+    req.user.desc = desc;
+    const edited = await req.user.save();
+    res.json({...edited._doc, success: true});
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
 exports.getMySummary = async (req, res, next) => {
   try {
     const val = {};
