@@ -1,17 +1,28 @@
 const Match = require("../models/Match");
 
-exports.getMyMatches = async (req, res, next) => {
+exports.getMyMatches = async (id) => {
   try {
-    const userId = req.params.userId;
-    const matches = await Match.find({ "players.userId": userId });
-    if (!matches)
-      return res
-        .status(404)
-        .json({ success: false, msg: "No Matches Found!!" });
+    const userId = id;
+    console.log(userId);
+    console.log(userId.toString());
+    const matches = await Match.aggregate([
+      {
+        $match: {
+          $or: [
+            { "players.0.userId": userId.toString() },
+            { "players.1.userId": userId.toString() },
+          ],
+        },
+      },
+    ]);
+    // if (!matches)
+    //   return res
+    //     .status(404)
+    //     .json({ success: false, msg: "No Matches Found!!" });
     console.log(matches);
-    return res.json(chat);
+    return matches;
   } catch (err) {
     console.log(err);
-    res.status(500).json({ err, success: false });
+    return null;
   }
 };

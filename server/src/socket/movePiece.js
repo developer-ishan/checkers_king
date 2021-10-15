@@ -24,18 +24,19 @@ module.exports = ({ game, destination, selectedPiece }) => {
 
   // only move to empty spaces
   if (destinationPiece !== 0) return;
-  console.log("passsed 1");
+
   // must move diagonal
   if (Math.abs(distanceI) !== Math.abs(distanceJ)) return;
-  console.log("passsed 2");
+
   // red pawn can't move up
   if (piece === RED_PAWN && di <= i) return;
-  console.log("passsed 3");
+
   // black pawn can't move down
   if (piece === BLACK_PAWN && di >= i) return;
+
   // can only move 1 or 2 slots
   if (Math.abs(distanceI) > 2) return;
-  console.log("passsed 4");
+
   if (Math.abs(distanceI) === 2) {
     // check if jumping a piece
     const middlePiece = game.board[oneCellForwardI][oneCellForwardJ];
@@ -50,7 +51,6 @@ module.exports = ({ game, destination, selectedPiece }) => {
   const pieceMove =
     game.turn[0] + i.toString() + j.toString() + di.toString() + dj.toString();
   game.pieceMoves.push(pieceMove);
-  console.log(pieceMove);
   game.board[di][dj] = game.board[i][j];
   game.board[i][j] = 0;
 

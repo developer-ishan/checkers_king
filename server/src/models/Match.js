@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
-var generateName = require("sillyname");
 
 // Create a schema
 const matchSchema = new Schema({

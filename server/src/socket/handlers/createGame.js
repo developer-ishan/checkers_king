@@ -5,6 +5,7 @@ module.exports =
   ({ io, socket }) =>
   async (name, isBot, token) => {
     console.log("inside create game function...");
+    console.log({ name, isBot, token });
     const newGame = await createNewGame({ player: socket, name, isBot, token });
     console.log(newGame.id);
     socket.join(newGame.id);
