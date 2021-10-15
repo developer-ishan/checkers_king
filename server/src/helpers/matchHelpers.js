@@ -14,7 +14,7 @@ const saveMatch = async (
   endTime,
   messages
 ) => {
-  const ratingsDelta = updateRating(players[0].id, players[1].id);
+  const ratingsDelta = await updateRating(players[0].id, players[1].id);
   const game = new Match({
     players: [
       {
