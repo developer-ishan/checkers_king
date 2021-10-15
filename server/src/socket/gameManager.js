@@ -1,5 +1,7 @@
 const movePiece = require("./movePiece");
-
+var jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config/keys");
+const User = require("../models/User");
 /*TODO: DISCLAIMER :-
 
 all code in this file isn't throughly tested, and most of it is directly pasted from chotu
@@ -34,12 +36,25 @@ exports.getGames = () => {
   return res;
 };
 
-exports.createNewGame = ({ player, name, isBot }) => {
+exports.createNewGame = async ({ player, name, isBot, token }) => {
+  let userId = null;
+  if (token) {
+    try {
+      var decoded = jwt.verify(token, JWT_SECRET).sub;
+      const user = await User.findById(decoded);
+      console.log(user.username, " created the game");
+      if (user) userId = user._id;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const game = {
     name,
     turn: "Red",
-    players: [{ socket: player, color: "Red" }],
+    players: [{ socket: player, color: "Red", id: userId }],
     id: nextGameId++,
+    pieceMoves: [],
     board: [
       [1, 0, 1, 0, 1, 0, 1, 0],
       [0, 1, 0, 1, 0, 1, 0, 1],
@@ -70,11 +85,25 @@ exports.movePiece = ({ player, selectedPiece, destination }) => {
   return game;
 };
 
-exports.addPlayerToGame = ({ player, gameId }) => {
+exports.addPlayerToGame = async ({ player, gameId, token }) => {
   const game = games.find((game) => game.id === gameId);
+  let userId = null;
+  if (token) {
+    try {
+      var decoded = jwt.verify(token, JWT_SECRET).sub;
+      const user = await User.findById(decoded);
+      if (user) {
+        console.log(user.username, " joined the game");
+        userId = user._id;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
   game.players.push({
     color: "Black",
     socket: player,
+    id: userId,
   });
   return "Black";
 };
@@ -93,7 +122,7 @@ exports.endGame = ({ player, winner }) => {
     // game.players.forEach((currentPlayer) => {
     //   if (winner) currentPlayer.socket.emit("winner", winner);
     // });
-    return game.id;
+    return game;
   }
   return null;
 };

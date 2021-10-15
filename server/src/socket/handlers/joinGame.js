@@ -4,7 +4,7 @@ const sendGameStatus = require("../helpers/sendGameStatus");
 
 module.exports =
   ({ io, socket }) =>
-  (gameId) => {
+  async (gameId, token) => {
     console.log("for socket ", socket.id);
     gameId = parseInt(gameId);
     const game = getGameByID(gameId);
@@ -13,12 +13,14 @@ module.exports =
     console.log("got the game");
     socket.join(gameId);
     console.log("joined the game");
+    // console.log(game.players);
     if (game.players.length < 2) {
-      const color = addPlayerToGame({
+    console.log(`adding ${socket.id} as 2nd player`);
+      const color = await addPlayerToGame({
         player: socket,
         gameId: gameId,
+        token: token
       });
-      console.log("joined as player");
       socket.emit("color", color);
     }
     sendGameStatus({ socket, gameId });

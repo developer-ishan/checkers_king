@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
+import { authenticate, isAuthenticated } from "../helper/authHelper";
 
 function Main({ games, setGames }) {
   let history = useHistory();
@@ -18,14 +19,16 @@ function Main({ games, setGames }) {
 
   // creates a new and redirects us to the game board
   const createGame = () => {
-    socket.emit("create-game", createGameField, isBot);
+    const token = isAuthenticated();
+    socket.emit("create-game", createGameField, isBot, token);
     history.push("/game");
   };
 
   // joins us to the game with game_id 0 for now
   // TODO: catching error on joining non-existent gaem
   const joinGame = (e) => {
-    socket.emit("join-game", joinGameField);
+    const token = isAuthenticated();
+    socket.emit("join-game", joinGameField, token);
     history.push("/game");
   };
 
