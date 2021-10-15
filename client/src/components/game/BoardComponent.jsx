@@ -131,18 +131,22 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
       case 0:
         return;
       case 1:
-        return <div className="z-20 w-5/6 bg-red-500 rounded-full h-5/6"></div>; //red pawn
+        return (
+          <div className="absolute w-5/6 bg-red-500 rounded-full h-5/6"></div>
+        ); //red pawn
       case 2:
-        return <div className="z-20 w-5/6 bg-black rounded-full h-5/6"></div>; //black pawn
+        return (
+          <div className="absolute w-5/6 bg-black rounded-full h-5/6"></div>
+        ); //black pawn
       case 3:
         return (
-          <div className="z-20 grid w-5/6 text-yellow-500 bg-red-500 rounded-full place-content-center h-5/6">
+          <div className="absolute grid w-5/6 text-yellow-500 bg-red-500 rounded-full place-content-center h-5/6">
             Q
           </div>
         ); //red queen
       case 4:
         return (
-          <div className="z-20 grid w-5/6 text-yellow-500 bg-black rounded-full place-content-center h-5/6">
+          <div className="absolute grid w-5/6 text-yellow-500 bg-black rounded-full place-content-center h-5/6">
             Q
           </div>
         ); //black queen
@@ -152,27 +156,7 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
     }
   };
   return (
-    <div className="p-8">
-      <div className="flex">
-        <button
-          className="p-2 pl-5 pr-5 text-lg text-gray-100 bg-red-500 border-red-300 rounded-lg focus:border-4"
-          onClick={quitGame}
-        >
-          Leave Game
-        </button>
-      </div>
-      {color !== null ? (
-        <h1 className="m-2">YOUR COLOR :- {color}</h1>
-      ) : (
-        <h1 className="m-2">SPECTATOR</h1>
-      )}
-      <h1 className="m-2">PLAYER TURN :- {turn}</h1>
-
-      {turn === color ? (
-        <h1>Your Turn To Move A Piece...</h1>
-      ) : (
-        <h1>Waiting For Opponent To Move...</h1>
-      )}
+    <div className="">
       {/* board start*/}
       <div
         style={{ height: "90vmin", width: "90vmin" }}
@@ -188,9 +172,6 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
                 className={getStyle(i, j)}
                 onClick={() => clickCell(i, j)}
               >
-                {/* putting the playing piece */}
-                {piece !== 0 && getPiece(board[i][j])}
-
                 {/* if current box is highligted then putting a overlay on the box*/}
                 {isHighlighted({ i, j }) !== undefined && (
                   <div className="absolute inset-0 bg-green-500 border-4 border-green-800"></div>
@@ -198,8 +179,10 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
 
                 {/*if current box is selected then putting a overlay on the box*/}
                 {isSelected(i, j) && (
-                  <div className="absolute inset-0 z-10 bg-yellow-500 border-4 border-yellow-800"></div>
+                  <div className="absolute inset-0 bg-yellow-500 border-4 border-yellow-800"></div>
                 )}
+                {/* putting the playing piece */}
+                {piece !== 0 && getPiece(board[i][j])}
               </div>
             ))}
           </div>
