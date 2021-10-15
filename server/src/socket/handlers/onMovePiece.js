@@ -2,7 +2,7 @@ const { movePiece, isGameOver, endGame } = require("../gameManager");
 const easyBot = require("../helpers/easyBot");
 const sendGames = require("../helpers/sendGames");
 const sendGameStatus = require("../helpers/sendGameStatus");
-const {saveMatch} = require('../../helpers/matchHelpers');
+const { saveMatch } = require("../../helpers/matchHelpers");
 module.exports =
   ({ io, socket }) =>
   async ({ selectedPiece, destination }) => {
@@ -11,9 +11,9 @@ module.exports =
       selectedPiece,
       destination,
     });
-
-    sendGameStatus({ socket, gameId: game.id });
+    console.log(game.pieceMoves);
     if (game === undefined) return;
+    sendGameStatus({ socket, gameId: game.id });
     const winner = isGameOver({ player: socket });
     if (winner !== false) {
       let finishedGame = endGame({ player: socket, winner });
@@ -23,11 +23,11 @@ module.exports =
 
       /**
        * saving finised game
-      */
+       */
       await saveMatch(
         finishedGame.players,
         finishedGame.id,
-        "large moves string",
+        finishedGame.pieceMoves,
         new Date(),
         new Date(),
         [{ text: "hi" }, { text: "saved chat" }]

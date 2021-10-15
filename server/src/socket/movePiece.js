@@ -47,6 +47,10 @@ module.exports = ({ game, destination, selectedPiece }) => {
     }
   }
 
+  const pieceMove =
+    game.turn[0] + i.toString() + j.toString() + di.toString() + dj.toString();
+  game.pieceMoves.push(pieceMove);
+  console.log(pieceMove);
   game.board[di][dj] = game.board[i][j];
   game.board[i][j] = 0;
 
