@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
+import { isAuthenticated } from "../../../helper/authHelper";
 
 const JoinGame = ({ socket }) => {
   const [gameId, setGameId] = useState("");
@@ -7,7 +8,8 @@ const JoinGame = ({ socket }) => {
   // joins us to the game with game_id 0 for now
   // TODO: catching error on joining non-existent gaem
   const joinGame = (e) => {
-    socket.emit("join-game", gameId);
+    const token = isAuthenticated();
+    socket.emit("join-game", gameId, token);
     history.push("/game");
   };
 

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import GameOptionsModal from "../../modal/GameOptionsModal";
 import { useHistory } from "react-router-dom";
+import { isAuthenticated } from "../../../helper/authHelper";
+
 Modal.setAppElement("#root");
 
 const RandomPlay = ({ socket }) => {
@@ -16,7 +18,8 @@ const RandomPlay = ({ socket }) => {
 
   const handleStartGame = () => {
     const { gameName, bot } = gameOptions;
-    socket.emit("create-game", gameName, bot);
+    const token = isAuthenticated();
+    socket.emit("create-game", gameName, bot, token);
     history.push("/game");
   };
 

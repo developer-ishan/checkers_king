@@ -1,11 +1,13 @@
 import React from "react";
 import { useHistory } from "react-router";
+import { isAuthenticated } from "../../../helper/authHelper";
 
 const CreateGame = ({ socket }) => {
   let history = useHistory();
   // creates a new and redirects us to the game board
   const createGame = () => {
-    socket.emit("create-game", "need to chang this", false);
+    const token = isAuthenticated();
+    socket.emit("create-game", "need to chang this", false, token);
     history.push("/game");
   };
   return (
