@@ -19,6 +19,8 @@ module.exports =
       let finishedGame = endGame({ player: socket, winner });
       console.log("inside onMovePiece, winner ", finishedGame.id);
       console.log("emitting winner event...");
+      console.log("finished game", finishedGame);
+      console.log("winner", winner);
       io.to(finishedGame.id).emit("winner", winner);
 
       /**
@@ -30,8 +32,9 @@ module.exports =
         finishedGame.pieceMoves,
         new Date(),
         new Date(),
-        [{ text: "hi" }, { text: "saved chat" }]
+        finishedGame.chat
       );
+      console.log("save match success");
       sendGames(io);
       io.socketsLeave(finishedGame.id);
     }

@@ -108,6 +108,11 @@ exports.addPlayerToGame = async ({ player, gameId, token }) => {
   return "Black";
 };
 
+exports.saveChatToGame = (gameId, msgObject) => {
+  const game = games.find((game) => game.id === gameId);
+  game.chat.push(msgObject);
+};
+
 exports.endGame = ({ player, winner }) => {
   // TODO: save the information of the game into the db
   const game = getGameForPlayer(player);
