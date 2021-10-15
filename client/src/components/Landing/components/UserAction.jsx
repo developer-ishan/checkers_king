@@ -2,11 +2,11 @@ import React from "react";
 import PlayWithFriends from "./PlayWithFriends";
 import RandomPlay from "./RandomPlay";
 
-const UserAction = () => {
+const UserAction = ({ socket }) => {
   return (
     <>
-      <RandomPlay />
-      <PlayWithFriends />
+      <RandomPlay socket={socket} />
+      <PlayWithFriends socket={socket} />
     </>
   );
 };

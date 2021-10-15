@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router";
 
-const JoinGame = () => {
+const JoinGame = ({ socket }) => {
+  const [gameId, setGameId] = useState("");
+  const history = useHistory();
+  // joins us to the game with game_id 0 for now
+  // TODO: catching error on joining non-existent gaem
+  const joinGame = (e) => {
+    socket.emit("join-game", gameId);
+    history.push("/game");
+  };
+
   return (
     <div class="flex flex-col items-center justify-center w-full h-auto px-2  bg-white sm:rounded-lg sm:shadow-xl">
       <div class="mt-10 mb-10 text-center">
-        <h2 class="text-2xl font-semibold mb-2">Have a Game code?</h2>
+        <h2 class="text-xl sm:text-2xl  lg:text-3xl font-semibold mb-2">
+          Have a Game code?
+        </h2>
         <p class="text-xs text-gray-500">
           enter the code below to join the game
         </p>
@@ -13,11 +25,18 @@ const JoinGame = () => {
         <input
           type="text"
           id="game-id"
+          value={gameId}
+          onChange={(e) => {
+            setGameId(e.target.value);
+          }}
           placeholder="enter game code"
           class="placeholder-gray-600 focus:placeholder-gray-400 border-dashed border-4 w-full border-yellow-300 active:ring-yellow-300 focus:border-yellow-300 focus:ring-yellow-300"
         />
         <br />
-        <button class="bg-indigo-500 text-white p-2 rounded capitalize my-3 w-full">
+        <button
+          class="bg-indigo-500 text-white p-2 rounded capitalize my-3 w-full"
+          onClick={joinGame}
+        >
           join game
         </button>
       </form>

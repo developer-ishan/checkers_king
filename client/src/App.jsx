@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 import { SocketContext } from "./context/SocketContext";
 import Game from "./components/game/Game";
@@ -27,8 +27,9 @@ const App = () => {
       <Switch>
         <Route exact path="/">
           <div className="h-full bg-gradient-to-r from-green-400 to-blue-500">
-            <Home />
-            {socket !== null && <Main games={games} setGames={setGames} />}
+            {socket !== null && <Home games={games} setGames={setGames} />}
+            {/* {socket !== null && <Main games={games} setGames={setGames} />} */}
+            {socket === null && <h2>loading....</h2>}
           </div>
         </Route>
         <Route exact path="/game">
