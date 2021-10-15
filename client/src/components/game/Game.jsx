@@ -7,6 +7,8 @@ import { SocketContext } from "../../context/SocketContext";
 import { GameContext } from "../../context/GameContext";
 import GameBar from "./GameBar";
 import Modal from "react-modal";
+import DrawModal from "../modal/DrawModal";
+import InviteCodeModal from "../modal/InviteCodeModal";
 Modal.setAppElement("#root");
 
 const Game = () => {
@@ -16,7 +18,8 @@ const Game = () => {
   const { gameValue, colorValue } = useContext(GameContext);
   const [chats, setChats] = useState([]); //store the chats of current game
   const [game, setGame] = gameValue;
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
   const [color, setColor] = colorValue;
 
   useEffect(() => {
@@ -42,13 +45,6 @@ const Game = () => {
     };
   }, []);
 
-  const openModal = () => {
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
   //socket is emitting the message sent by the opponent
   //catching it here
   socket.on("receive-msg", (msg) => {
@@ -56,15 +52,9 @@ const Game = () => {
     setChats([...chats, { player: "opponent", msg: `${msg}` }]);
   });
 
-  socket.on("draw-offered", () => {
-    openModal();
-  });
-  socket.on("draw-accepted", () => {
-    alert("opponent accepted the draw");
-    // TODO:exit out this player
-  });
-
-  socket.on("draw-rejected", () => alert("draw rejected: aa gya swad!"));
+  const offerDraw = () => {
+    socket.emit("draw-offered", { gameId: game.id });
+  };
 
   const sendChatMsg = (msg) => {
     if (msg === "") return;
@@ -90,23 +80,9 @@ const Game = () => {
     history.goBack();
   };
 
-  const offerDraw = () => {
-    socket.emit("draw-offered", { gameId: game.id });
-  };
-  const rejectDraw = () => {
-    closeModal();
-    socket.emit("draw-rejected", { gameId: game.id });
-  };
-
-  const acceptDraw = () => {
-    closeModal();
-    socket.emit("draw-accepted", { gameId: game.id });
-  };
-
   return (
     <div className="">
       <GameBar turn={game.turn} leaveGame={leaveGame} offerDraw={offerDraw} />
-
       <div className="grid grid-cols-12 px-2 mt-4">
         <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
           <BoardComponent
@@ -120,33 +96,19 @@ const Game = () => {
           <Chat sendChatMsg={sendChatMsg} chats={chats} />
         </div>
       </div>
-
       {/* modal for draw */}
-      <Modal
-        className="absolute z-50 w-2/5 transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-      >
-        <div className="z-50 p-4 bg-gray-500">
-          <h1 className="text-center text-white capitalize text-md sm:text-2xl">
-            opponent offered draw
-          </h1>
-          <div className="flex flex-col items-center justify-around p-2 md:flex-row ">
-            <button
-              className="w-full max-w-xs px-4 py-2 m-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-red-500 rounded shadow outline-none active:bg-red-600 hover:shadow-md hover:bg-red-600 focus:outline-none ease"
-              onClick={() => rejectDraw()}
-            >
-              cancel
-            </button>
-            <button
-              className="w-full max-w-xs px-4 py-2 m-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-indigo-500 rounded shadow outline-none active:bg-red-600 hover:shadow-md hover:bg-indigo-600 focus:outline-none ease"
-              onClick={() => acceptDraw()}
-            >
-              accept
-            </button>
-          </div>
-        </div>
-      </Modal>
+      <DrawModal
+        modalState={isDrawModalOpen}
+        setModalState={setIsDrawModalOpen}
+        socket={socket}
+        gameId={game.id}
+      />
+      {/* invite code modal */}
+      <InviteCodeModal
+        modalState={isInviteModalOpen}
+        setModalState={setIsInviteModalOpen}
+        gameId={game.id}
+      />
     </div>
   );
 };
