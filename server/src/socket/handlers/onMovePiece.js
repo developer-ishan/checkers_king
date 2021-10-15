@@ -2,10 +2,10 @@ const { movePiece, isGameOver, endGame } = require("../gameManager");
 const easyBot = require("../helpers/easyBot");
 const sendGames = require("../helpers/sendGames");
 const sendGameStatus = require("../helpers/sendGameStatus");
-
+const {saveMatch} = require('../../helpers/matchHelpers');
 module.exports =
   ({ io, socket }) =>
-  ({ selectedPiece, destination }) => {
+  async ({ selectedPiece, destination }) => {
     const game = movePiece({
       player: socket,
       selectedPiece,
@@ -16,12 +16,24 @@ module.exports =
     if (game === undefined) return;
     const winner = isGameOver({ player: socket });
     if (winner !== false) {
-      let gameId = endGame({ player: socket, winner });
-      console.log("inside onMovePiece, winner ", gameId);
+      let finishedGame = endGame({ player: socket, winner });
+      console.log("inside onMovePiece, winner ", finishedGame.id);
       console.log("emitting winner event...");
-      io.to(game.id).emit("winner", winner);
+      io.to(finishedGame.id).emit("winner", winner);
+
+      /**
+       * saving finised game
+      */
+      await saveMatch(
+        finishedGame.players,
+        finishedGame.id,
+        "large moves string",
+        new Date(),
+        new Date(),
+        [{ text: "hi" }, { text: "saved chat" }]
+      );
       sendGames(io);
-      io.socketsLeave(gameId);
+      io.socketsLeave(finishedGame.id);
     }
 
     // playing against bot

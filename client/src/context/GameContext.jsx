@@ -16,6 +16,7 @@ export const GameProvider = (props) => {
     ],
     turn: null,
     id: null,
+    userId: null
   });
   const [color, setColor] = useState(null);
 

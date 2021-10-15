@@ -1,6 +1,6 @@
 const Chat = require("../models/Chat");
 const Match = require("../models/Match");
-const { updateRating } = require("../helpers/updateRating");
+const updateRating = require("./updateRating");
 
 const saveChat = async (users, match, messages) => {
   const chat = new Chat({ users, match, messages });
@@ -32,7 +32,7 @@ const saveMatch = async (
     endTime,
   });
 
-  await saveChat(players, matchId, messages);
+  await saveChat([ players[0].id,  players[1].id], matchId, messages);
   return await game.save();
 };
 /**
