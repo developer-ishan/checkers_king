@@ -1,4 +1,5 @@
 const Match = require("../models/Match");
+const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.getMyMatches = async (req, res, next) => {
@@ -42,7 +43,6 @@ exports.getMyMatches = async (req, res, next) => {
       return res
         .status(404)
         .json({ success: false, msg: "No Matches Found!!" });
-    console.log(matches);
 
     //the above matches array contains lots of data
     //so filtering it down to only required data
@@ -74,23 +74,27 @@ exports.getMyMatches = async (req, res, next) => {
     });
     return res.json(filteredData);
   } catch (err) {
-    console.log(err);
-    return null;
+    return res.status(404).json({
+      success: false,
+      msg: "no such match found",
+      err: err,
+    });
   }
 };
 
 exports.getMatchById = async (req, res, next) => {
   try {
-    const {matchId} = req.params;
+    const { matchId } = req.params;
     const matches = await Match.aggregate([
       {
-        $match: {_id: ObjectId(matchId)}
+        $match: { _id: ObjectId(matchId) },
       },
       {
         $project: {
           startTime: 1,
           endTime: 1,
           players: 1,
+          moves: 1,
           pids: {
             $map: {
               input: "$players",
@@ -110,14 +114,16 @@ exports.getMatchById = async (req, res, next) => {
       },
     ]);
 
-    if (!matches)
+    if (!matches || matches.length === 0)
       return res
         .status(404)
         .json({ success: false, msg: "No Matches Found!!" });
-    console.log(matches);
-    return res.json(matches);
+    return res.json(matches[0]);
   } catch (err) {
-    console.log(err);
-    return null;
+    return res.status(404).json({
+      success: false,
+      msg: "no such match found",
+      err: err,
+    });
   }
 };

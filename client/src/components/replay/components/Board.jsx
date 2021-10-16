@@ -61,28 +61,35 @@ const Board = ({ moves }) => {
   };
   const nextMove = () => {
     let newMoveNum = moveNum;
-    if (moveNum !== moves.length) {
+    if (moveNum < moves.length - 1) {
       const newMoveNum = moveNum + 1;
       executeNextMove(moves[newMoveNum]);
       setMoveNum(newMoveNum);
+    } else {
+      alert("Match finished");
+      setMoveNum(moveNum + 1);
     }
   };
   return (
     <div>
-      <BoardComponent boardMatrix={boardStates[boardStates.length-1]} />
+      <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
       <div class="inline-flex">
-        <button
-          onClick={prevMove}
-          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-        >
-          Prev
-        </button>
-        <button
-          onClick={nextMove}
-          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-        >
-          Next
-        </button>
+        {moves && boardStates.length > 1 && (
+          <button
+            onClick={prevMove}
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+          >
+            Prev
+          </button>
+        )}
+        {moves && moveNum < moves.length && (
+          <button
+            onClick={nextMove}
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+          >
+            Next
+          </button>
+        )}
       </div>
       <div>{boardStates.length}</div>
     </div>
