@@ -40,14 +40,14 @@ const Game = () => {
     });
 
     socket.on("winner", (winner) => {
-      alert("Winner of the game is ", winner);
-      console.log("winner event caught...");
-      history.goBack();
+      alert(`Winner of the game is ${winner}`);
+      console.log("winner event caught...", winner);
+      history.push("/");
     });
 
     socket.on("end-game", () => {
       console.log("end-game event caught...");
-      history.goBack();
+      history.push("/");
     });
   }, []);
 

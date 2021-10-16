@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import GameOptionsModal from "../../modal/GameOptionsModal";
 import { useHistory } from "react-router-dom";
 import { isAuthenticated } from "../../../helper/authHelper";
+
 Modal.setAppElement("#root");
 
 const RandomPlay = ({ socket }) => {
