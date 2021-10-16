@@ -9,6 +9,7 @@ import Home from "./components/Landing/Home";
 import Main from "./components/Main";
 import { API } from "./config/backend";
 import Profile from "./components/user/Profile";
+import Replay from "./components/replay/Replay";
 
 const App = () => {
   const [socket, setSocket] = useContext(SocketContext);
@@ -39,6 +40,9 @@ const App = () => {
         </Route>
         <Route exact path="/user/:userId">
           <Profile />
+        </Route>
+        <Route exact path="/replay/:matchId">
+          <Replay />
         </Route>
       </Switch>
     </BrowserRouter>
