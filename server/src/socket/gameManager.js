@@ -36,7 +36,13 @@ exports.getGames = () => {
   return res;
 };
 
-exports.createNewGame = async ({ player, name, isBot, token }) => {
+exports.createNewGame = async ({
+  player,
+  name,
+  isBot,
+  mandatoryMoves,
+  token,
+}) => {
   let userId = null;
   if (token) {
     try {
@@ -54,6 +60,7 @@ exports.createNewGame = async ({ player, name, isBot, token }) => {
     turn: "Red",
     players: [{ socket: player, color: "Red", id: userId }],
     id: nextGameId++,
+    createTime: new Date(),
     pieceMoves: [],
     board: [
       // [1, 0, 1, 0, 1, 0, 1, 0],
@@ -66,14 +73,15 @@ exports.createNewGame = async ({ player, name, isBot, token }) => {
       // [0, 2, 0, 2, 0, 2, 0, 2],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 1, 0, 1, 0, 0, 0],
+      [0, 0, 0, 0, 1, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0],
+      [0, 2, 0, 2, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 2, 0, 2, 0, 0, 0],
+      [0, 2, 0, 2, 2, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
+    mandatoryMoves,
     chat: [],
   };
   games.push(game);

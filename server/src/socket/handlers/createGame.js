@@ -3,10 +3,16 @@ const sendGames = require("../helpers/sendGames");
 
 module.exports =
   ({ io, socket }) =>
-  async (name, isBot, token) => {
+  async (name, isBot, mandatoryMoves, token) => {
     console.log("inside create game function...");
-    console.log({ name, isBot, token });
-    const newGame = await createNewGame({ player: socket, name, isBot, token });
+    console.log({ name, isBot, token, mandatoryMoves });
+    const newGame = await createNewGame({
+      player: socket,
+      name,
+      isBot,
+      mandatoryMoves,
+      token,
+    });
     console.log(newGame.id);
     socket.join(newGame.id);
     sendGames(io);

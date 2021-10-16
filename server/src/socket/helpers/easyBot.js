@@ -9,7 +9,7 @@ const ATTACK_POINTS = 3 + Math.floor(Math.random() * 6);
 const DEFENSE_POINTS = 3 + Math.floor(Math.random() * 5);
 const EMPTY_POINTS = 1 + Math.floor(Math.random() * 4);
 const DANGER_POINTS = 2 + Math.floor(Math.random() * 3);
-const QUEEN_POINTS = 2 + Math.floor(Math.random() * 6);
+const QUEEN_POINTS = 1 + Math.floor(Math.random() * 6);
 
 const player = {
   0: "Empty",
@@ -61,7 +61,8 @@ const evaluatePosition = ({ board, tposi, tposj, boardPiece }) => {
     (boardPiece === RED_PAWN && tposi === BOTTOM_ROW) ||
     (boardPiece === BLACK_PAWN && tposj === TOP_ROW)
   )
-    calculatedValue += QUEEN_POINTS;
+    calculatedValue +=
+      boardPiece !== BLACK_QUEEN || boardPiece !== RED_QUEEN ? QUEEN_POINTS : 0;
 
   for (let i = 0; i < 4; ++i) {
     let tmpi = tposi + diagonalCells[i].i,
