@@ -71,13 +71,13 @@ const UserInfo = ({ userId }) => {
   };
   return (
     <div className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 bg-gray-800 rounded-lg shadow-lg">
-      <div className="col-span-12 sm:col-span-3 lg:col-span-12">
+      <div className="col-span-12 sm:col-span-4 lg:col-span-12">
         <img
           src={user.photo}
           className="object-cover h-full mx-auto rounded-xl"
         />
       </div>
-      <div className="col-span-12 space-y-2 text-white sm:col-span-9 lg:col-span-12">
+      <div className="col-span-12 space-y-2 text-white sm:col-span-8 lg:col-span-12">
         <div className="">
           <p className="text-xs italic font-bold">username</p>
           <EdiText

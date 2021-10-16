@@ -7,10 +7,10 @@ import UserInfo from "./components/UserInfo";
 const Profile = () => {
   const { userId } = useParams();
   return (
-    <div className="p-3 space-y-3 bg-gray-100">
+    <div className="space-y-3 bg-gray-100 ">
       {/*TODO:either set the navbar global or do something of it  */}
       <Navbar />
-      <div className="relative grid grid-cols-12 gap-3 mx-auto max-w-7xl">
+      <div className="relative grid grid-cols-12 gap-3 p-2 mx-auto max-w-7xl">
         <div className="h-full col-span-12 lg:col-span-3 ">
           <UserInfo userId={userId} />
         </div>
