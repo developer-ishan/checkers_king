@@ -31,6 +31,7 @@ const userSchema = new Schema({
   },
   desc: {
     type: String,
+    default: "Hi there! let's a play a match",
   },
   active: {
     type: Boolean,
@@ -38,8 +39,8 @@ const userSchema = new Schema({
   },
   rating: {
     type: Number,
-    default: 800
-  }
+    default: 800,
+  },
 });
 
 userSchema.pre("save", async function (next) {

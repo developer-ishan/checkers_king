@@ -45,3 +45,21 @@ export const getUserById = (userId) => {
       .catch((error) => console.log("error", error));
   }
 };
+
+export const updateUser = (updatedData) => {
+  console.log(JSON.stringify(updatedData));
+  var myHeaders = new Headers();
+  const token = isAuthenticated();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+  myHeaders.append("Content-Type", "application/json");
+  var requestOptions = {
+    method: "PUT",
+    headers: myHeaders,
+    redirect: "follow",
+    body: JSON.stringify(updatedData),
+  };
+
+  return fetch(`${BASE}/api/user/`, requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};
