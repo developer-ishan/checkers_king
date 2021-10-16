@@ -18,8 +18,8 @@ const RandomPlay = ({ socket }) => {
 
   const handleStartGame = () => {
     const token = isAuthenticated();
-    const { gameName, bot } = gameOptions;
-    socket.emit("create-game", gameName, bot, token);
+    const { gameName, bot, forceJump } = gameOptions;
+    socket.emit("create-game", gameName, bot, forceJump, token);
     history.push("/game");
   };
 
