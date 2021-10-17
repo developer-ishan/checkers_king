@@ -6,10 +6,6 @@ const TOP_ROW = 0;
 const BOTTOM_ROW = 7;
 
 module.exports = ({ game, destination, selectedPiece }) => {
-  console.log("inside main move piece function...");
-  console.log(selectedPiece);
-  console.log(destination);
-
   if (selectedPiece.i === undefined || selectedPiece.j === undefined) return;
   const i = selectedPiece.i;
   const j = selectedPiece.j;

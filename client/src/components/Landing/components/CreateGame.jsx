@@ -7,7 +7,8 @@ const CreateGame = ({ socket }) => {
   // creates a new and redirects us to the game board
   const createGame = () => {
     const token = isAuthenticated();
-    socket.emit("create-game", "need to chang this", false, false, token);
+    // ARGS :- ("create-game", Game-Title, isBot, mandatoryMoves, token)
+    socket.emit("create-game", "need to chang this", true, true, token);
     history.push("/game");
   };
   return (
@@ -26,9 +27,7 @@ const CreateGame = ({ socket }) => {
         >
           <img src="https://img.icons8.com/android/24/000000/plus.png" />
         </a>
-        <p className="w-full mt-3 font-bold text-center text-white">
-          Create New Game
-        </p>
+        <p className="w-full mt-3 font-bold text-center text-white">New Game</p>
       </div>
     </div>
   );

@@ -71,11 +71,9 @@ const Game = () => {
   };
 
   const leaveGame = () => {
-    console.log("GAME:", game);
-    console.log("gameId", game.id);
-    if (color !== null) socket.emit("leave-game");
+    if (color !== null) quitGame();
     else socket.emit("leave-room", { roomId: game.id });
-    history.goBack();
+    history.push("/");
   };
 
   return (
