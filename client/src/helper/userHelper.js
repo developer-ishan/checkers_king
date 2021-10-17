@@ -63,3 +63,19 @@ export const updateUser = (updatedData) => {
     .then((response) => response.json())
     .catch((error) => console.log("error", error));
 };
+
+export const getPreviousMatches = (userId) => {
+  const token = isAuthenticated();
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  return fetch(`${BASE}/api/match/${userId}`, requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};
