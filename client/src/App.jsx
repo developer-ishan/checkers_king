@@ -10,6 +10,7 @@ import Main from "./components/Main";
 import { API } from "./config/backend";
 import Profile from "./components/user/Profile";
 import Replay from "./components/replay/Replay";
+import Test from "./Test";
 
 const App = () => {
   const [socket, setSocket] = useContext(SocketContext);
@@ -43,6 +44,9 @@ const App = () => {
         </Route>
         <Route exact path="/replay/:matchId">
           <Replay />
+        </Route>
+        <Route exact path="/test">
+          <Test />
         </Route>
       </Switch>
     </BrowserRouter>
