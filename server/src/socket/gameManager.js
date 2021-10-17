@@ -1,17 +1,14 @@
 const movePiece = require("./movePiece");
 var jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const { JWT_SECRET } = require("../config/keys");
 const User = require("../models/User");
-/*TODO: DISCLAIMER :-
+const {
+  getAllPieces,
+  getPossibleMoves,
+  getPiecesCount,
+} = require("./helpers/botHelpers");
 
-all code in this file isn't throughly tested, and most of it is directly pasted from chotu
-if there are any mishappenings due to this code... please don't abuse me
-
-Yours Sincerely,
-MojoAlpha 
-*/
-
-var nextGameId = 0;
 const games = [];
 
 const getGameForPlayer = (player) => {
@@ -43,7 +40,8 @@ exports.createNewGame = async ({
   mandatoryMoves,
   token,
 }) => {
-  let userId = null;
+  let userId = null,
+    matchId = crypto.randomBytes(4).toString("hex");
   if (token) {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
@@ -59,26 +57,26 @@ exports.createNewGame = async ({
     name,
     turn: "Red",
     players: [{ socket: player, color: "Red", id: userId }],
-    id: nextGameId++,
+    id: matchId,
     createTime: new Date(),
     pieceMoves: [],
     board: [
-      // [1, 0, 1, 0, 1, 0, 1, 0],
-      // [0, 1, 0, 1, 0, 1, 0, 1],
-      // [1, 0, 1, 0, 1, 0, 1, 0],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
       // [0, 0, 0, 0, 0, 0, 0, 0],
       // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 2, 0, 2, 0, 2, 0, 2],
-      // [2, 0, 2, 0, 2, 0, 2, 0],
-      // [0, 2, 0, 2, 0, 2, 0, 2],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 1, 0, 0, 0],
-      [0, 0, 1, 0, 0, 0, 0, 0],
-      [0, 2, 0, 2, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 2, 0, 2, 2, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 1, 0, 0, 0],
+      // [0, 0, 1, 0, 0, 0, 0, 0],
+      // [0, 2, 0, 2, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 2, 0, 2, 2, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
     mandatoryMoves,
@@ -131,14 +129,12 @@ exports.saveChatToGame = (gameId, msgObject) => {
 
 exports.endGame = ({ player, winner }) => {
   // TODO: save the information of the game into the db
+  // TODO: what happens if a player quits the game
   const game = getGameForPlayer(player);
-  // players might disconnect while in the lobby
   if (game) {
     games.splice(games.indexOf(game), 1);
     if (winner) {
       console.log("endgame insiders.... ", winner);
-      // player.to(game.id).emit("winner", winner);
-      // player.emit("winner", winner);
     }
     // game.players.forEach((currentPlayer) => {
     //   if (winner) currentPlayer.socket.emit("winner", winner);
@@ -148,24 +144,34 @@ exports.endGame = ({ player, winner }) => {
   return null;
 };
 
+const getAllMovesCountByPlayer = ({ board, color }) => {
+  let pieces = getAllPieces({ board, color }),
+    movesCount = 0;
+  for (let i = 0; i < pieces.length; ++i) {
+    movesCount += getPossibleMoves({ board, piece: pieces[i] }).length;
+  }
+  return movesCount;
+};
+
 exports.isGameOver = ({ player }) => {
   const game = getGameForPlayer(player);
 
-  let redCount = 0;
-  let blackCount = 0;
-  for (let i = 0; i < game.board.length; i++) {
-    for (let j = 0; j < game.board[i].length; j++) {
-      if (game.board[i][j] === 1 || game.board[i][j] === 3) {
-        redCount++;
-      }
-      if (game.board[i][j] === 2 || game.board[i][j] === 4) {
-        blackCount++;
-      }
-    }
-  }
-  if (redCount === 0) {
+  let redCount =
+    getPiecesCount({ board: game.board, type: 1 }) +
+    getPiecesCount({ board: game.board, type: 3 });
+  let blackCount =
+    getPiecesCount({ board: game.board, type: 2 }) +
+    getPiecesCount({ board: game.board, type: 4 });
+
+  if (
+    redCount === 0 ||
+    getAllMovesCountByPlayer({ board: game.board, color: "Red" }) === 0
+  ) {
     return "Black";
-  } else if (blackCount === 0) {
+  } else if (
+    blackCount === 0 ||
+    getAllMovesCountByPlayer({ board: game.board, color: "Black" }) === 0
+  ) {
     return "Red";
   } else {
     return false;

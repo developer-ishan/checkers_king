@@ -1,5 +1,5 @@
 const { movePiece, isGameOver, endGame } = require("../gameManager");
-const easyBot = require("../helpers/easyBot");
+const { aiBotMove } = require("../helpers/gameBot");
 const sendGames = require("../helpers/sendGames");
 const sendGameStatus = require("../helpers/sendGameStatus");
 const mandatoryMoves = require("../helpers/mandatoryMoves");
@@ -8,9 +8,6 @@ const { saveMatch } = require("../../helpers/matchHelpers");
 const isMandatoryMove = ({ game, selectedPiece, destination }) => {
   const diffI = Math.abs(selectedPiece.i - destination.i);
   const diffJ = Math.abs(selectedPiece.j - destination.j);
-  console.log("checking for mandatory move...");
-  console.log({ diffI, diffJ });
-  console.log(game.mandatoryMoves);
   return diffI === 2 && diffJ === 2 && game.mandatoryMoves;
 };
 
@@ -75,42 +72,43 @@ module.exports =
 
     // playing against bot
     if (game.isBot) {
-      const nextMove = easyBot({
-        board: game.board,
-        turn: game.turn,
-      });
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      const botGame = movePiece({
-        player: socket,
-        selectedPiece: nextMove.selectedPiece,
-        destination: nextMove.destination,
-      });
+      const nextMove = aiBotMove({ board: game.board, turn: game.turn });
+      console.log("got move : ", nextMove);
+      // await new Promise((resolve) => setTimeout(resolve, 300));
+      if (nextMove != null) {
+        const botGame = movePiece({
+          player: socket,
+          selectedPiece: nextMove.selectedPiece,
+          destination: nextMove.destination,
+        });
 
-      sendGameStatus({ socket, gameId: game.id });
+        sendGameStatus({ socket, gameId: game.id });
 
-      if (isMandatoryMove({ game: botGame, selectedPiece, destination })) {
-        console.log("mandatory move detected...");
-        selectedPiece = destination;
-        while (selectedPiece !== false) {
-          let mandatoryMove = mandatoryMoves({
-            game: botGame,
-            selectedPiece,
-          });
-          console.log("mandatory move :- ", mandatoryMove);
-          if (mandatoryMove === false) break;
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          botGame = movePiece({
-            player: socket,
-            selectedPiece,
-            destination: mandatoryMove,
-          });
-          selectedPiece = mandatoryMove;
-          sendGameStatus({ socket, gameId: botGame.id });
+        if (isMandatoryMove({ game: botGame, selectedPiece, destination })) {
+          console.log("mandatory move detected...");
+          selectedPiece = destination;
+          while (selectedPiece !== false) {
+            let mandatoryMove = mandatoryMoves({
+              game: botGame,
+              selectedPiece,
+            });
+            console.log("mandatory move :- ", mandatoryMove);
+            if (mandatoryMove === false) break;
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            botGame = movePiece({
+              player: socket,
+              selectedPiece,
+              destination: mandatoryMove,
+            });
+            selectedPiece = mandatoryMove;
+            sendGameStatus({ socket, gameId: botGame.id });
+          }
         }
+        if (botGame === undefined) return;
       }
 
-      if (botGame === undefined) return;
       const winner = isGameOver({ player: socket });
+      // TODO: saving bot matches
       if (winner !== false) {
         endGame({ player: socket, winner });
         io.to(finishedGame.id).emit("winner", winner);

@@ -2,7 +2,6 @@ const { getGameByID, saveChatToGame } = require("../gameManager");
 
 module.exports = ({ gameId, msg, io, socket }) => {
   const from = socket.id;
-  gameId = parseInt(gameId);
   const game = getGameByID(gameId);
   if (game === undefined) return;
 
