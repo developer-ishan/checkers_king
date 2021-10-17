@@ -2,9 +2,11 @@ const { movePiece, isGameOver, endGame } = require("../gameManager");
 const { aiBotMove } = require("../helpers/gameBot");
 const sendGames = require("../helpers/sendGames");
 const sendGameStatus = require("../helpers/sendGameStatus");
-const mandatoryMoves = require("../helpers/mandatoryMoves");
+const { giveMandatoryMove } = require("../helpers/mandatoryMoves");
 const { saveMatch } = require("../../helpers/matchHelpers");
+const { simulatePieceMove } = require("../helpers/botHelpers");
 
+// checks if the current move supports mandatory move
 const isMandatoryMove = ({ game, selectedPiece, destination }) => {
   const diffI = Math.abs(selectedPiece.i - destination.i);
   const diffJ = Math.abs(selectedPiece.j - destination.j);
@@ -20,41 +22,34 @@ module.exports =
       destination,
     });
 
+    // checks for invalid game condition
     if (game === undefined) return;
     sendGameStatus({ socket, gameId: game.id });
 
+    // making the mandatory move in the board
     if (isMandatoryMove({ game, selectedPiece, destination })) {
-      console.log("mandatory move detected...");
-      selectedPiece = destination;
-      while (selectedPiece !== false) {
-        let mandatoryMove = mandatoryMoves({
-          game,
-          selectedPiece,
+      let currPiece = destination;
+      let destPiece = await giveMandatoryMove({ game, piece: currPiece });
+      // iterating till the conditions for mandatory move is satisfied
+      while (destPiece != null) {
+        // simulating move without changing the turn in the game
+        simulatePieceMove({
+          board: game.board,
+          piece: currPiece,
+          move: destPiece,
         });
-        console.log("mandatory move :- ", mandatoryMove);
-        if (mandatoryMove === false) break;
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        game = movePiece({
-          player: socket,
-          selectedPiece,
-          destination: mandatoryMove,
-        });
-        selectedPiece = mandatoryMove;
         sendGameStatus({ socket, gameId: game.id });
+        currPiece = destPiece;
+        destPiece = await giveMandatoryMove({ game, piece: currPiece });
       }
     }
 
+    // checking if the game is over with a winner
     const winner = isGameOver({ player: socket });
     if (winner !== false) {
       let finishedGame = endGame({ player: socket, winner });
-      console.log("inside onMovePiece, winner ", finishedGame.id);
-      console.log("emitting winner event...");
-      console.log("finished game", finishedGame);
-      console.log("winner", winner);
       io.to(finishedGame.id).emit("winner", winner);
-      /**
-       * saving finised game
-       */
+      // saving finised game if the opponent wasn't a bot
       if (finishedGame.isBot === false) {
         await saveMatch(
           finishedGame.players,
@@ -66,42 +61,58 @@ module.exports =
         );
       }
       console.log("save match success");
+      // sending current ongoing games to all the users
       sendGames(io);
+      // removing all the sockets in the room
       io.socketsLeave(finishedGame.id);
+      return;
     }
 
     // playing against bot
     if (game.isBot) {
-      const nextMove = aiBotMove({ board: game.board, turn: game.turn });
-      console.log("got move : ", nextMove);
-      // await new Promise((resolve) => setTimeout(resolve, 300));
+      // level should only be kept in range [1, 5]
+      const nextMove = aiBotMove({
+        board: game.board,
+        level: 4,
+        turn: game.turn,
+      });
+      // delay for move visiblity
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      // next move is null if the bot doesn't have any possible moves, which is basically a win condition
       if (nextMove != null) {
-        const botGame = movePiece({
+        let botGame = movePiece({
           player: socket,
           selectedPiece: nextMove.selectedPiece,
           destination: nextMove.destination,
         });
+        sendGameStatus({ socket, gameId: botGame.id });
 
-        sendGameStatus({ socket, gameId: game.id });
-
-        if (isMandatoryMove({ game: botGame, selectedPiece, destination })) {
-          console.log("mandatory move detected...");
-          selectedPiece = destination;
-          while (selectedPiece !== false) {
-            let mandatoryMove = mandatoryMoves({
-              game: botGame,
-              selectedPiece,
+        if (
+          isMandatoryMove({
+            game: botGame,
+            selectedPiece: nextMove.selectedPiece,
+            destination: nextMove.destination,
+          })
+        ) {
+          let currPiece = nextMove.destination;
+          let destPiece = await giveMandatoryMove({
+            game: botGame,
+            piece: currPiece,
+          });
+          // iterating till the conditions for mandatory move is satisfied
+          while (destPiece != null) {
+            // simulating move without changing the turn in the game
+            simulatePieceMove({
+              board: botGame.board,
+              piece: currPiece,
+              move: destPiece,
             });
-            console.log("mandatory move :- ", mandatoryMove);
-            if (mandatoryMove === false) break;
-            await new Promise((resolve) => setTimeout(resolve, 300));
-            botGame = movePiece({
-              player: socket,
-              selectedPiece,
-              destination: mandatoryMove,
-            });
-            selectedPiece = mandatoryMove;
             sendGameStatus({ socket, gameId: botGame.id });
+            currPiece = destPiece;
+            destPiece = await giveMandatoryMove({
+              game: botGame,
+              piece: currPiece,
+            });
           }
         }
         if (botGame === undefined) return;
@@ -110,7 +121,7 @@ module.exports =
       const winner = isGameOver({ player: socket });
       // TODO: saving bot matches
       if (winner !== false) {
-        endGame({ player: socket, winner });
+        let finishedGame = endGame({ player: socket, winner });
         io.to(finishedGame.id).emit("winner", winner);
         sendGames(io);
       }
