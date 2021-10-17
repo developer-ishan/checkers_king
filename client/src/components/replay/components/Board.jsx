@@ -34,41 +34,52 @@ const Board = ({ moves }) => {
   const executeNextMove = (move) => {
     const { turn, i, j, di, dj } = parseMove(move);
     // alert("next: "+move);
-    const curState = boardStates[boardStates.length - 1];
-    const updatedBoard = curState.map(function (arr) {
-      return arr.slice();
-    });
-    const distanceI = di - i;
-    const distanceJ = dj - j;
-    const oneCellForwardI = i + Math.abs(distanceI) / distanceI;
-    const oneCellForwardJ = j + Math.abs(distanceJ) / distanceJ;
-    const destinationPiece = updatedBoard[di][dj];
-    const piece = updatedBoard[i][j];
+    setBoardStates((boardStates) => {
+      const curState = boardStates[boardStates.length - 1];
+      const updatedBoard = curState.map(function (arr) {
+        return arr.slice();
+      });
+      const distanceI = di - i;
+      const distanceJ = dj - j;
+      const oneCellForwardI = i + Math.abs(distanceI) / distanceI;
+      const oneCellForwardJ = j + Math.abs(distanceJ) / distanceJ;
+      const destinationPiece = updatedBoard[di][dj];
+      const piece = updatedBoard[i][j];
 
-    const middlePiece = updatedBoard[oneCellForwardI][oneCellForwardJ];
-    if (middlePiece !== piece) {
-      updatedBoard[oneCellForwardI][oneCellForwardJ] = 0;
-    }
-    updatedBoard[di][dj] = updatedBoard[i][j];
-    updatedBoard[i][j] = 0;
-    setBoardStates([...boardStates, updatedBoard]);
+      const middlePiece = updatedBoard[oneCellForwardI][oneCellForwardJ];
+      if (middlePiece !== piece) {
+        updatedBoard[oneCellForwardI][oneCellForwardJ] = 0;
+      }
+      updatedBoard[di][dj] = updatedBoard[i][j];
+      updatedBoard[i][j] = 0;
+      return [...boardStates, updatedBoard];
+    });
   };
   const prevMove = () => {
     if (boardStates.length > 1) {
-      const updateStates = boardStates.slice(0, boardStates.length - 1);
-      setBoardStates(updateStates);
+      setBoardStates((boardStates) => {
+        return boardStates.slice(0, boardStates.length - 1);
+      });
+      setMoveNum((moveNum) => {
+        if ( boardStates.length > 1) {
+          return moveNum - 1;
+        } else {
+
+        }
+      });
     }
   };
   const nextMove = () => {
-    let newMoveNum = moveNum;
-    if (moveNum < moves.length - 1) {
-      const newMoveNum = moveNum + 1;
-      executeNextMove(moves[newMoveNum]);
-      setMoveNum(newMoveNum);
-    } else {
-      alert("Match finished");
-      setMoveNum(moveNum + 1);
-    }
+    setMoveNum((moveNum) => {
+      if (moveNum < moves.length - 1) {
+        const newMoveNum = moveNum + 1;
+        executeNextMove(moves[newMoveNum]);
+        return newMoveNum;
+      } else {
+        alert("Match finished");
+        return moveNum + 1;
+      }
+    });
   };
   return (
     <div>

@@ -1,3 +1,9 @@
+const RED_PAWN = 1;
+const BLACK_PAWN = 2;
+const RED_QUEEN = 3;
+const BLACK_QUEEN = 4;
+const TOP_ROW = 0;
+const BOTTOM_ROW = 7;
 const BOARD_SIZE = 8;
 const INF = 99999;
 
@@ -9,6 +15,7 @@ const pieceColor = {
   4: "Black", // queen
 };
 
+// possible moves of a particular type of piece
 const pieceMoves = {
   0: [{}],
   1: [
@@ -33,6 +40,7 @@ const pieceMoves = {
   ],
 };
 
+// creates a copy of the board by value
 const giveDeepCopy = (board) => {
   let copy = [];
   board.forEach((row) => {
@@ -102,6 +110,10 @@ const simulatePieceMove = ({ board, piece, move }) => {
       aj = (move.j + piece.j) / 2;
     board[ai][aj] = 0;
   }
+  if (type === RED_PAWN && move.i === BOTTOM_ROW)
+    board[move.i][move.j] = RED_QUEEN;
+  if (type === BLACK_PAWN && move.i === TOP_ROW)
+    board[move.i][move.j] = BLACK_QUEEN;
 };
 
 // evaluation function of board; Tries to maximize score for RED & minimize score for BLACK
@@ -171,4 +183,5 @@ module.exports = {
   getAllPieces,
   getPossibleMoves,
   getPiecesCount,
+  simulatePieceMove,
 };
