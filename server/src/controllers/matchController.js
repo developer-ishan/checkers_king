@@ -1,4 +1,5 @@
 const Match = require("../models/Match");
+const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.getMyMatches = async (req, res, next) => {
@@ -63,7 +64,15 @@ exports.getMyMatches = async (req, res, next) => {
           userName: username,
           rating: rating,
           ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
+          profileUrl:
+            "https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png",
         };
+        if ("google" in detail) {
+          player["profileUrl"] = detail.google.profileUrl;
+        } else if ("facebook" in detail) {
+          if (detail.facebook.photo)
+            player["profileUrl"] = detail.facebook.photo;
+        }
         playersInfo.push(player);
       });
 
@@ -72,6 +81,7 @@ exports.getMyMatches = async (req, res, next) => {
       //not the id which was shared between friends
       filteredData.push({ matchId: _id, players: playersInfo });
     });
+    console.log("all matches by this user", matches);
     return res.json(filteredData);
   } catch (err) {
     console.log(err);
@@ -81,10 +91,10 @@ exports.getMyMatches = async (req, res, next) => {
 
 exports.getMatchById = async (req, res, next) => {
   try {
-    const {matchId} = req.params;
+    const { matchId } = req.params;
     const matches = await Match.aggregate([
       {
-        $match: {_id: ObjectId(matchId)}
+        $match: { _id: ObjectId(matchId) },
       },
       {
         $project: {
