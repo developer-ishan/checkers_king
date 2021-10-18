@@ -28,7 +28,7 @@ const Chat = ({ sendChatMsg, chats }) => {
   };
 
   return (
-    <div className="flex flex-col p-8 space-y-2 text-black bg-white">
+    <div className="flex flex-col p-8 space-y-2 text-black bg-white dark:bg-gray-700 dark:text-white">
       <div className="w-full p-2 text-center border-2">Chat Messages</div>
 
       <div
@@ -41,8 +41,8 @@ const Chat = ({ sendChatMsg, chats }) => {
               <p
                 className={
                   chat.player === "you"
-                    ? "text-right bg-indigo-300 p-1 rounded w-3/4 ml-auto"
-                    : "text-left bg-red-300 p-1 rounded w-3/4"
+                    ? "text-right bg-indigo-300 dark:bg-gray-500 p-1 rounded w-3/4 ml-auto"
+                    : "text-left bg-red-300 dark:bg-gray-400 p-1 rounded w-3/4"
                 }
               >{`${chat.msg}`}</p>
             );
@@ -55,10 +55,11 @@ const Chat = ({ sendChatMsg, chats }) => {
         <div ref={messagesEndRef} />
       </div>
       <input
-        className="w-full px-3 py-2 text-xs leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+        className="w-full px-3 py-2 text-xs leading-tight text-gray-700 border rounded shadow appearance-none dark:bg-gray-800 dark:text-white focus:outline-none focus:shadow-outline"
         id="msg"
         type="text"
         value={msg}
+        autoComplete="off"
         onChange={(e) => setMsg(e.target.value)}
         onKeyDown={(e) => handleEnterKey(e)}
         placeholder="Type a message"

@@ -23,26 +23,38 @@ const Match = ({ matchId, players, userId }) => {
     setOpponent(players[1 - selfUserIndex]);
   }, []);
 
+  const textStyle = {
+    borderColor: "#403750",
+    textShadow:
+      "-5px 1px #403750, -1px -1px 0 #403750, 1px -1px 0 #403750, -1px 1px 0 #403750, 1px 1px 0 #403750",
+  };
+
   return (
-    <div className="p-2 space-y-2 bg-white rounded shadow-lg">
+    <div className="p-2 space-y-2 bg-yellow-300 rounded shadow-lg shadow-xl dark:bg-gray-600">
       <div className="flex flex-col items-center justify-around space-y-5 ">
-        <div className="flex items-center justify-between w-full p-1 bg-gray-200">
+        <div className="relative flex items-center justify-between w-full p-2 bg-yellow-100 rounded-lg shadow-xl dark:bg-gray-500">
           {self &&
             (self.ratingChange > 0 ? (
               <>
-                <h1 className="font-bold tracking-tight text-green-500">
+                <h1 className="text-xl font-bold tracking-tight text-green-500 ">
                   +{self.ratingChange}
                 </h1>
-                <h1 className="font-bold tracking-tight text-green-500 uppercase">
+                <h1
+                  className="absolute text-3xl font-bold tracking-tight text-green-500 uppercase transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+                  style={textStyle}
+                >
                   won
                 </h1>
               </>
             ) : (
               <>
-                <h1 className="font-bold tracking-tight text-red-500">
+                <h1 className="text-xl font-bold tracking-tight text-red-500">
                   {self.ratingChange}
                 </h1>
-                <h1 className="font-bold tracking-tight text-red-500 uppercase">
+                <h1
+                  className="absolute text-2xl font-bold tracking-tight text-red-500 uppercase transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+                  style={textStyle}
+                >
                   loose
                 </h1>
               </>
@@ -54,7 +66,7 @@ const Match = ({ matchId, players, userId }) => {
             watch replay
           </Link>
         </div>
-        <div className="flex items-center justify-around w-full">
+        <div className="flex flex-col items-center justify-around w-full sm:flex-row">
           {self && (
             <div className="flex flex-col items-center">
               <img
@@ -67,7 +79,12 @@ const Match = ({ matchId, players, userId }) => {
               </Link>
             </div>
           )}
-          <h1 className="text-4xl font-bold tracking-tight">vs</h1>
+          <h1
+            className="text-6xl font-bold tracking-tight text-white"
+            style={textStyle}
+          >
+            vs
+          </h1>
           <div>
             {opponent && (
               <div className="flex flex-col items-center">

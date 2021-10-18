@@ -71,7 +71,7 @@ const Board = ({ moves }) => {
     }
   };
   return (
-    <div>
+    <div className="dark:bg-gray-900">
       <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
       <div class="inline-flex">
         {moves && boardStates.length > 1 && (

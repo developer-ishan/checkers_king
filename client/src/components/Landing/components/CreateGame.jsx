@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router";
 import { isAuthenticated } from "../../../helper/authHelper";
+import GameButton from "../../game/GameButton";
 
 const CreateGame = ({ socket }) => {
   let history = useHistory();
@@ -17,17 +18,13 @@ const CreateGame = ({ socket }) => {
         className="absolute transform inset-x-2/4 inset-y-2/4 -translate-x-2/4 -translate-y-2/4"
         alt="game image"
       />
-      <div className="absolute rounded inset-1 opacity-70 bg-gradient-to-br from-purple-600 via-indigo-500 to-teal-400"></div>
-      <div className="absolute inset-0 transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4">
-        <a
-          href="#"
-          onClick={() => createGame()}
-          className="block table p-2 p-4 mx-auto text-white capitalize transform border-4 border-dashed rounded-full hover:scale-150 active:scale-150 align place-content-center"
-        >
-          <img src="https://img.icons8.com/android/24/000000/plus.png" />
-        </a>
-        <p className="w-full mt-3 font-bold text-center text-white">New Game</p>
-      </div>
+      <div className="absolute inset-0 rounded opacity-70 indigo-gradient dark:dark-gradient dark:bg-opacity-100 "></div>
+      <GameButton
+        className="absolute p-2 font-bold text-indigo-500 transform bg-white top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+        onClickFn={() => createGame()}
+      >
+        New Game
+      </GameButton>
     </div>
   );
 };

@@ -22,11 +22,14 @@ const Home = ({ games, setGames }) => {
 
   // playMusic();
   return (
-    <div className="bg-gray-100 bg-red-300 " onMouseMove={() => playMusic()}>
+    <div
+      className="bg-yellow-300 dark:bg-gray-900 dark:text-gray-200"
+      onMouseMove={() => playMusic()}
+    >
       <Navbar />
       <div className="grid grid-cols-12">
         {/* left side */}
-        <div className="grid col-span-12 col-start-1 px-5 md:col-span-8">
+        <div className="grid col-span-12 col-start-1 px-5 lg:col-span-8">
           <UserAction socket={socket} />
         </div>
 
