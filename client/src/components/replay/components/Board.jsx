@@ -64,7 +64,7 @@ const Board = ({ moves }) => {
         if ( boardStates.length > 1) {
           return moveNum - 1;
         } else {
-
+          return moveNum;
         }
       });
     }
