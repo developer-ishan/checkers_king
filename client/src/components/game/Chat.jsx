@@ -37,14 +37,14 @@ const Chat = ({ sendChatMsg, chats }) => {
       >
         {chats.length > 0 &&
           chats.map((chat) => {
-            return (
-              <p
-                className={
-                  chat.player === "you"
-                    ? "text-right bg-indigo-300 dark:bg-gray-500 p-1 rounded w-3/4 ml-auto"
-                    : "text-left bg-red-300 dark:bg-gray-400 p-1 rounded w-3/4"
-                }
-              >{`${chat.msg}`}</p>
+            return chat.player === "you" ? (
+              <div className="w-3/4 ml-auto">
+                <p className="w-full p-1 ml-auto text-right bg-indigo-300 rounded dark:bg-gray-500 max-w-max">{`${chat.msg}`}</p>
+              </div>
+            ) : (
+              <div className="w-3/4 mr-auto">
+                <p className="w-full p-1 text-left bg-red-300 rounded dark:bg-gray-400 max-w-max">{`${chat.msg}`}</p>
+              </div>
             );
           })}
         {chats.length == 0 && (
