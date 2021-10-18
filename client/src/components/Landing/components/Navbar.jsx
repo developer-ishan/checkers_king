@@ -13,6 +13,7 @@ import LoginSignUpForm from "./LoginSignUpForm";
 require("dotenv").config();
 const Navbar = () => {
   const history = useHistory();
+  const [darkMode, setDarkMode] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useState(false);
@@ -23,6 +24,26 @@ const Navbar = () => {
     f_photo: undefined,
     g_photo: undefined,
   });
+  useEffect(() => {
+    const html = document.querySelector("html");
+    if (!("DarkMode" in localStorage)) {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        html.classList.add("dark");
+        setDarkMode(true);
+      } else {
+        html.classList.remove("dark");
+        setDarkMode(false);
+      }
+    } else {
+      if (localStorage.getItem("DarkMode") === "true") {
+        html.classList.add("dark");
+        setDarkMode(true);
+      } else {
+        html.classList.remove("dark");
+        setDarkMode(false);
+      }
+    }
+  }, []);
   useEffect(() => {
     let token = isAuthenticated();
     if (token) {
@@ -62,20 +83,52 @@ const Navbar = () => {
       })
       .catch((err) => console.log("ERROR:", err));
   };
+  const handleToggle = () => {
+    const html = document.querySelector("html");
+    if (darkMode) {
+      html.classList.remove("dark");
+      localStorage.setItem("DarkMode", "false");
+      setDarkMode(false);
+    } else {
+      html.classList.add("dark");
+      localStorage.setItem("DarkMode", "true");
+      setDarkMode(true);
+    }
+  };
 
   return (
-    <header class="w-full mb-4 text-gray-700 bg-white border-t border-gray-100 shadow-md body-font">
+    <header class="w-full mb-4 text-gray-700 bg-white dark:bg-gray-700 dark:text-white border-t border-gray-100 shadow-md body-font">
       <div class="flex flex-col items-center justify-between px-6 py-3  md:flex-row">
         {/* logo */}
         <a
-          href="!#"
+          href="/"
           class="flex items-center mb-4 font-medium text-gray-900 title-font md:mb-0"
         >
           <img src="/images/checkers-icon.png" alt="" />
-          <p className="m-2 text-xs leading-4 tracking-wider uppercase">
-            checker's <br /> king
+          <p className="m-2 text-xs leading-4 tracking-wider uppercase dark:text-white">
+            checkers <br /> king
           </p>
         </a>
+        {/* dark mode toggle */}
+        <div class="flex justify-end items-center space-x-2 mx-auto relative">
+          <span class="text-xs font-extralight">Light </span>
+          <div>
+            <input
+              type="checkbox"
+              name=""
+              id="checkbox"
+              class="hidden"
+              checked={darkMode}
+              onClick={handleToggle}
+            />
+            <label for="checkbox" class="cursor-pointer">
+              <div class="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
+                <div class="w-4 h-4 switch-ball bg-white rounded-full shadow"></div>
+              </div>
+            </label>
+          </div>
+          <span class="text-xs font-semibold">Dark</span>
+        </div>
         {/* login and signups*/}
         <nav class="flex flex-wrap items-center text-base md:ml-auto space-x-2 flex-1">
           {!auth && (

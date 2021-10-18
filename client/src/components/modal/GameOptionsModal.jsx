@@ -18,7 +18,7 @@ const gameOptionsModal = ({
       onRequestClose={closeModal}
     >
       <div class="flex justify-center max-w-sm mx-auto">
-        <div class="flex flex-col items-start justify-between w-4/5 h-auto my-20 overflow-hidden bg-white rounded-lg shadow-xl">
+        <div class="flex flex-col items-start justify-between w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
           <div class="flex flex-row items-baseline justify-around w-full p-4 pb-0 mb-3">
             <h2 class="mr-auto text-lg font-semibold tracking-wide uppercase">
               options
@@ -26,14 +26,14 @@ const gameOptionsModal = ({
             <div class="flex flex-row">
               <a
                 href="#"
-                class="text-xs text-blue-700 "
+                class="text-xs text-blue-700 dark:text-pink-400 "
                 onClick={() => closeModal()}
               >
                 close
               </a>
             </div>
           </div>
-          <div class="w-full p-4 pt-0 text-gray-800 bg-gray-100 divide-y divide-gray-400">
+          <div class="w-full p-4 pt-0 text-gray-800 bg-gray-100 dark:bg-gray-700 dark:text-white divide-y divide-gray-400">
             {/* select checker */}
             <div class=" py-4">
               <h2 className="font-bold capitalize">checker</h2>
@@ -44,6 +44,7 @@ const gameOptionsModal = ({
                     type="radio"
                     name="red"
                     id="red"
+                    className="dark:text-pink-500"
                     checked={gameOptions.checker === "red"}
                     onChange={() =>
                       setGameOptions({
@@ -59,6 +60,7 @@ const gameOptionsModal = ({
                     type="radio"
                     name="blue"
                     id="blue"
+                    className="dark:text-pink-500"
                     checked={gameOptions.checker === "blue"}
                     onChange={() =>
                       setGameOptions({
@@ -79,6 +81,7 @@ const gameOptionsModal = ({
                   type="checkbox"
                   name="playwithbot"
                   id="playwithbot"
+                  className="dark:text-pink-500"
                   checked={gameOptions.bot}
                   onChange={() => {
                     setGameOptions({ ...gameOptions, bot: !gameOptions.bot });
@@ -94,6 +97,7 @@ const gameOptionsModal = ({
                   type="checkbox"
                   name="forcedjumps"
                   id="forcedjumps"
+                  className="dark:text-pink-500"
                   checked={gameOptions.forceJump}
                   onChange={() => {
                     setGameOptions({
