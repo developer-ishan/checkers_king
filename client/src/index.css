@@ -2,3 +2,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer utilities {
+  .indigo-gradient {
+    background: linear-gradient(
+        217deg,
+        rgba(44, 1, 255, 0.8),
+        rgba(44, 1, 255, 0) 70.71%
+      ),
+      linear-gradient(127deg, rgba(107, 1, 255, 1), rgba(107, 1, 255, 0) 70.71%),
+      linear-gradient(336deg, rgba(0, 0, 255, 0.8), rgba(0, 0, 255, 0) 70.71%);
+  }
+  @variants dark {
+    .dark-gradient {
+      @apply bg-gradient-to-br from-gray-700 to-gray-700;
+    }
+  }
+}

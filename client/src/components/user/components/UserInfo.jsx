@@ -70,7 +70,7 @@ const UserInfo = ({ userId }) => {
     });
   };
   return (
-    <div className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 bg-gray-800 rounded-lg shadow-lg">
+    <div className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 rounded-lg shadow-lg indigo-gradient dark:dark-gradient">
       <div className="col-span-12 sm:col-span-4 lg:col-span-12">
         <img
           src={user.photo}

@@ -3,7 +3,7 @@ module.exports = {
     enabled: false,
     content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   },
-  darkMode: false, // or 'media' or 'class'
+  darkMode: "class", // or 'media' or 'class'
   theme: {
     extend: {
       gridTemplateRows: {
@@ -12,6 +12,12 @@ module.exports = {
 
         // Complex site-specific row configuration
         layout: "200px minmax(900px, 1fr) 100px",
+      },
+      fontFamily: {
+        custom: "'Poppins', sans-serif",
+      },
+      skew: {
+        "-15": "-15deg",
       },
     },
   },

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { isAuthenticated } from "../../../helper/authHelper";
+import GameButton from "../../game/GameButton";
 
 const JoinGame = ({ socket }) => {
   const [gameId, setGameId] = useState("");
@@ -14,12 +15,12 @@ const JoinGame = ({ socket }) => {
   };
 
   return (
-    <div class="flex flex-col items-center justify-center w-full h-auto px-2  bg-white sm:rounded-lg sm:shadow-xl">
+    <div class="flex flex-col items-center justify-center w-full h-auto px-2  bg-white dark:bg-gray-700 rounded-lg sm:shadow-xl">
       <div class="mt-10 mb-10 text-center">
-        <h2 class="text-xl sm:text-2xl  lg:text-3xl font-semibold mb-2">
+        <h2 class="text-xl dark:text-white sm:text-2xl  lg:text-3xl font-semibold mb-2">
           Have A Game Code?
         </h2>
-        <p class="text-xs text-gray-500">
+        <p class="text-xs text-gray-500 dark:text-white">
           Enter The Code Below To Join The Game
         </p>
       </div>
@@ -32,15 +33,23 @@ const JoinGame = ({ socket }) => {
             setGameId(e.target.value);
           }}
           placeholder="Enter Game Code"
-          class="placeholder-gray-600 focus:placeholder-gray-400 border-dashed border-4 w-full border-yellow-300 active:ring-yellow-300 focus:border-yellow-300 focus:ring-yellow-300"
+          autoComplete="off"
+          class="text-gray-400 text-center placeholder-gray-400  border-dashed border-4 w-full border-yellow-300 active:ring-yellow-300 focus:border-yellow-300 focus:ring-yellow-300"
         />
         <br />
-        <button
+        {/* <button
           class="bg-indigo-500 text-white p-2 rounded capitalize my-3 w-full"
           onClick={joinGame}
         >
           Join Game
-        </button>
+        </button> */}
+        <GameButton
+          className="block w-3/4 p-2 mx-auto my-5 text-white bg-indigo-500"
+          shadowColor="#FBC638"
+          onClickFn={() => joinGame()}
+        >
+          JoinGame
+        </GameButton>
       </form>
     </div>
   );

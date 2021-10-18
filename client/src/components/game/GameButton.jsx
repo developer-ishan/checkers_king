@@ -1,27 +1,21 @@
-import React, { Children } from "react";
+import React from "react";
 
 const GameButton = ({
   onClickFn,
   className,
-  text,
-  children,
   shadowColor = "#FBC638",
+  children,
 }) => {
-  console.log(Children);
-  let classes = "block transform -skew-x-15";
+  let classes = "transform -skew-x-15";
   classes = classes + " " + className;
-  console.log(classes);
   return (
-    <>
-      <button
-        href=""
-        onClick={onClickFn}
-        className={classes}
-        style={{ boxShadow: `6px 6px 0 ${shadowColor}` }}
-      >
-        {children}
-      </button>
-    </>
+    <button
+      className={classes}
+      onClick={() => onClickFn()}
+      style={{ boxShadow: `6px 6px 0 ${shadowColor}` }}
+    >
+      {children}
+    </button>
   );
 };
 
