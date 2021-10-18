@@ -55,9 +55,9 @@ const Navbar = () => {
     register({ email, password })
       .then((result) => {
         if (result.success) {
-          authenticate(result, () => {
-            setAuth(result.token);
-          });
+          console.log("User Signed up successfully!!")
+          setEmail("");
+          setPassword("");
         }
       })
       .catch((err) => console.log("ERROR:", err));

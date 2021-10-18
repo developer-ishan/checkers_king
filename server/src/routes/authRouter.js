@@ -3,7 +3,9 @@ const { check } = require("express-validator");
 const passport = require("passport");
 const authController = require("../controllers/authController");
 const validator = require("../middleware/validator");
+const isVerified = require("../middleware/isVerified");
 const userAuth = require("../middleware/userAuth");
+const { verifyMail } = require("../controllers/authController");
 
 authRouter.post(
   "/signup",
@@ -30,11 +32,21 @@ authRouter.post(
         return res
           .status(401)
           .json({ success: false, err: "email and password does not match" });
+      if (!user.isVerified)
+        return res
+          .status(401)
+          .json({ success: false, err: "user not verified" });
       req.user = user;
       next();
     })(req, res, next);
   },
   authController.signInSendToken
+);
+
+authRouter.get(
+  "/verify",
+  passport.authenticate("verify_email", { session: false }),
+  verifyMail
 );
 
 authRouter.get("/signout", userAuth, authController.signOut);
@@ -56,20 +68,16 @@ authRouter.get(
 authRouter.get(
   "/oauth/facebook",
   passport.authenticate("facebookToken", { session: false }),
-  authController.facebookOAuth,
+  authController.facebookOAuth
 );
 authRouter.get(
   "/oauth/facebook/callback",
   passport.authenticate("facebookToken", {
     session: false,
-    assignProperty: 'profile',
+    assignProperty: "profile",
   }),
   authController.facebookOAuth,
   authController.signInSendCookie
 );
-
-authRouter.get("/dashboard", userAuth, authController.dashboard);
-
-authRouter.get("/status", userAuth, authController.checkAuth);
 
 module.exports = authRouter;
