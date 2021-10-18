@@ -132,22 +132,24 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
         return;
       case 1:
         return (
-          <div className="absolute w-5/6 bg-red-500 rounded-full h-5/6"></div>
+          <div className="absolute w-5/6 bg-red-500 border-8 border-red-700 border-solid rounded-full shadow-inner h-5/6"></div>
         ); //red pawn
       case 2:
         return (
-          <div className="absolute w-5/6 bg-black rounded-full h-5/6"></div>
+          <div className="absolute w-5/6 bg-gray-800 border-8 border-gray-900 border-solid rounded-full shadow-inner h-5/6"></div>
         ); //black pawn
       case 3:
         return (
-          <div className="absolute grid w-5/6 text-yellow-500 bg-red-500 rounded-full place-content-center h-5/6">
-            Q
+          <div className="absolute grid w-5/6 text-yellow-500 bg-red-500 border-8 border-red-700 border-solid rounded-full shadow-inner place-content-center h-5/6">
+            {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
+            <img src="/images/crown.png" className="w-8 h-8 text-white" />
           </div>
         ); //red queen
       case 4:
         return (
-          <div className="absolute grid w-5/6 text-yellow-500 bg-black rounded-full place-content-center h-5/6">
-            Q
+          <div className="absolute grid w-5/6 bg-gray-800 border-8 border-gray-900 border-solid rounded-full shadow-inner place-content-center h-5/6">
+            {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
+            <img src="/images/crown.png" className="w-8 h-8 text-white" />
           </div>
         ); //black queen
 

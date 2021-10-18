@@ -106,7 +106,7 @@ const Navbar = () => {
         >
           <img src="/images/checkers-icon.png" alt="" />
           <p className="m-2 text-xs leading-4 tracking-wider uppercase dark:text-white">
-            checker's <br /> king
+            checkers <br /> king
           </p>
         </a>
         {/* dark mode toggle */}
