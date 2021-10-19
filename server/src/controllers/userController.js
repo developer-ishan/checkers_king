@@ -1,4 +1,5 @@
 const { check } = require("express-validator");
+// const upload = require("../config/upload");
 const User = require("../models/User");
 exports.deleteUser = async (req, res, next) => {
   try {
@@ -54,3 +55,13 @@ exports.getUserById = async (req, res, next) => {
     res.status(500).json(err);
   }
 };
+// exports.uploadProfilePic = (req, res, next) => {
+//   upload(req, res, function (err) {
+//     if (err instanceof multer.MulterError) {
+//       return res.status(500).json(err);
+//     } else if (err) {
+//       return res.status(500).json(err);
+//     }
+//     return res.status(200).send(req.file);
+//   })
+// }

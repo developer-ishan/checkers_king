@@ -3,6 +3,7 @@ const {
   getUserById,
   deleteUser,
   updateUser,
+  // uploadProfilePic
 } = require("../controllers/userController");
 const validator = require("../middleware/validator");
 const isVerified = require("../middleware/isVerified");
@@ -26,5 +27,6 @@ userRouter
   )
   .delete(userAuth, isVerified, deleteUser);
 userRouter.get("/summary", userAuth, isVerified, getMySummary);
+// userRouter.post("/dp", userAuth, isVerified, uploadProfilePic);
 userRouter.get("/summary/:userId", getUserById);
 module.exports = userRouter;
