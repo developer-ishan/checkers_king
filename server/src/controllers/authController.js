@@ -257,6 +257,7 @@ module.exports = {
           name: profile.name,
           photo: profile.photos[0].value,
         },
+        isVerified: true
       });
 
       req.user = await newUser.save();
@@ -313,6 +314,7 @@ module.exports = {
           name: profile.name,
           photo: profile.photos[0].value,
         },
+        isVerified: true
       });
 
       req.user = await newUser.save();
