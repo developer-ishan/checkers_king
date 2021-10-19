@@ -22,18 +22,18 @@ const updateRating = async (winnerId, loserId) => {
   const winner = await User.findById(winnerId);
   const loser = await User.findById(loserId);
   const { winnerNew, loserNew } = EloRating(winner.rating, loser.rating);
-  console.log(winnerNew, loserNew);
+
   const deltaWinner = winnerNew - winner.rating;
   const deltaLoser = loserNew - loser.rating;
 
   winner.rating = winnerNew;
   loser.rating = loserNew;
 
-  const updatedWinner = await winner.save();
-  const updatedLoser = await winner.save();
+  await winner.save();
+  await loser.save();
   return {
-    updatedWinner,
-    updatedLoser,
+    winnerNew,
+    loserNew,
     deltaLoser,
     deltaWinner,
   };

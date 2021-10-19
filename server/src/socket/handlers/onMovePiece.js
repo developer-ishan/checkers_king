@@ -3,7 +3,6 @@ const { aiBotMove } = require("../helpers/gameBot");
 const sendGames = require("../helpers/sendGames");
 const sendGameStatus = require("../helpers/sendGameStatus");
 const { giveMandatoryMove } = require("../helpers/mandatoryMoves");
-const { saveMatch } = require("../../helpers/matchHelpers");
 const { simulatePieceMove } = require("../helpers/botHelpers");
 
 // checks if the current move supports mandatory move
@@ -47,20 +46,8 @@ module.exports =
     // checking if the game is over with a winner
     const winner = isGameOver({ player: socket });
     if (winner !== false) {
-      let finishedGame = endGame({ player: socket, winner });
+      let finishedGame = await endGame({ player: socket, winner });
       io.to(finishedGame.id).emit("winner", winner);
-      // saving finised game if the opponent wasn't a bot
-      if (finishedGame.isBot === false) {
-        await saveMatch(
-          finishedGame.players,
-          finishedGame.id,
-          finishedGame.pieceMoves,
-          finishedGame.createTime,
-          new Date(),
-          finishedGame.chat
-        );
-      }
-      console.log("save match success");
       // sending current ongoing games to all the users
       sendGames(io);
       // removing all the sockets in the room
@@ -68,16 +55,16 @@ module.exports =
       return;
     }
 
-    // playing against bot
     if (game.isBot) {
       // level should only be kept in range [1, 5]
       const nextMove = aiBotMove({
         board: game.board,
-        level: 4,
+        level: game.botLevel,
         turn: game.turn,
       });
       // delay for move visiblity
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      const delay = game.botLevel === 6 ? 200 : 300;
+      await new Promise((resolve) => setTimeout(resolve, delay));
       // next move is null if the bot doesn't have any possible moves, which is basically a win condition
       if (nextMove != null) {
         let botGame = movePiece({
@@ -118,12 +105,13 @@ module.exports =
         if (botGame === undefined) return;
       }
 
+      // checking for winning condition for a match
       const winner = isGameOver({ player: socket });
-      // TODO: saving bot matches
       if (winner !== false) {
-        let finishedGame = endGame({ player: socket, winner });
+        let finishedGame = await endGame({ player: socket, winner });
         io.to(finishedGame.id).emit("winner", winner);
         sendGames(io);
+        io.socketsLeave(finishedGame.id);
       }
     }
   };
