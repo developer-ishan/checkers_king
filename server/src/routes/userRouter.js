@@ -5,12 +5,13 @@ const {
   updateUser,
 } = require("../controllers/userController");
 const validator = require("../middleware/validator");
+const isVerified = require("../middleware/isVerified");
 const userAuth = require("../middleware/userAuth");
 const userRouter = require("express").Router();
 const { check } = require("express-validator");
 userRouter
   .route("/")
-  .get(userAuth, async (req, res, next) => {
+  .get(userAuth, isVerified, async (req, res, next) => {
     res.json(req.user);
   })
   .put(
@@ -20,9 +21,10 @@ userRouter
     ],
     validator,
     userAuth,
+    isVerified,
     updateUser
   )
-  .delete(userAuth, deleteUser);
-userRouter.get("/summary", userAuth, getMySummary);
+  .delete(userAuth, isVerified, deleteUser);
+userRouter.get("/summary", userAuth, isVerified, getMySummary);
 userRouter.get("/summary/:userId", getUserById);
 module.exports = userRouter;

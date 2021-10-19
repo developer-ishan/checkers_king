@@ -9,6 +9,10 @@ const userSchema = new Schema({
     type: [String],
     required: true,
   },
+  isVerified : {
+    type: Boolean,
+    default: false
+  },
   local: {
     email: {
       type: String,

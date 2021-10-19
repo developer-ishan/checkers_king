@@ -1,6 +1,12 @@
 const JWT = require("jsonwebtoken");
 const User = require("../models/User");
-const { JWT_SECRET, UI_BASE } = require("../config/keys");
+const {
+  JWT_SECRET,
+  VERIFICATION_JWT_SECRET,
+  UI_BASE,
+  SERVER_BASE,
+} = require("../config/keys");
+const { transporter, mailOptions } = require("../config/mailer");
 
 signToken = (user) => {
   return JWT.sign(
@@ -11,6 +17,18 @@ signToken = (user) => {
       exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
     },
     JWT_SECRET
+  );
+};
+
+signVerificationToken = (user) => {
+  return JWT.sign(
+    {
+      iss: "Checkers_King",
+      sub: user._id,
+      iat: new Date().getTime(), // current time
+      exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
+    },
+    VERIFICATION_JWT_SECRET
   );
 };
 
@@ -35,11 +53,36 @@ module.exports = {
         email: email,
         password: password,
       };
-      await foundUser.save();
+      const savedUser = await foundUser.save();
       // Generate the token
-      const token = signToken(foundUser);
-      // Respond with token
-      return res.status(200).json({ success: true, token: token });
+      const token = signVerificationToken(savedUser);
+
+      //mail the verification link
+      transporter.sendMail(
+        {
+          from: "checkersking8@gmail.com",
+          to: email,
+          subject: "Verification Mail",
+          html: `
+            <h1>Welcome to the amazing world of checkers</h1>
+            <a target="_blank" href='${SERVER_BASE}/api/auth/verify?verificationToken=${token}'>Verification Link</a>
+            <p>If above link does not work: ${SERVER_BASE}/api/auth/verify?verificationToken=${token}</p>
+          `,
+          text: `If above link does not work: ${SERVER_BASE}/api/auth/verify?verificationToken=${token}`,
+        },
+        function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            // Respond with token
+            console.log("Email sent: " + info.response);
+            return res.status(200).json({
+              success: true,
+              msg: "user saved and mail sent successfully!!",
+            });
+          }
+        }
+      );
     }
 
     // Create a new user
@@ -54,10 +97,86 @@ module.exports = {
     await newUser.save();
 
     // Generate the token
-    const token = signToken(newUser);
-    res.status(200).json({ success: true, token: token });
+    const token = signVerificationToken(newUser);
+    transporter.sendMail(
+      {
+        from: "checkersking8@gmail.com",
+        to: email,
+        subject: "Verification Mail",
+        html: `
+          <h1>Welcome to the amazing world of checkers</h1>
+          <a target="_blank" href='${SERVER_BASE}/api/auth/verify?verificationToken=${token}'>Verification Link</a>
+          <p>If above link does not work: ${SERVER_BASE}/api/auth/verify?verificationToken=${token}</p>
+        `,
+        text: `If above link does not work: ${SERVER_BASE}/api/auth/verify?verificationToken=${token}`,
+      },
+      function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          // Respond with token
+          console.log("Email sent: " + info.response);
+          return res.status(200).json({
+            success: true,
+            msg: "user saved and mail sent successfully!!",
+          });
+        }
+      }
+    );
   },
 
+  resendMail: async (req, res, next) => {
+    const user = await User.findOne({ "local.email": req.body.email });
+    if (!user) {
+      return res.send(404).json({
+        success: false,
+        msg: "No account found for the given email",
+      });
+    }
+    if (user.isVerified) return res.send("Email already verified");
+    // Generate the token
+    const token = signVerificationToken(user);
+
+    //mail the verification link
+    transporter.sendMail(
+      {
+        from: "checkersking8@gmail.com",
+        to: email,
+        subject: "Resend Verification Mail",
+        html: `
+          <h1>Welcome to the amazing world of checkers</h1>
+          <a target="_blank" href='${SERVER_BASE}/api/auth/verify?verificationToken=${token}'>Verification Link</a>
+          <p>If above link does not work: ${SERVER_BASE}/api/auth/verify?verificationToken=${token}</p>
+        `,
+        text: `If above link does not work: ${SERVER_BASE}/api/auth/verify?verificationToken=${token}`,
+      },
+      function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          // Respond with token
+          console.log("Email sent: " + info.response);
+          return res.status(200).json({
+            success: true,
+            msg: "user saved and mail sent successfully!!",
+          });
+        }
+      }
+    );
+
+    return res.send(404).json({
+      success: false,
+      msg: "No account found for the given email",
+    });
+  },
+
+  verifyMail: async (req, res, next) => {
+    req.user.isVerified = true;
+    await req.user.save();
+    return res.send(
+      "Email Verified Successfully, you can close the window now"
+    );
+  },
   signInSendCookie: async (req, res, next) => {
     // Generate token
     const token = signToken(req.user);
@@ -74,7 +193,12 @@ module.exports = {
   },
   signInSendToken: async (req, res, next) => {
     const token = signToken(req.user);
-    res.status(200).json({ success: true, caution: "set the token in cookie for uniformity", token: token, userId:req.user._id });
+    res.status(200).json({
+      success: true,
+      caution: "set the token in cookie for uniformity",
+      token: token,
+      userId: req.user._id,
+    });
   },
 
   signOut: async (req, res, next) => {

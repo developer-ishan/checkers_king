@@ -36,6 +36,34 @@ passport.use(
   )
 );
 
+passport.use(
+  "verify_email",
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromUrlQueryParameter("verificationToken"),
+      secretOrKey: keys.VERIFICATION_JWT_SECRET,
+      passReqToCallback: true,
+    },
+    async (req, payload, done) => {
+      try {
+        // Find the user specified in token
+        const user = await User.findById(payload.sub);
+
+        // If user doesn't exists, handle it
+        if (!user) {
+          return done(null, false);
+        }
+
+        // Otherwise, return the user
+        req.user = user;
+        done(null, user);
+      } catch (error) {
+        done(error, false);
+      }
+    }
+  )
+);
+
 // Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
@@ -43,7 +71,7 @@ passport.use(
       clientID: keys.oauth.google.clientID,
       clientSecret: keys.oauth.google.clientSecret,
       callbackURL: "/api/auth/oauth/google/callback",
-      scope: ['profile', 'email']
+      scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -62,7 +90,15 @@ passport.use(
       clientID: keys.oauth.facebook.clientID,
       clientSecret: keys.oauth.facebook.clientSecret,
       callbackURL: "/api/auth/oauth/facebook/callback",
-      profileFields: ['id', 'displayName', 'picture.type(large)', 'emails', 'first_name', 'last_name', 'middle_name']
+      profileFields: [
+        "id",
+        "displayName",
+        "picture.type(large)",
+        "emails",
+        "first_name",
+        "last_name",
+        "middle_name",
+      ],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

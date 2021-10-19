@@ -56,8 +56,7 @@ app.use(function (req, res, next) {
 
 // Catching 500 Internal Server Error
 app.use(function (err, req, res, next) {
-  res.status(err.status || 500);
-  res.json({
+  res.status(err.status || 500).json({
     error: err.message,
     success: false,
   });
