@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "react-modal";
+import { useHistory } from "react-router-dom";
+
 const DrawModal = ({ modalState, setModalState, socket, gameId }) => {
+  let history = useHistory();
+
   const closeModal = () => {
     socket.emit("draw-rejected", { gameId });
     setModalState(false);
@@ -15,15 +19,18 @@ const DrawModal = ({ modalState, setModalState, socket, gameId }) => {
     setModalState(false);
   };
 
-  socket.on("draw-offered", () => {
-    setModalState(true);
-  });
-  socket.on("draw-accepted", () => {
-    alert("opponent accepted the draw");
-    // TODO:exit out this player
-  });
+  useEffect(() => {
+    socket.on("draw-offered", () => {
+      setModalState(true);
+    });
 
-  socket.on("draw-rejected", () => alert("draw rejected: aa gya swad!"));
+    socket.on("draw-accepted", () => {
+      alert("opponent accepted the draw");
+      history.push("/");
+    });
+
+    socket.on("draw-rejected", () => alert("draw rejected: aa gya swad!"));
+  }, []);
 
   return (
     <Modal

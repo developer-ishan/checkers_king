@@ -10,16 +10,23 @@ const RandomPlay = ({ socket }) => {
   const history = useHistory();
   const [isGameOptionModalOpen, setIsGameOptionModalOpen] = useState(false);
   const [gameOptions, setGameOptions] = useState({
-    checker: "red",
+    checker: "Red",
     bot: false,
+    botLevel: 2,
     forceJump: true,
-    gameName: "",
   });
 
   const handleStartGame = () => {
     const token = isAuthenticated();
-    const { gameName, bot, forceJump } = gameOptions;
-    socket.emit("create-game", gameName, bot, forceJump, token);
+    const { bot, botLevel, checker, forceJump } = gameOptions;
+    socket.emit(
+      "create-game",
+      bot,
+      botLevel,
+      checker,
+      forceJump,
+      token
+    );
     history.push("/game");
   };
 

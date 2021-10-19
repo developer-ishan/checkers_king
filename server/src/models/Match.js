@@ -7,12 +7,10 @@ const matchSchema = new Schema({
     {
       userId: String,
       delta: Number,
+      updatedRating: Number,
+      color: String,
     },
   ],
-  matchId: {
-    type: String,
-    required: true,
-  },
   moves: [{ type: String }],
   startTime: Date,
   endTime: Date,

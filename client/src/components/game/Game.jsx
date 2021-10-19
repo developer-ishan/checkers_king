@@ -40,8 +40,8 @@ const Game = () => {
     });
 
     socket.on("winner", (winner) => {
-      alert(`Winner of the game is ${winner}`);
-      console.log("winner event caught...", winner);
+      if (winner === null) alert("Game is declared Draw!!");
+      else alert(`Winner of the game is ${winner}`);
       history.push("/");
     });
 

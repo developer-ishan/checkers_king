@@ -7,8 +7,8 @@ const CreateGame = ({ socket }) => {
   // creates a new and redirects us to the game board
   const createGame = () => {
     const token = isAuthenticated();
-    // ARGS :- ("create-game", Game-Title, isBot, mandatoryMoves, token)
-    socket.emit("create-game", "need to chang this", true, true, token);
+    // ARGS :- ("create-game", isBot, mandatoryMoves, token)
+    socket.emit("create-game", true, true, token);
     history.push("/game");
   };
   return (

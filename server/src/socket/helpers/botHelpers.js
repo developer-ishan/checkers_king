@@ -7,6 +7,8 @@ const BOTTOM_ROW = 7;
 const BOARD_SIZE = 8;
 const INF = 99999;
 
+let RED_SCORE, BLACK_SCORE, REDQ_SCORE, BLACKQ_SCORE;
+
 const pieceColor = {
   0: "Empty",
   1: "Red", // pawn
@@ -119,10 +121,10 @@ const simulatePieceMove = ({ board, piece, move }) => {
 // evaluation function of board; Tries to maximize score for RED & minimize score for BLACK
 const evaluatePosition = (board) => {
   return (
-    getPiecesCount({ board, type: 1 }) -
-    getPiecesCount({ board, type: 2 }) +
-    getPiecesCount({ board, type: 3 }) -
-    getPiecesCount({ board, type: 4 })
+    Math.floor(getPiecesCount({ board, type: 1 }) * RED_SCORE) -
+    Math.floor(getPiecesCount({ board, type: 2 }) * BLACK_SCORE) +
+    Math.floor(getPiecesCount({ board, type: 3 }) * REDQ_SCORE) -
+    Math.floor(getPiecesCount({ board, type: 4 }) * BLACKQ_SCORE)
   );
 };
 
@@ -136,6 +138,10 @@ function ai_algorithm(board, depth, maxPlayer) {
     let maxEval = -INF,
       bestMove = null,
       pieces = getAllPieces({ board, color: "Red" });
+
+    RED_SCORE = Math.random() * 2;
+    REDQ_SCORE = Math.random() * 1;
+
     for (let i = 0; i < pieces.length; ++i) {
       let moves = getPossibleMoves({ board, piece: pieces[i] });
       for (let j = 0; j < moves.length; ++j) {
@@ -158,6 +164,10 @@ function ai_algorithm(board, depth, maxPlayer) {
     let minEval = INF,
       bestMove = null,
       pieces = getAllPieces({ board, color: "Black" });
+
+    BLACK_SCORE = Math.random() * 2;
+    BLACKQ_SCORE = Math.random();
+
     for (let i = 0; i < pieces.length; ++i) {
       let moves = getPossibleMoves({ board, piece: pieces[i] });
       for (let j = 0; j < moves.length; ++j) {

@@ -7,33 +7,49 @@ const saveChat = async (users, match, messages) => {
   return await chat.save();
 };
 const saveMatch = async (
-  players,
-  matchId,
+  p1,
+  p2,
   moves,
   startTime,
   endTime,
-  messages
+  messages,
+  isDraw,
+  isBot
 ) => {
-  const ratingsDelta = await updateRating(players[0].id, players[1].id);
-  const game = new Match({
-    players: [
-      {
-        userId: players[0].id,
-        delta: ratingsDelta.deltaWinner,
-      },
-      {
-        userId: players[1].id,
-        delta: ratingsDelta.deltaLoser,
-      },
-    ],
-    matchId,
+  let ratingsUpdate = null;
+  if (!isBot && !isDraw) ratingsUpdate = await updateRating(p1.id, p2.id);
+  let game = new Match({
+    players: [],
     moves,
     startTime,
     endTime,
   });
 
-  await saveChat([ players[0].id,  players[1].id], matchId, messages);
-  return await game.save();
+  // handles draw condition between players
+  if (isDraw) {
+    game.players.push({ userId: p1.id, delta: 0, color: p1.color });
+    game.players.push({ userId: p2.id, delta: 0, color: p2.color });
+  } else if (isBot) {
+    // handles games with bots
+    game.players.push({ userId: p1.id, delta: 0, color: p1.color });
+  } else {
+    // handles game between two players
+    game.players.push({
+      userId: p1.id,
+      delta: ratingsUpdate.deltaWinner,
+      updatedRating: ratingsUpdate.winnerNew,
+      color: p1.color,
+    });
+    game.players.push({
+      userId: p2.id,
+      delta: ratingsUpdate.deltaLoser,
+      updatedRating: ratingsUpdate.loserNew,
+      color: p2.color,
+    });
+  }
+  const savedGame = await game.save();
+  if (!isBot)
+    await saveChat([p1.id, p2.id], savedGame._id.toString(), messages);
 };
 /**
  * ip: matchId

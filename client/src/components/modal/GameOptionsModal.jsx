@@ -36,59 +36,101 @@ const gameOptionsModal = ({
           <div class="w-full p-4 pt-0 text-gray-800 bg-gray-100 divide-y divide-gray-400">
             {/* select checker */}
             <div class=" py-4">
-              <h2 className="font-bold capitalize">checker</h2>
+              <h2 className="my-2 font-bold capitalize">choose color : </h2>
 
               <div className="flex items-center space-x-2">
-                <label htmlFor="red" className="flex items-center">
+                <label htmlFor="red" className="flex items-center mx-1">
                   <input
                     type="radio"
                     name="red"
                     id="red"
-                    checked={gameOptions.checker === "red"}
+                    checked={gameOptions.checker === "Red"}
                     onChange={() =>
                       setGameOptions({
                         ...gameOptions,
-                        checker: "red",
+                        checker: "Red",
                       })
                     }
                   />
-                  <p>red</p>
+                  <p className="mx-2">Red</p>
                 </label>
-                <label htmlFor="blue" className="flex items-center">
+                <label htmlFor="black" className="flex items-center mx-1">
                   <input
                     type="radio"
-                    name="blue"
-                    id="blue"
-                    checked={gameOptions.checker === "blue"}
+                    name="black"
+                    id="black"
+                    checked={gameOptions.checker === "Black"}
                     onChange={() =>
                       setGameOptions({
                         ...gameOptions,
-                        checker: "blue",
+                        checker: "Black",
                       })
                     }
                   />
-                  <p>blue</p>
+                  <p className="mx-2">Black</p>
                 </label>
               </div>
             </div>
             {/* play with bot */}
-            <div class="flex flex-row items-center justify-between py-4">
-              <h2 className="font-bold capitalize">play with bot</h2>
-              <label htmlFor="playwithbot">
-                <input
-                  type="checkbox"
-                  name="playwithbot"
-                  id="playwithbot"
-                  checked={gameOptions.bot}
-                  onChange={() => {
-                    setGameOptions({ ...gameOptions, bot: !gameOptions.bot });
-                  }}
-                />
-              </label>
+            <div class="flex flex-col py-4">
+              <div className="flex flex-row items-center justify-between px-2 my-1">
+                <h2 className="font-bold capitalize">play with bot</h2>
+                <label htmlFor="playwithbot">
+                  <input
+                    type="checkbox"
+                    name="playwithbot"
+                    id="playwithbot"
+                    checked={gameOptions.bot}
+                    onChange={() => {
+                      setGameOptions({ ...gameOptions, bot: !gameOptions.bot });
+                    }}
+                  />
+                </label>
+              </div>
+              {gameOptions.bot === true && (
+                <div className="flex flex-row items-center justify-between my-1">
+                  <label htmlFor="easy" className="flex items-center mx-1">
+                    <input
+                      type="radio"
+                      name="easy"
+                      id="easy"
+                      checked={gameOptions.botLevel === 2}
+                      onChange={() =>
+                        setGameOptions({ ...gameOptions, botLevel: 2 })
+                      }
+                    />
+                    <p className="mx-2">Easy</p>
+                  </label>
+                  <label htmlFor="medium" className="flex items-center mx-1">
+                    <input
+                      type="radio"
+                      name="medium"
+                      id="medium"
+                      checked={gameOptions.botLevel === 4}
+                      onChange={() =>
+                        setGameOptions({ ...gameOptions, botLevel: 4 })
+                      }
+                    />
+                    <p className="mx-2">Medium</p>
+                  </label>
+                  <label htmlFor="hard" className="flex items-center mx-1">
+                    <input
+                      type="radio"
+                      name="hard"
+                      id="hard"
+                      checked={gameOptions.botLevel === 6}
+                      onChange={() =>
+                        setGameOptions({ ...gameOptions, botLevel: 6 })
+                      }
+                    />
+                    <p className="mx-2">Hard</p>
+                  </label>
+                </div>
+              )}
             </div>
             {/* force jump */}
-            <div class="flex flex-row items-center justify-between pt-4">
-              <h2 className="font-bold capitalize">forced jumps</h2>
+            <div class="flex flex-row items-center justify-between py-4">
+              <h2 className="font-bold capitalize">forced jumps : </h2>
               <label htmlFor="forcedjumps">
                 <input
                   type="checkbox"
@@ -99,25 +141,6 @@ const gameOptionsModal = ({
                     setGameOptions({
                       ...gameOptions,
                       forceJump: !gameOptions.forceJump,
-                    });
-                  }}
-                />
-              </label>
-            </div>
-            {/* game name */}
-            <div className="pt-4">
-              <h2 className="font-bold capitalize">game name</h2>
-              <label htmlFor="gamename">
-                <input
-                  type="text"
-                  name="gamename"
-                  id="gamename"
-                  className="w-full rounded"
-                  placeholder="name this game"
-                  onChange={(e) => {
-                    setGameOptions({
-                      ...gameOptions,
-                      gameName: e.target.value,
                     });
                   }}
                 />
