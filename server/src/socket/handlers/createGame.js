@@ -3,19 +3,25 @@ const sendGames = require("../helpers/sendGames");
 const sendGameStatus = require("../helpers/sendGameStatus");
 const { aiBotMove } = require("../helpers/gameBot");
 const { movePiece } = require("../gameManager");
+const { userAlreadyExistsInOtherGame } = require("../helpers/errorHelpers");
 
 module.exports =
   ({ io, socket }) =>
-  async (isBot, botLevel, color, mandatoryMoves, token) => {
-    console.log("inside create game function...");
+  async (isBot, botLevel, color, mandatoryMoves, isRated, token) => {
+    // checking if user already exists in another game
+    const alreadyExists = await userAlreadyExistsInOtherGame(socket, token);
+    if (alreadyExists) return;
+
     const newGame = await createNewGame({
       player: socket,
       isBot,
       botLevel,
       color,
       mandatoryMoves,
+      isRated,
       token,
     });
+    // joining the room with name similar to the game id
     socket.join(newGame.id);
     sendGames(io);
     socket.emit("game-status", {
@@ -25,6 +31,7 @@ module.exports =
     });
     socket.emit("color", color);
 
+    // handles the condition when the game is against the bot & bot has to move first
     if (newGame.isBot && newGame.players[0].color === "Black") {
       const nextMove = aiBotMove({
         board: newGame.board,

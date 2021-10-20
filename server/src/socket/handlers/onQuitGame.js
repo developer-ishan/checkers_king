@@ -1,6 +1,7 @@
 const { endGame, getColorOfPlayer } = require("../gameManager");
 const sendGames = require("../helpers/sendGames");
 
+// user calling this function loses the game
 module.exports =
   ({ io, socket }) =>
   async () => {
@@ -12,7 +13,7 @@ module.exports =
 
     const roomId = endedGame.id;
     io.to(roomId).emit("end-game");
-    console.log("emitting 'end-game' event to room ", roomId);
+    // removing all the users of this room
     io.socketsLeave(roomId);
     sendGames(io);
   };

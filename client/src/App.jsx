@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import { SocketContext } from "./context/SocketContext";
 import Game from "./components/game/Game";
 import Home from "./components/Landing/Home";
-import Main from "./components/Main";
 import { API } from "./config/backend";
 import Profile from "./components/user/Profile";
 import Replay from "./components/replay/Replay";

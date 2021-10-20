@@ -44,6 +44,10 @@ module.exports = ({ game, destination, selectedPiece }) => {
     }
   }
 
+  /* 
+  piece moves of the player are saved into the game once the move 
+  is assured to be justified within the rules of the game
+  */
   const pieceMove =
     game.turn[0] + i.toString() + j.toString() + di.toString() + dj.toString();
   game.pieceMoves.push(pieceMove);
@@ -55,6 +59,6 @@ module.exports = ({ game, destination, selectedPiece }) => {
   } else if (piece === BLACK_PAWN && di === TOP_ROW) {
     game.board[di][dj] = BLACK_QUEEN;
   }
-
+  // switching the turn of player after each move
   game.turn = game.turn === "Red" ? "Black" : "Red";
 };

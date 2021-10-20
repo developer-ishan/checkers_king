@@ -147,6 +147,43 @@ const gameOptionsModal = ({
                 />
               </label>
             </div>
+            {/* is rated field */}
+            <div class=" py-4">
+              <h2 className="my-2 font-bold capitalize">match type : </h2>
+
+              <div className="flex items-center space-x-2">
+                <label htmlFor="rated" className="flex items-center mx-1">
+                  <input
+                    type="radio"
+                    name="rated"
+                    id="rated"
+                    checked={gameOptions.isRated === true}
+                    onChange={() =>
+                      setGameOptions({
+                        ...gameOptions,
+                        isRated: true,
+                      })
+                    }
+                  />
+                  <p className="mx-2">Rated</p>
+                </label>
+                <label htmlFor="friendly" className="flex items-center mx-1">
+                  <input
+                    type="radio"
+                    name="friendly"
+                    id="friendly"
+                    checked={gameOptions.isRated === false}
+                    onChange={() =>
+                      setGameOptions({
+                        ...gameOptions,
+                        isRated: false,
+                      })
+                    }
+                  />
+                  <p className="mx-2">Friendly</p>
+                </label>
+              </div>
+            </div>
           </div>
           <button
             type="submit"

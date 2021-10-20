@@ -6,8 +6,7 @@ import GameButton from "../../game/GameButton";
 const JoinGame = ({ socket }) => {
   const [gameId, setGameId] = useState("");
   const history = useHistory();
-  // joins us to the game with game_id 0 for now
-  // TODO: catching error on joining non-existent gaem
+
   const joinGame = (e) => {
     const token = isAuthenticated();
     socket.emit("join-game", gameId, token);

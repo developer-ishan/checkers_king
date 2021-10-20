@@ -13,6 +13,7 @@ const acceptDraw = require("./handlers/acceptDraw");
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
 
+  // on a new user connection
   io.on("connection", (socket) => {
     console.log("a user connected! ID :- " + socket.id);
     sendGames(socket);
@@ -43,7 +44,7 @@ exports.SocketServer = (io) => {
     socket.on("send-msg", ({ gameId, msg }) => {
       saveChat({ gameId, msg, io, socket });
     });
-    // socket.on("send-msg", saveChat({ io, socket }));
+
     socket.on("disconnect", onDisconnect({ io, socket }));
   });
 };

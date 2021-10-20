@@ -74,6 +74,7 @@ module.exports =
         });
         sendGameStatus({ socket, gameId: botGame.id });
 
+        // checks if the piece can inititate a mandatory move
         if (
           isMandatoryMove({
             game: botGame,

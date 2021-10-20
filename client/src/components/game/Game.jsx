@@ -31,6 +31,12 @@ const Game = () => {
   };
 
   useEffect(() => {
+    // TODO: add a modal to display the error
+    socket.on("game-error", ({ error }) => {
+      alert(error);
+      history.push("/");
+    });
+
     socket.on("game-status", (game) => {
       setGame(game);
     });

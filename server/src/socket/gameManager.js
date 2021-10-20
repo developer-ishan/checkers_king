@@ -10,36 +10,59 @@ const {
 } = require("./helpers/botHelpers");
 const { saveMatch } = require("../helpers/matchHelpers");
 
+// set of all the ongoing games
 const games = [];
 
+// gets the game where player is the playing
 const getGameForPlayer = (player) => {
   return games.find((game) => {
     return game.players.find((p) => p.socket === player);
   });
 };
 
+// gets the game by the gameId assigned while creation
 exports.getGameByID = (GameId) => {
   return games.find((g) => g.id === GameId);
 };
 
+// gets the trimmed information of ongoing games to join
 exports.getGames = () => {
   let res = [];
   games.map((g) => {
-    const { players, board, ...game } = g;
     res.push({
-      ...game,
-      playerCount: players.length,
+      id: g.id,
+      playerCount: g.players.length,
     });
   });
   return res;
 };
 
+// returns a game where the user with token belongs
+exports.getGameByUserId = async (token) => {
+  let userId = null;
+  if (token) {
+    try {
+      var decoded = jwt.verify(token, JWT_SECRET).sub;
+      const user = await User.findById(decoded);
+      console.log(user.username, " created the game");
+      if (user) userId = user._id;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return games.find((game) => {
+    return game.players.find((p) => p.id === userId);
+  });
+};
+
+// creates an instance of game and pushes into the games array
 exports.createNewGame = async ({
   player,
   isBot,
   botLevel,
   color,
   mandatoryMoves,
+  isRated,
   token,
 }) => {
   let userId = null,
@@ -82,14 +105,17 @@ exports.createNewGame = async ({
       // [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
+    isRated,
     botLevel,
     mandatoryMoves,
     chat: [],
   };
   games.push(game);
+  console.log("game create with id ", matchId);
   return game;
 };
 
+// moves the piece on the board of the game player is currently playing
 exports.movePiece = ({ player, selectedPiece, destination }) => {
   const game = getGameForPlayer(player);
   if (game !== undefined)
@@ -101,9 +127,11 @@ exports.movePiece = ({ player, selectedPiece, destination }) => {
   return game;
 };
 
+// adds the player as an opponent to the game with id gameId
 exports.addPlayerToGame = async ({ player, gameId, token }) => {
   const game = games.find((game) => game.id === gameId);
   let userId = null;
+  // checking for registered user to create the game
   if (token) {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
@@ -116,6 +144,7 @@ exports.addPlayerToGame = async ({ player, gameId, token }) => {
       console.log(err);
     }
   }
+  // determining the piece color of the opponent
   let color = game.players[0].color === "Red" ? "Black" : "Red";
   game.players.push({
     color,
@@ -125,11 +154,13 @@ exports.addPlayerToGame = async ({ player, gameId, token }) => {
   return color;
 };
 
+// saves the chat into the game object
 exports.saveChatToGame = (gameId, msgObject) => {
   const game = games.find((game) => game.id === gameId);
   game.chat.push(msgObject);
 };
 
+// gets the color of the piece of player playing the game
 exports.getColorOfPlayer = ({ player }) => {
   const game = getGameForPlayer(player),
     pc = game.players[0].color;
@@ -137,6 +168,7 @@ exports.getColorOfPlayer = ({ player }) => {
   return pc;
 };
 
+// ends the game : removes the game object from the games array & saves it into the db
 exports.endGame = async ({ player, winner }) => {
   const game = getGameForPlayer(player);
   if (game) {
@@ -176,6 +208,7 @@ exports.endGame = async ({ player, winner }) => {
   return null;
 };
 
+// function to determing the winning condition of a player; when he cannot move any piece the opponent wins
 const getAllMovesCountByPlayer = ({ board, color }) => {
   let pieces = getAllPieces({ board, color }),
     movesCount = 0;
@@ -185,6 +218,7 @@ const getAllMovesCountByPlayer = ({ board, color }) => {
   return movesCount;
 };
 
+// checks the condition when any of the player wins; return false if game can continue on
 exports.isGameOver = ({ player }) => {
   const game = getGameForPlayer(player);
 

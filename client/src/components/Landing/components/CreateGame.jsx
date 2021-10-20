@@ -9,7 +9,7 @@ const CreateGame = ({ socket }) => {
   const createGame = () => {
     const token = isAuthenticated();
     // ARGS :- ("create-game", isBot, mandatoryMoves, token)
-    socket.emit("create-game", true, true, token);
+    socket.emit("create-game", false, 4, "Red", true, true, token);
     history.push("/game");
   };
   return (
