@@ -15,21 +15,22 @@ const RandomPlay = ({ socket }) => {
     bot: false,
     botLevel: 2,
     forceJump: true,
-    isRated: true,
   });
 
   const handleStartGame = () => {
     const token = isAuthenticated();
-    const { bot, botLevel, checker, forceJump, isRated } = gameOptions;
-    socket.emit(
-      "create-game",
-      bot,
-      botLevel,
-      checker,
-      forceJump,
-      isRated,
-      token
-    );
+    const { bot, botLevel, checker, forceJump } = gameOptions;
+    if (bot)
+      socket.emit(
+        "create-game",
+        bot,
+        botLevel,
+        checker,
+        forceJump,
+        false, // isRated field is false for bot by default
+        token
+      );
+    else socket.emit("random-play-user", forceJump, token);
     history.push("/game");
   };
 

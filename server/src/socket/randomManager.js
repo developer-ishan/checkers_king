@@ -6,6 +6,7 @@ const User = require("../models/User");
 var waitingGuests = [];
 var waitingPlayers = [];
 
+// gives the league of the player with a particular rating
 const get_league = (rating) => {
   if (rating < 800) return ["Bronze", 0, 800, "🥉"];
   if (rating < 1000) return ["Silver", 1, 1000, "🥈"];
@@ -19,25 +20,27 @@ const get_league = (rating) => {
 };
 
 exports.randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
-  waitingGuests.map((guest) => {
+  // searching for player in queue with similar specifications
+  for (let i = 0; i < waitingGuests.length; ++i) {
+    let guest = waitingGuests[i];
     if (mandatoryMoves === guest.mandatoryMoves) {
-      // create game b/w these two matching guests
+      // creating a new game
       const newGame = await createNewGame({
         player,
         isBot: false,
-        botLevel: 2,
+        botLevel: -1,
         color: "Red",
         mandatoryMoves,
         isRated: false,
         token: guestId,
       });
-
-      addPlayerToGame({
+      // adding another player to the game
+      await addPlayerToGame({
         player: guest.player,
         gameId: newGame.id,
         token: guestId,
       });
-
+      // removing the opponent from the waiting queue
       waitingGuests.splice(
         waitingGuests.indexOf({
           player: guest.player,
@@ -48,7 +51,8 @@ exports.randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
       );
       return newGame;
     }
-  });
+  }
+
   // if the conditions for match didn't match push guest into waiting queue
   waitingGuests.push({ player, guestId, mandatoryMoves });
   return null;
@@ -56,6 +60,7 @@ exports.randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
 
 exports.randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
   let user = null;
+  // recognising the user as registered
   if (token) {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
@@ -67,36 +72,48 @@ exports.randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
   if (user === null) return;
   const playerLeague = get_league(user.rating)[0];
 
-  waitingPlayers.map((player) => {
+  // searching for appropriate player to start the game with
+  for (let i = 0; i < waitingPlayers.length; ++i) {
+    let possiblePlayer = waitingPlayers[i];
     if (
-      mandatoryMoves === player.mandatoryMoves &&
-      playerLeague === player.league
+      mandatoryMoves === possiblePlayer.mandatoryMoves &&
+      playerLeague === possiblePlayer.league
     ) {
-      const newGame = createNewGame({
+      // creating a new game
+      const newGame = await createNewGame({
         player,
         isBot: false,
-        botLevel: 2,
+        botLevel: -1,
         color: "Red",
         mandatoryMoves,
         isRated: true,
         token,
       });
-      addPlayerToGame({
-        player: player.player,
+      // adding the other player as opponent
+      await addPlayerToGame({
+        player: possiblePlayer.player,
         gameId: newGame.id,
-        token: player.token,
+        token: possiblePlayer.token,
       });
+      // removing the players from the waiting  queue
       waitingPlayers.splice(
         waitingPlayers.indexOf({
-          player: player.player,
-          token: player.token,
-          mandatoryMoves: player.mandatoryMoves,
-          league: player.league,
+          player: possiblePlayer.player,
+          token: possiblePlayer.token,
+          mandatoryMoves: possiblePlayer.mandatoryMoves,
+          league: possiblePlayer.league,
         })
       );
       return newGame;
     }
+  }
+  // if the player with specifications isn't found push player into the waiting queue
+  waitingPlayers.push({
+    player,
+    token,
+    mandatoryMoves,
+    league: playerLeague,
   });
-  waitingPlayers({ player, token, mandatoryMoves, league: playerLeague });
+  console.log(waitingPlayers);
   return null;
 };
