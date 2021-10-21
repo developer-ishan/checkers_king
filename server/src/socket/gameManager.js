@@ -11,7 +11,7 @@ const {
 const { saveMatch } = require("../helpers/matchHelpers");
 
 // set of all the ongoing games
-const games = [];
+var games = [];
 
 // gets the game where player is the playing
 const getGameForPlayer = (player) => {
@@ -40,7 +40,8 @@ exports.getGames = () => {
 // returns a game where the user with token belongs
 exports.getGameByUserId = async (token) => {
   let userId = null;
-  if (token) {
+  if (token.startsWith("guest")) userId = token;
+  else if (token) {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
       const user = await User.findById(decoded);
@@ -68,7 +69,8 @@ exports.createNewGame = async ({
   let userId = null,
     matchId = crypto.randomBytes(4).toString("hex");
   // checking for registered user to create the game
-  if (token) {
+  if (token.startsWith("guest")) userId = token;
+  else if (token) {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
       const user = await User.findById(decoded);
@@ -132,7 +134,8 @@ exports.addPlayerToGame = async ({ player, gameId, token }) => {
   const game = games.find((game) => game.id === gameId);
   let userId = null;
   // checking for registered user to create the game
-  if (token) {
+  if (token.startsWith("guest")) userId = token;
+  else if (token) {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
       const user = await User.findById(decoded);
@@ -186,7 +189,8 @@ exports.endGame = async ({ player, winner }) => {
         new Date(),
         game.chat,
         isDraw,
-        game.isBot
+        game.isBot,
+        game.isRated
       );
     } else {
       // handles condition for game with bots
@@ -198,7 +202,8 @@ exports.endGame = async ({ player, winner }) => {
         new Date(),
         game.chat,
         false, // considering that you cannot propose draw with bot
-        game.isBot
+        game.isBot,
+        game.isRated
       );
     }
     console.log("game saved");

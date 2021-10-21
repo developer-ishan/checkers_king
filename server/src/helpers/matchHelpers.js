@@ -14,7 +14,8 @@ const saveMatch = async (
   endTime,
   messages,
   isDraw,
-  isBot
+  isBot,
+  isRated
 ) => {
   let ratingsUpdate = null;
   if (!isBot && !isDraw) ratingsUpdate = await updateRating(p1.id, p2.id);
@@ -26,7 +27,7 @@ const saveMatch = async (
   });
 
   // handles draw condition between players
-  if (isDraw) {
+  if (isDraw || !isRated) {
     game.players.push({ userId: p1.id, delta: 0, color: p1.color });
     game.players.push({ userId: p2.id, delta: 0, color: p2.color });
   } else if (isBot) {
