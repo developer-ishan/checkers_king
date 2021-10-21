@@ -10,6 +10,8 @@ import Modal from "react-modal";
 import DrawModal from "../modal/DrawModal";
 import InviteCodeModal from "../modal/InviteCodeModal";
 import GameCall from "./GameCall";
+import ErrorModal from "../modal/ErrorModal";
+import Lobby from "./Lobby";
 Modal.setAppElement("#root");
 
 const Game = () => {
@@ -19,6 +21,9 @@ const Game = () => {
   const [game, setGame] = gameValue;
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [drawDecision, setDrawDecision] = useState(null);
+  const [error, setError] = useState(null);
   const [color, setColor] = colorValue;
   const [gameId, setGameId] = useState(null);
   let history = useHistory();
@@ -35,9 +40,12 @@ const Game = () => {
   useEffect(() => {
     console.log("GAMEID in game:", game.id);
     // TODO: add a modal to display the error
-    socket.on("game-error", ({ error }) => {
-      alert(error);
-      history.push("/");
+    socket.on("game-error", (error) => {
+      console.log("error detected", error);
+      // alert(error.title);
+      // history.push("/");
+      setError(error);
+      setIsErrorModalOpen(true);
     });
 
     socket.on("game-status", (game) => {
@@ -59,6 +67,27 @@ const Game = () => {
     socket.on("end-game", () => {
       console.log("end-game event caught...");
       history.push("/");
+    });
+    socket.on("draw-offered", () => {
+      setIsDrawModalOpen(true);
+    });
+
+    socket.on("draw-accepted", () => {
+      setDrawDecision({
+        title: "draw accepted",
+        msg: "opponent accepted the draw",
+        buttonText: "okay",
+        redirecTo: "/",
+      });
+    });
+
+    socket.on("draw-rejected", () => {
+      setDrawDecision({
+        title: "draw rejected",
+        msg: "opponent rejected the draw",
+        buttonText: "okay",
+        redirecTo: "",
+      });
     });
   }, []);
 
@@ -89,7 +118,14 @@ const Game = () => {
 
   return (
     <>
-      {!gameId && <p>lobby.....</p>}
+      {!gameId && <Lobby heading="Lobby" />}
+      {error && (
+        <ErrorModal
+          modalState={isErrorModalOpen}
+          setModalState={setIsErrorModalOpen}
+          error={error}
+        />
+      )}
       {gameId && (
         <div className="">
           <GameBar
@@ -113,6 +149,7 @@ const Game = () => {
               </div>
             </div>
           </div>
+
           {/* modal for draw */}
           <DrawModal
             modalState={isDrawModalOpen}
@@ -126,6 +163,14 @@ const Game = () => {
             setModalState={setIsInviteModalOpen}
             gameId={game.id}
           />
+          {/* this modal will show the accept or reject of draw */}
+          {drawDecision && (
+            <ErrorModal
+              modalState={drawDecision}
+              setModalState={setDrawDecision}
+              error={drawDecision}
+            />
+          )}
         </div>
       )}
     </>

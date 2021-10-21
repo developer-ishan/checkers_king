@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
 import {
   authenticate,
@@ -8,7 +9,9 @@ import {
   register,
 } from "../../../helper/authHelper";
 import { getMySummary } from "../../../helper/userHelper";
+import ErrorModal from "../../modal/ErrorModal";
 import LoginSignUpForm from "./LoginSignUpForm";
+Modal.setAppElement("#root");
 
 require("dotenv").config();
 const Navbar = () => {
@@ -16,6 +19,10 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [signUpLoading, setSignUpLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState({
     username: undefined,
@@ -60,12 +67,24 @@ const Navbar = () => {
   const handleLogIn = (e) => {
     e.preventDefault();
     if (email === "" || password === "") return;
+    setLoginLoading(true);
     login({ email, password })
       .then((result) => {
+        console.log("login result:", result);
         if (result.success) {
           authenticate(result, () => {
             setAuth(result.token);
+            setLoginLoading(false);
           });
+        } else {
+          setError({
+            title: "invalid credential",
+            msg: `${result.err}`,
+            buttonText: "okay",
+            redirectTo: "",
+          });
+          setLoginLoading(false);
+          setIsErrorModalOpen(true);
         }
       })
       .catch((err) => console.log("ERROR:", err));
@@ -73,12 +92,34 @@ const Navbar = () => {
   const handleSignup = (e) => {
     e.preventDefault();
     if (email === "" || password === "") return;
+    if (password.length < 8) {
+      alert("min 8 character password required");
+      return;
+    }
+    setSignUpLoading(true);
     register({ email, password })
       .then((result) => {
+        console.log("signu result:", result);
         if (result.success) {
-          console.log("User Signed up successfully!!")
+          console.log("User Signed up successfully!!");
           setEmail("");
           setPassword("");
+          setError({
+            title: "email verification",
+            msg: "a verification mail has been sent to your mail id. click on the link to verify account",
+            buttonText: "okay",
+            redirectTo: "",
+          });
+          setIsErrorModalOpen(true);
+        } else {
+          setError({
+            title: "SignUp Error",
+            msg: `${result.err}`,
+            buttonText: "okay",
+            redirectTo: "",
+          });
+          setSignUpLoading(false);
+          setIsErrorModalOpen(true);
         }
       })
       .catch((err) => console.log("ERROR:", err));
@@ -140,6 +181,8 @@ const Navbar = () => {
                 setPassword={setPassword}
                 handleLogIn={handleLogIn}
                 handleSignup={handleSignup}
+                loginLoading={loginLoading}
+                signUpLoading={signUpLoading}
               />
             </div>
           )}
@@ -199,6 +242,13 @@ const Navbar = () => {
           )}
         </nav>
       </div>
+      {error && (
+        <ErrorModal
+          modalState={isErrorModalOpen}
+          setModalState={setIsErrorModalOpen}
+          error={error}
+        />
+      )}
     </header>
   );
 };

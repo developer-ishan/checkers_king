@@ -35,7 +35,10 @@ authRouter.post(
       if (!user.isVerified)
         return res
           .status(401)
-          .json({ success: false, err: "user not verified" });
+          .json({
+            success: false,
+            err: "email not verified.please check you email for verification mail",
+          });
       req.user = user;
       next();
     })(req, res, next);

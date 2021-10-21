@@ -39,7 +39,7 @@ module.exports = {
     // Check if there is a user with the same email
     let foundUser = await User.findOne({ "local.email": email });
     if (foundUser) {
-      return res.status(403).json({ error: "Email is already in use" });
+      return res.status(403).json({ err: "Email is already in use" });
     }
 
     // Is there a Google account with the same email?
@@ -257,7 +257,7 @@ module.exports = {
           name: profile.name,
           photo: profile.photos[0].value,
         },
-        isVerified: true
+        isVerified: true,
       });
 
       req.user = await newUser.save();
@@ -314,7 +314,7 @@ module.exports = {
           name: profile.name,
           photo: profile.photos[0].value,
         },
-        isVerified: true
+        isVerified: true,
       });
 
       req.user = await newUser.save();
