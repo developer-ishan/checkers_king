@@ -28,12 +28,10 @@ const Chat = ({ sendChatMsg, chats }) => {
   };
 
   return (
-    <div className="flex flex-col p-8 space-y-2 text-black bg-white dark:bg-gray-700 dark:text-white">
-      <div className="w-full p-2 text-center border-2">Chat Messages</div>
-
+    <div className="flex flex-col h-full mt-3 space-y-2 text-black bg-white dark:bg-gray-700 dark:text-white">
       <div
         id="chatwindow"
-        className="w-full h-64 p-1 space-y-2 overflow-auto border-2"
+        className="w-full h-64 p-1 space-y-2 overflow-auto border-2 md:h-4/5"
       >
         {chats.length > 0 &&
           chats.map((chat) => {

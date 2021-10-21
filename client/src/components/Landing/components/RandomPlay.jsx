@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import GameOptionsModal from "../../modal/GameOptionsModal";
 import { useHistory } from "react-router-dom";
 import { isAuthenticated } from "../../../helper/authHelper";
 import GameButton from "../../game/GameButton";
+import RandomGameOptionsModal from "../../modal/RandomGameOptionsModal";
 
 Modal.setAppElement("#root");
 
@@ -61,7 +61,7 @@ const RandomPlay = ({ socket }) => {
           />
         </div>
       </div>
-      <GameOptionsModal
+      <RandomGameOptionsModal
         modalState={isGameOptionModalOpen}
         setModalState={setIsGameOptionModalOpen}
         gameOptions={gameOptions}
