@@ -6,7 +6,7 @@ const GameBar = ({ turn, leaveGame, offerDraw }) => {
     <div className="grid w-full grid-cols-12 p-3 bg-indigo-400">
       <div
         id="gameRelatedInfo"
-        className="flex justify-between col-span-12 space-x-2 sm:col-span-4 sm:col-start-10"
+        className="flex justify-between col-span-12 space-x-2 sm:col-span-4 sm:col-start-8"
       >
         {/* turn indicator */}
         <div className="flex items-center space-x-2">

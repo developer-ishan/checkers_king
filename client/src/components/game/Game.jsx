@@ -9,6 +9,7 @@ import GameBar from "./GameBar";
 import Modal from "react-modal";
 import DrawModal from "../modal/DrawModal";
 import InviteCodeModal from "../modal/InviteCodeModal";
+import GameCall from "./GameCall";
 Modal.setAppElement("#root");
 
 const Game = () => {
@@ -19,6 +20,7 @@ const Game = () => {
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
   const [color, setColor] = colorValue;
+  const [gameId, setGameId] = useState(null);
   let history = useHistory();
 
   const movePiece = ({ selectedPiece, destination }) => {
@@ -31,6 +33,7 @@ const Game = () => {
   };
 
   useEffect(() => {
+    console.log("GAMEID in game:", game.id);
     // TODO: add a modal to display the error
     socket.on("game-error", ({ error }) => {
       alert(error);
@@ -38,6 +41,8 @@ const Game = () => {
     });
 
     socket.on("game-status", (game) => {
+      console.log("received game from backend", game.id);
+      setGameId(game.id);
       setGame(game);
     });
 
@@ -83,35 +88,47 @@ const Game = () => {
   };
 
   return (
-    <div className="">
-      <GameBar turn={game.turn} leaveGame={leaveGame} offerDraw={offerDraw} />
-      <div className="grid grid-cols-12 px-2 mt-4">
-        <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
-          <BoardComponent
-            board={game.board}
-            color={color}
-            movePiece={movePiece}
+    <>
+      {!gameId && <p>lobby.....</p>}
+      {gameId && (
+        <div className="">
+          <GameBar
             turn={game.turn}
+            leaveGame={leaveGame}
+            offerDraw={offerDraw}
+          />
+          <div className="grid grid-cols-12 px-2 mt-4">
+            <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
+              <BoardComponent
+                board={game.board}
+                color={color}
+                movePiece={movePiece}
+                turn={game.turn}
+              />
+            </div>
+            <div className="col-span-12 md:col-span-3 md:col-start-9">
+              <div className="flex flex-col h-full">
+                <GameCall socket={socket} gameId={gameId} />
+                <Chat sendChatMsg={sendChatMsg} chats={chats} />
+              </div>
+            </div>
+          </div>
+          {/* modal for draw */}
+          <DrawModal
+            modalState={isDrawModalOpen}
+            setModalState={setIsDrawModalOpen}
+            socket={socket}
+            gameId={game.id}
+          />
+          {/* invite code modal */}
+          <InviteCodeModal
+            modalState={isInviteModalOpen}
+            setModalState={setIsInviteModalOpen}
+            gameId={game.id}
           />
         </div>
-        <div className="col-span-12 md:col-span-3 md:col-start-9">
-          <Chat sendChatMsg={sendChatMsg} chats={chats} />
-        </div>
-      </div>
-      {/* modal for draw */}
-      <DrawModal
-        modalState={isDrawModalOpen}
-        setModalState={setIsDrawModalOpen}
-        socket={socket}
-        gameId={game.id}
-      />
-      {/* invite code modal */}
-      <InviteCodeModal
-        modalState={isInviteModalOpen}
-        setModalState={setIsInviteModalOpen}
-        gameId={game.id}
-      />
-    </div>
+      )}
+    </>
   );
 };
 

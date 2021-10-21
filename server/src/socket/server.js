@@ -9,7 +9,7 @@ const saveChat = require("./handlers/saveChat");
 const offerDraw = require("./handlers/offerDraw");
 const rejectDraw = require("./handlers/rejectDraw");
 const acceptDraw = require("./handlers/acceptDraw");
-
+const videoHandler = require("./handlers/videoHandler");
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
 
@@ -41,6 +41,9 @@ exports.SocketServer = (io) => {
       socket.leave(roomId);
     });
 
+    socket.on("opponent-video-ready", ({ peerId, gameId }) => {
+      videoHandler({ peerId, gameId, io });
+    });
     socket.on("send-msg", ({ gameId, msg }) => {
       saveChat({ gameId, msg, io, socket });
     });
