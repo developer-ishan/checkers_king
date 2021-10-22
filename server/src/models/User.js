@@ -9,6 +9,9 @@ const userSchema = new Schema({
     type: [String],
     required: true,
   },
+  photo: {
+    type: String
+  },
   isVerified : {
     type: Boolean,
     default: false

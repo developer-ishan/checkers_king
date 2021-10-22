@@ -5,12 +5,15 @@ import App from "./App";
 import { SocketProvider } from "./context/SocketContext";
 import { GameProvider } from "./context/GameContext";
 import reportWebVitals from "./reportWebVitals";
+import { UserProvider } from "./context/UserContext";
 
 ReactDOM.render(
   <React.StrictMode>
     <SocketProvider>
       <GameProvider>
-        <App />
+        <UserProvider>
+          <App />
+        </UserProvider>
       </GameProvider>
     </SocketProvider>
   </React.StrictMode>,

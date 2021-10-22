@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { getUserById, updateUser } from "../../../helper/userHelper";
 import EdiText from "react-editext";
 import Cookies from "js-cookie";
+import { UserContext } from "../../../context/UserContext";
+import DpEdit from "./DpEdit";
+import BASE from "../../../config";
+
 const UserInfo = ({ userId }) => {
+  const [userState, setUserState] = useContext(UserContext);
   const [user, setUser] = useState({ username: "", active: true, photo: "" });
   const [userName, setUserName] = useState("");
   const [userNameValidationMsg, setUserNameValidationMsg] = useState("");
@@ -14,16 +19,7 @@ const UserInfo = ({ userId }) => {
     getUserById(userId)
       .then((data) => {
         console.log(data);
-        let f_photo, g_photo;
-        if (data.facebook) f_photo = data.facebook.photo;
-        if (data.google) f_photo = data.google.photo;
-        let photo = f_photo
-          ? f_photo
-          : g_photo
-          ? g_photo
-          : "https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png";
-        console.log(photo);
-        const { username, desc } = data;
+        const { username, desc, photo } = data;
         setUserName(username);
         setDesc(desc);
         setUser({ ...data, photo });
@@ -73,9 +69,10 @@ const UserInfo = ({ userId }) => {
     <div className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 rounded-lg shadow-lg indigo-gradient dark:dark-gradient">
       <div className="col-span-12 sm:col-span-4 lg:col-span-12">
         <img
-          src={user.photo}
-          className="object-cover h-full mx-auto rounded-xl"
+          src={`${BASE}/public/dp/${user.photo}`}
+          // className="object-cover h-full mx-auto rounded-xl"
         />
+        {canEdit() && <DpEdit />}
       </div>
       <div className="col-span-12 space-y-2 text-white sm:col-span-8 lg:col-span-12">
         <div className="">

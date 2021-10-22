@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { UserContext } from "../../../context/UserContext";
 import {
   authenticate,
   isAuthenticated,
@@ -12,6 +13,7 @@ import LoginSignUpForm from "./LoginSignUpForm";
 
 require("dotenv").config();
 const Navbar = () => {
+  const [userState, setUserState] = useContext(UserContext);
   const history = useHistory();
   const [darkMode, setDarkMode] = useState(false);
   const [email, setEmail] = useState("");
@@ -149,7 +151,8 @@ const Navbar = () => {
               {/* logged in user info */}
               <div className="flex items-center p-2">
                 <div className="w-8 h-8 ">
-                  {user?.f_photo ? (
+                  <img src={userState.photo} className="w-full rounded-full"></img>
+                  {/* {user?.f_photo ? (
                     <img
                       src={user?.f_photo}
                       className="w-full rounded-full"
@@ -164,7 +167,7 @@ const Navbar = () => {
                       className="w-full rounded-full"
                       src="https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png"
                     ></img>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   {user?.username && (
