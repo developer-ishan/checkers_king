@@ -9,8 +9,10 @@ module.exports =
   ({ io, socket }) =>
   async (isBot, botLevel, color, mandatoryMoves, isRated, token) => {
     // checking if user already exists in another game
+    console.log("create game called");
     const alreadyExists = await userAlreadyExistsInOtherGame(socket, token);
     if (alreadyExists) return;
+    console.log("not already exist");
 
     const newGame = await createNewGame({
       player: socket,
@@ -30,6 +32,8 @@ module.exports =
       turn: newGame.turn,
     });
     socket.emit("color", color);
+    //if playing with bot send this
+    if (newGame.isBot) socket.emit("playing-with-bot", newGame.botLevel);
 
     // handles the condition when the game is against the bot & bot has to move first
     if (newGame.isBot && newGame.players[0].color === "Black") {

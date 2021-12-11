@@ -6,7 +6,7 @@ const GameButton = ({
   shadowColor = "#FBC638",
   children,
 }) => {
-  let classes = "transform -skew-x-15";
+  let classes = "transform -skew-x-15 ";
   classes = classes + " " + className;
   return (
     <button

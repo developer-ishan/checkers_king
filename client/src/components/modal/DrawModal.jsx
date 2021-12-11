@@ -19,19 +19,6 @@ const DrawModal = ({ modalState, setModalState, socket, gameId }) => {
     setModalState(false);
   };
 
-  useEffect(() => {
-    socket.on("draw-offered", () => {
-      setModalState(true);
-    });
-
-    socket.on("draw-accepted", () => {
-      alert("opponent accepted the draw");
-      history.push("/");
-    });
-
-    socket.on("draw-rejected", () => alert("draw rejected: aa gya swad!"));
-  }, []);
-
   return (
     <Modal
       className="absolute z-50 w-2/5 transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
