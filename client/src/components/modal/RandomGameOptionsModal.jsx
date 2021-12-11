@@ -16,6 +16,7 @@ const RandomGameOptionsModal = ({
       className="absolute w-11/12 max-w-md transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
       isOpen={modalState}
       onRequestClose={closeModal}
+      preventScroll={true}
     >
       <div class="flex justify-center mx-auto">
         <div class="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">

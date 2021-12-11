@@ -18,11 +18,15 @@ const Game = () => {
   const [socket, setSocket] = useContext(SocketContext);
   const { gameValue, colorValue } = useContext(GameContext);
   const [chats, setChats] = useState([]); //store the chats of current game
-  const [game, setGame] = gameValue;
+  const [game, setGame] = useState(null);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [drawDecision, setDrawDecision] = useState(null);
+  const [matchResult, setMatchResult] = useState(null);
+  //these both are made from error modal
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+  const [botLevel, setBotLevel] = useState(-1); //initilay not playing with bot
   const [error, setError] = useState(null);
   const [color, setColor] = colorValue;
   const [gameId, setGameId] = useState(null);
@@ -38,7 +42,6 @@ const Game = () => {
   };
 
   useEffect(() => {
-    console.log("GAMEID in game:", game.id);
     // TODO: add a modal to display the error
     socket.on("game-error", (error) => {
       console.log("error detected", error);
@@ -47,10 +50,11 @@ const Game = () => {
       setError(error);
       setIsErrorModalOpen(true);
     });
+    socket.on("playing-with-bot", (botLevel) => setBotLevel(botLevel));
 
     socket.on("game-status", (game) => {
-      console.log("received game from backend", game.id);
-      setGameId(game.id);
+      console.log("received game from backend", game);
+      // setGameId(game.id);
       setGame(game);
     });
 
@@ -59,9 +63,18 @@ const Game = () => {
     });
 
     socket.on("winner", (winner) => {
-      if (winner === null) alert("Game is declared Draw!!");
-      else alert(`Winner of the game is ${winner}`);
-      history.push("/");
+      let msgToUser;
+      if (winner === null) msgToUser = "Game is declared Draw!!";
+      else if (winner === color)
+        msgToUser = "congratulations you won the game!! 🥳🥳";
+      else msgToUser = "you lost the game!! 😢😢";
+
+      setMatchResult({
+        title: "match Result",
+        msg: `${msgToUser}`,
+        buttonText: "okay",
+        redirectTo: "/",
+      });
     });
 
     socket.on("end-game", () => {
@@ -116,9 +129,16 @@ const Game = () => {
     history.push("/");
   };
 
+  const boardClass = () => {
+    if (botLevel === -1)
+      return "col-span-12 col-start-1 text-center text-white md:col-span-8";
+    //if playing against bot no need to small the size
+    return "col-span-12 col-start-1 text-center text-white";
+  };
   return (
     <>
-      {!gameId && <Lobby heading="Lobby" />}
+      {!game && <Lobby heading="Lobby" />}
+      {/* this modal showsup the error like game not exist or multiple game detected */}
       {error && (
         <ErrorModal
           modalState={isErrorModalOpen}
@@ -126,15 +146,27 @@ const Game = () => {
           error={error}
         />
       )}
-      {gameId && (
-        <div className="">
+      {game && (
+        <div
+          className=""
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1525034687081-c702010cb70d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')",
+            backgroundSize: "cover",
+          }}
+        >
+          {/* gamebar:this component show the game controls like:leave game,offerdraw,sound controls */}
           <GameBar
             turn={game.turn}
             leaveGame={leaveGame}
             offerDraw={offerDraw}
+            botLevel={botLevel}
+            gameId={game.id}
+            color={color}
           />
           <div className="grid grid-cols-12 px-2 mt-4">
-            <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
+            {/* actual board where game is played */}
+            <div className={boardClass()}>
               <BoardComponent
                 board={game.board}
                 color={color}
@@ -142,15 +174,23 @@ const Game = () => {
                 turn={game.turn}
               />
             </div>
-            <div className="col-span-12 md:col-span-3 md:col-start-9">
-              <div className="flex flex-col h-full">
-                <GameCall socket={socket} gameId={gameId} />
-                <Chat sendChatMsg={sendChatMsg} chats={chats} />
-              </div>
-            </div>
+            {/* if not playing with bot then only show these components*/}
+            {botLevel === -1 && (
+              <>
+                <div className="col-span-12 md:col-span-3 md:col-start-9">
+                  <div className="flex flex-col h-full">
+                    {/* video call component */}
+                    <GameCall socket={socket} gameId={game.id} />
+                    {/* chat component */}
+                    <Chat sendChatMsg={sendChatMsg} chats={chats} />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* modal for draw */}
+
           <DrawModal
             modalState={isDrawModalOpen}
             setModalState={setIsDrawModalOpen}
@@ -169,6 +209,14 @@ const Game = () => {
               modalState={drawDecision}
               setModalState={setDrawDecision}
               error={drawDecision}
+            />
+          )}
+          {/* result of the game*/}
+          {matchResult && (
+            <ErrorModal
+              modalState={matchResult}
+              setModalState={setMatchResult}
+              error={matchResult}
             />
           )}
         </div>

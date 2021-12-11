@@ -1,43 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
+import SmallScreenInfoModal from "../modal/SmallScreenInfoModal";
+import Modal from "react-modal";
+import GameActionButton from "./GameActionButton";
+Modal.setAppElement("#root");
 
-const GameBar = ({ turn, leaveGame, offerDraw }) => {
-  console.log(turn === "Red");
+const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
+  const [isGameOptionsModalOpen, setIsGameOptionsModalOpen] = useState(false);
   return (
-    <div className="grid w-full grid-cols-12 p-3 bg-indigo-400">
-      <div
-        id="gameRelatedInfo"
-        className="flex justify-between col-span-12 space-x-2 sm:col-span-4 sm:col-start-8"
+    <div className="flex items-center w-full p-3 bg-indigo-400 ">
+      {/* turn indicator */}
+      <div className="">
+        <p className="px-2 py-1 text-black capitalize bg-yellow-300 rounded-full">
+          {turn === color ? "your turn" : "opponent's turn"}
+        </p>
+      </div>
+      <button
+        className="p-1 ml-auto bg-gray-200 rounded-full sm:hidden"
+        onClick={() => setIsGameOptionsModalOpen(true)}
       >
-        {/* turn indicator */}
-        <div className="flex items-center space-x-2">
-          {turn === "Red" ? (
-            <div className="w-6 h-6 bg-red-500 border-4 border-white "></div>
-          ) : (
-            <div className="box-border w-5 h-5 bg-red-500 "></div>
-          )}
-          {turn === "Black" ? (
-            <div className="w-6 h-6 bg-gray-900 border-4 border-white "></div>
-          ) : (
-            <div className="box-border w-5 h-5 bg-gray-900 "></div>
-          )}
-        </div>
-        {/* offer draw button */}
-        <button
-          className="w-full max-w-xs px-4 py-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-yellow-500 rounded shadow outline-none active:bg-red-600 hover:shadow-md hover:bg-yellow-600 focus:outline-none ease"
-          onClick={() => offerDraw()}
-        >
-          offer draw
-        </button>
-        {/* leave btn*/}
-        <button
-          className="w-full max-w-xs px-4 py-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-red-500 rounded shadow outline-none active:bg-red-600 hover:shadow-md hover:bg-red-600 focus:outline-none ease"
-          onClick={() => leaveGame()}
-        >
-          leave
-        </button>
+        <img
+          src="https://img.icons8.com/ios-filled/50/000000/menu--v1.png"
+          className="w-3 h-3"
+        />
+      </button>
+      <div className="hidden ml-auto sm:block">
+        <GameActionButton
+          leaveGame={leaveGame}
+          offerDraw={offerDraw}
+          gameId={gameId}
+          botLevel={botLevel}
+        />
       </div>
       {/* audio controls */}
       {/* maybe count of kitni goti kati */}
+      <SmallScreenInfoModal
+        title="game Options"
+        modalState={isGameOptionsModalOpen}
+        setModalState={setIsGameOptionsModalOpen}
+      >
+        <GameActionButton
+          leaveGame={leaveGame}
+          offerDraw={offerDraw}
+          gameId={gameId}
+          botLevel={botLevel}
+        />
+      </SmallScreenInfoModal>
     </div>
   );
 };

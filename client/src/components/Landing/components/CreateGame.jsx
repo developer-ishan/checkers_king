@@ -19,10 +19,7 @@ const CreateGame = ({ socket }) => {
     socket.emit("create-game", false, 4, checker, forceJump, isRated, token);
     history.push("/game");
   };
-  const scrollOnClose = (val) => {
-    console.log("workded", val);
-    console.log(window.scrollTo(0, val));
-  };
+
   return (
     <div className="relative grid w-full h-64 bg-white sm:h-full sm:rounded-lg sm:shadow-xl place-content-center">
       <img
@@ -42,7 +39,6 @@ const CreateGame = ({ socket }) => {
         setModalState={setIsGameOptionModalOpen}
         gameOptions={gameOptions}
         setGameOptions={setGameOptions}
-        scrollOnClose={scrollOnClose}
         handleCreateGame={handleCreateGame}
       />
     </div>

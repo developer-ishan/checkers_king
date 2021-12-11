@@ -50,8 +50,10 @@ exports.getGameByUserId = async (token) => {
       console.log(err);
     }
   }
+  console.log("games array:", games);
   return games.find((game) => {
-    return game.players.find((p) => p.id === userId);
+    console.log(`for ${game.id} players :${game.players}`);
+    return game.players.find((p) => p.id.toString() === userId.toString());
   });
 };
 

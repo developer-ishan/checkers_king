@@ -125,29 +125,55 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
     return false;
   };
 
-  //this function return piece
+  //this function return piece(goti)
   const getPiece = (pieceType) => {
+    const cursorStyle = (color) => {
+      if (turn === color)
+        return {
+          cursor: "default",
+        };
+      return {
+        cursor: "not-allowed",
+      };
+    };
+    const title = `${turn} player's turn`;
     switch (pieceType) {
       case 0:
         return;
       case 1:
         return (
-          <div className="absolute w-5/6 bg-red-500 border-8 border-red-700 border-solid rounded-full shadow-inner h-5/6"></div>
+          <div
+            className="absolute w-5/6 bg-red-500 border-2 border-red-700 border-solid rounded-full shadow-inner sm:border-4 md:border-8 h-5/6"
+            style={cursorStyle("Red")}
+            title={title}
+          ></div>
         ); //red pawn
       case 2:
         return (
-          <div className="absolute w-5/6 bg-gray-800 border-8 border-gray-900 border-solid rounded-full shadow-inner h-5/6"></div>
+          <div
+            className="absolute w-5/6 bg-gray-800 border-2 border-gray-900 border-solid rounded-full shadow-inner sm:border-4 md:border-8 h-5/6"
+            style={cursorStyle("Black")}
+            title={title}
+          ></div>
         ); //black pawn
       case 3:
         return (
-          <div className="absolute grid w-5/6 text-yellow-500 bg-red-500 border-8 border-red-700 border-solid rounded-full shadow-inner place-content-center h-5/6">
+          <div
+            className="absolute grid w-5/6 text-yellow-500 bg-red-500 border-2 border-red-700 border-solid rounded-full shadow-inner sm:border-4 md:border-8 place-content-center h-5/6"
+            style={cursorStyle("Red")}
+            title={title}
+          >
             {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
             <img src="/images/crown.png" className="w-8 h-8 text-white" />
           </div>
         ); //red queen
       case 4:
         return (
-          <div className="absolute grid w-5/6 bg-gray-800 border-8 border-gray-900 border-solid rounded-full shadow-inner place-content-center h-5/6">
+          <div
+            className="absolute grid w-5/6 bg-gray-800 border-2 border-gray-900 border-solid rounded-full shadow-inner sm:border-4 md:border-8 place-content-center h-5/6"
+            style={cursorStyle("Black")}
+            title={title}
+          >
             {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
             <img src="/images/crown.png" className="w-8 h-8 text-white" />
           </div>
@@ -157,11 +183,21 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
         break;
     }
   };
+  //this ensure that the players color remains on the lower side
+  console.log("rotation color:", color);
+  const rot = color === "Black" ? 0 : 180;
+  console.log("rotation degree:", rot);
+
   return (
-    <div className="">
+    <div className="mb-3">
       {/* board start*/}
       <div
-        style={{ height: "90vmin", width: "90vmin" }}
+        style={{
+          height: "90vmin",
+          width: "90vmin",
+          transform: `rotateX(${rot}deg) rotateY(${rot}deg)`,
+          border: "0.8rem double #fff",
+        }}
         className="grid grid-cols-1 mx-auto grid-rows-8"
       >
         {/* small boxes of the board */}
@@ -192,7 +228,6 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
         {/* small boxes end */}
       </div>
       {/* board end */}
-      <h1>Selected Cell :- {`(${selectedPiece.i}, ${selectedPiece.j})`}</h1>
     </div>
   );
 };

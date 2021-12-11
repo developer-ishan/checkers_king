@@ -61,7 +61,7 @@ const Board = ({ moves }) => {
         return boardStates.slice(0, boardStates.length - 1);
       });
       setMoveNum((moveNum) => {
-        if ( boardStates.length > 1) {
+        if (boardStates.length > 1) {
           return moveNum - 1;
         } else {
           return moveNum;
@@ -82,27 +82,39 @@ const Board = ({ moves }) => {
     });
   };
   return (
-    <div className="dark:bg-gray-900">
-      <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
-      <div class="inline-flex">
-        {moves && boardStates.length > 1 && (
-          <button
-            onClick={prevMove}
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-          >
-            Prev
-          </button>
-        )}
-        {moves && moveNum < moves.length && (
-          <button
-            onClick={nextMove}
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-          >
-            Next
-          </button>
-        )}
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1525034687081-c702010cb70d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')",
+        backgroundSize: "cover",
+      }}
+    >
+      <div className="grid grid-cols-12 px-2 mt-4">
+        <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
+          <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
+        </div>
+
+        <div class="inline-flex">
+          {moves && boardStates.length > 1 && (
+            <button
+              onClick={prevMove}
+              class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+            >
+              Prev
+            </button>
+          )}
+          {moves && moveNum < moves.length && (
+            <button
+              onClick={nextMove}
+              class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+            >
+              Next
+            </button>
+          )}
+        </div>
+        <div>{boardStates.length}</div>
       </div>
-      <div>{boardStates.length}</div>
     </div>
   );
 };

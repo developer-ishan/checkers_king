@@ -60,19 +60,7 @@ const BoardComponent = ({ boardMatrix, color }) => {
   console.log("rotation degree:", rot);
 
   return (
-    <div
-      className="mx-auto mb-3"
-      style={{
-        height: "90vmin",
-        width: "90vmin",
-      }}
-    >
-      <div className="flex">
-        <p className="inline-block p-2 mr-auto text-base text-left text-white transform bg-indigo-500 sm:text-lg md:text-xl lg:text-2xl -skew-x-15">
-          player name
-        </p>
-      </div>
-
+    <div className="mb-3">
       {/* board start*/}
       <div
         style={{
@@ -101,11 +89,6 @@ const BoardComponent = ({ boardMatrix, color }) => {
         {/* small boxes end */}
       </div>
       {/* board end */}
-      <div className="flex justify-items-end">
-        <p className="inline-block p-2 ml-auto text-base text-left text-white transform bg-indigo-500 sm:text-lg md:text-xl lg:text-2xl -skew-x-15">
-          player name
-        </p>
-      </div>
     </div>
   );
 };

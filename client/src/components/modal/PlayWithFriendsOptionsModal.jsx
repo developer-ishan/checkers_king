@@ -6,20 +6,9 @@ const PlayWithFriendsOptionsModal = ({
   setModalState,
   gameOptions,
   setGameOptions,
-  scrollOnClose,
   handleCreateGame,
 }) => {
-  let windowOffset;
-  if (modalState) {
-    document.body.style.overflowY = "hidden";
-    windowOffset = window.scrollY;
-    console.log(windowOffset);
-  }
   const closeModal = () => {
-    console.log("restore", windowOffset);
-    document.body.style.overflowY = "scroll";
-    scrollOnClose(windowOffset);
-
     setModalState(false);
   };
   return (
