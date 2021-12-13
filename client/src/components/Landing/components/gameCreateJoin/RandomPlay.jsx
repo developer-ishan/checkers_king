@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
-import { isAuthenticated } from "../../../helper/authHelper";
-import GameButton from "../../game/GameButton";
-import RandomGameOptionsModal from "../../modal/RandomGameOptionsModal";
+import { isAuthenticated } from "../../../../helper/authHelper";
+import GameButton from "../others/GameButton";
+import RandomGameOptionsModal from "../../../modal/RandomGameOptionsModal";
 
 Modal.setAppElement("#root");
 

@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
 import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
-import { UserContext } from "../../../context/UserContext";
+import { UserContext } from "../../../../context/UserContext";
 import {
   authenticate,
   isAuthenticated,
   login,
   signout,
   register,
-} from "../../../helper/authHelper";
-import { getMySummary } from "../../../helper/userHelper";
-import ErrorModal from "../../modal/ErrorModal";
-import SmallScreenInfoModal from "../../modal/SmallScreenInfoModal";
+} from "../../../../helper/authHelper";
+import { getMySummary } from "../../../../helper/userHelper";
+import ErrorModal from "../../../modal/ErrorModal";
+import SmallScreenInfoModal from "../../../modal/SmallScreenInfoModal";
 import LoginSignUpForm from "./LoginSignUpForm";
 Modal.setAppElement("#root");
 

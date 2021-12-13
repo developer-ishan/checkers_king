@@ -1,6 +1,6 @@
 import React from "react";
-import PlayWithFriends from "./PlayWithFriends";
-import RandomPlay from "./RandomPlay";
+import PlayWithFriends from "../gameCreateJoin/PlayWithFriends";
+import RandomPlay from "../gameCreateJoin/RandomPlay";
 
 const UserAction = ({ socket }) => {
   return (

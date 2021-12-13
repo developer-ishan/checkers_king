@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { isAuthenticated } from "../../../helper/authHelper";
-import GameButton from "../../game/GameButton";
+import { isAuthenticated } from "../../../../helper/authHelper";
+import GameButton from "../others/GameButton";
 
 const JoinGame = ({ socket }) => {
   const [gameId, setGameId] = useState("");

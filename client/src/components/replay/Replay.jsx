@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router";
 import { API } from "../../config/backend";
 import Board from "./components/Board";
-import Lobby from "../game/Lobby";
+import Lobby from "../lobby/Lobby";
 const Replay = () => {
   const { matchId } = useParams();
   const [loading, setLoading] = useState(false);

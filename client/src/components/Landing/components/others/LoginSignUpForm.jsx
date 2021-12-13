@@ -1,5 +1,5 @@
 import React from "react";
-import BASE from "../../../config";
+import BASE from "../../../../config";
 
 const LoginSignUpForm = ({
   email,

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { isAuthenticated } from "../../../helper/authHelper";
-import GameButton from "../../game/GameButton";
-import PlayWithFriendsOptionsModal from "../../modal/PlayWithFriendsOptionsModal";
+import { isAuthenticated } from "../../../../helper/authHelper";
+import GameButton from "../others/GameButton";
+import PlayWithFriendsOptionsModal from "../../../modal/PlayWithFriendsOptionsModal";
 const CreateGame = ({ socket }) => {
   let history = useHistory();
   const [isGameOptionModalOpen, setIsGameOptionModalOpen] = useState(false);
