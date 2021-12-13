@@ -1,17 +1,17 @@
 import React, { useEffect, useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
-import BoardComponent from "./BoardComponent";
-import Chat from "./Chat";
+import BoardComponent from "./components/board/BoardComponent";
+import Chat from "./components/communication/Chat";
 
 import { SocketContext } from "../../context/SocketContext";
 import { GameContext } from "../../context/GameContext";
-import GameBar from "./GameBar";
+import GameBar from "./components/board/GameBar";
 import Modal from "react-modal";
 import DrawModal from "../modal/DrawModal";
 import InviteCodeModal from "../modal/InviteCodeModal";
-import GameCall from "./GameCall";
+import GameCall from "./components/communication/GameCall";
 import ErrorModal from "../modal/ErrorModal";
-import Lobby from "./Lobby";
+import Lobby from "../lobby/Lobby";
 Modal.setAppElement("#root");
 
 const Game = () => {

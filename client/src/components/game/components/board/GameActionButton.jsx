@@ -14,12 +14,12 @@ const GameActionButton = ({ offerDraw, leaveGame, botLevel, gameId }) => {
       id="gameRelatedInfo"
       className="flex flex-col items-center w-full ml sm:w-auto sm:flex-row"
     >
-      <p className="relative flex items-center justify-center w-full max-w-xs p-1 text-center text-white bg-gray-400 rounded">
+      <p className="relative flex items-center justify-center w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-center text-white bg-gray-400 rounded">
         {gameId}
-        <span className="m-1 cursor-pointer" onClick={() => handleCopy()}>
+        <span className="mx-1 cursor-pointer" onClick={() => handleCopy()}>
           <img
             src="https://img.icons8.com/material-outlined/24/000000/copy.png"
-            className="w-5 h-5"
+            className=""
           />
         </span>
         {isCopied && (
@@ -34,7 +34,7 @@ const GameActionButton = ({ offerDraw, leaveGame, botLevel, gameId }) => {
           className="w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-white uppercase transition-all duration-150 bg-yellow-500 rounded shadow outline-none sm:w-auto active:bg-red-600 hover:shadow-md hover:bg-yellow-600 focus:outline-none ease"
           onClick={() => offerDraw()}
         >
-          offer draw
+          draw
         </button>
       )}
       {/* leave btn*/}

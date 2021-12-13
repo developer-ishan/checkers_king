@@ -1,13 +1,13 @@
 import React from "react";
 import { useParams } from "react-router";
-import Navbar from "../Landing/components/Navbar";
+import Navbar from "../Landing/components/others/Navbar";
 import PreviousMatches from "./components/PreviousMatches";
 import UserInfo from "./components/UserInfo";
 
 const Profile = () => {
   const { userId } = useParams();
   return (
-    <div className="space-y-3 bg-gray-100  dark:bg-gray-900">
+    <div className="space-y-3 bg-gray-100 dark:bg-gray-900">
       {/*TODO:either set the navbar global or do something of it  */}
       <Navbar />
       <div className="relative grid grid-cols-12 gap-3 p-2 mx-auto max-w-7xl">

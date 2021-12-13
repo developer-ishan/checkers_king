@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import Navbar from "./components/Navbar";
-import UserAction from "./components/UserAction";
+import Navbar from "./components/others/Navbar";
+import UserAction from "./components/others/UserAction";
 import HomeSong from "../../static/home.mp3";
 import { SocketContext } from "../../context/SocketContext";
 
