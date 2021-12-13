@@ -1,5 +1,8 @@
-const { getGameByID, endGame } = require("../gameManager");
-const sendGames = require("../helpers/sendGames");
+const {
+  getGameByID,
+  endGame,
+} = require("../../../helpers/gameBoardHelpers/gamePlayManager");
+const { sendAllGames } = require("../../../helpers/gameStatusHelper");
 
 module.exports = async ({ gameId, io, socket }) => {
   const from = socket.id;
@@ -14,6 +17,6 @@ module.exports = async ({ gameId, io, socket }) => {
   // performing the end game procedures
   let finishedGame = await endGame({ player: socket, winner: false });
   io.to(finishedGame.id).emit("winner", null);
-  sendGames(io);
+  sendAllGames(io);
   io.socketsLeave(finishedGame.id);
 };

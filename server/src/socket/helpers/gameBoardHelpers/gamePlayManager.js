@@ -1,14 +1,10 @@
-const movePiece = require("./movePiece");
+const movePiece = require("./movePieceHelpers/movePiece");
 var jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { JWT_SECRET } = require("../config/keys");
-const User = require("../models/User");
-const {
-  getAllPieces,
-  getPossibleMoves,
-  getPiecesCount,
-} = require("./helpers/botHelpers");
-const { saveMatch } = require("../helpers/matchHelpers");
+const { JWT_SECRET } = require("../../../config/keys");
+const User = require("../../../models/User");
+const { getPiecesCount, getAllMovesCountByPlayer } = require("../gameHelper");
+const { saveMatch } = require("../../../helpers/matchHelpers");
 
 // set of all the ongoing games
 var games = [];
@@ -68,15 +64,18 @@ exports.createNewGame = async ({
   isRated,
   token,
 }) => {
+  console.log("inside createNewGame helper function...");
   let userId = null,
     matchId = crypto.randomBytes(4).toString("hex");
   // checking for registered user to create the game
-  if (token.startsWith("guest")) userId = token;
-  else if (token) {
+  if (token.startsWith("guest")) {
+    console.log("guest user identified....");
+    userId = token;
+  } else if (token) {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
       const user = await User.findById(decoded);
-      console.log(user.username, " created the game");
+      console.log("user identified :- " + user.username + "... creating!!");
       if (user) userId = user._id;
     } catch (err) {
       console.log(err);
@@ -114,20 +113,36 @@ exports.createNewGame = async ({
     mandatoryMoves,
     chat: [],
   };
+
   games.push(game);
-  console.log("game create with id ", matchId);
+  console.log("game create successfully! ID :- ", matchId);
   return game;
+};
+
+const savePieceMoveToGame = ({ game, destination, selectedPiece }) => {
+  const pieceMove =
+    game.turn[0] +
+    selectedPiece.i.toString() +
+    selectedPiece.j.toString() +
+    destination.i.toString() +
+    destination.j.toString();
+  game.pieceMoves.push(pieceMove);
 };
 
 // moves the piece on the board of the game player is currently playing
 exports.movePiece = ({ player, selectedPiece, destination }) => {
   const game = getGameForPlayer(player);
-  if (game !== undefined)
-    movePiece({
-      game,
+  if (game !== undefined) {
+    const moveResults = movePiece({
+      board: game.board,
       destination,
       selectedPiece,
     });
+    if (moveResults !== null) {
+      savePieceMoveToGame({ game, selectedPiece, destination });
+      game.turn = game.turn === "Red" ? "Black" : "Red";
+    }
+  }
   return game;
 };
 
@@ -150,13 +165,13 @@ exports.addPlayerToGame = async ({ player, gameId, token }) => {
     }
   }
   // determining the piece color of the opponent
-  let color = game.players[0].color === "Red" ? "Black" : "Red";
+  let pColor = game.players[0].color === "Red" ? "Black" : "Red";
   game.players.push({
-    color,
+    color: pColor,
     socket: player,
     id: userId,
   });
-  return color;
+  return pColor;
 };
 
 // saves the chat into the game object
@@ -210,25 +225,14 @@ exports.endGame = async ({ player, winner }) => {
     }
     console.log("game saved");
     games.splice(games.indexOf(game), 1);
-    return game;
+    return game.id;
   }
   return null;
-};
-
-// function to determing the winning condition of a player; when he cannot move any piece the opponent wins
-const getAllMovesCountByPlayer = ({ board, color }) => {
-  let pieces = getAllPieces({ board, color }),
-    movesCount = 0;
-  for (let i = 0; i < pieces.length; ++i) {
-    movesCount += getPossibleMoves({ board, piece: pieces[i] }).length;
-  }
-  return movesCount;
 };
 
 // checks the condition when any of the player wins; return false if game can continue on
 exports.isGameOver = ({ player }) => {
   const game = getGameForPlayer(player);
-
   let redCount =
     getPiecesCount({ board: game.board, type: 1 }) +
     getPiecesCount({ board: game.board, type: 3 });

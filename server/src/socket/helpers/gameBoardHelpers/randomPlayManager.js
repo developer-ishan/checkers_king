@@ -1,7 +1,7 @@
-const { createNewGame, addPlayerToGame } = require("./gameManager");
+const { createNewGame, addPlayerToGame } = require("./gamePlayManager");
 var jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config/keys");
-const User = require("../models/User");
+const { JWT_SECRET } = require("../../../config/keys");
+const User = require("../../../models/User");
 
 var waitingGuests = [];
 var waitingPlayers = [];

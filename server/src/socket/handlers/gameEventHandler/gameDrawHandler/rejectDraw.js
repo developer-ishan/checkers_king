@@ -1,4 +1,6 @@
-const { getGameByID } = require("../gameManager");
+const {
+  getGameByID,
+} = require("../../../helpers/gameBoardHelpers/gamePlayManager");
 
 module.exports = ({ gameId, io, socket }) => {
   const from = socket.id;

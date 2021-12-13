@@ -1,7 +1,14 @@
-const { getGameByID } = require("../gameManager");
+const {
+  getGameByID,
+  getGames,
+} = require("../helpers/gameBoardHelpers/gamePlayManager");
+
+exports.sendAllGames = (io) => {
+  io.emit("games", getGames());
+};
 
 // emits the current state of the game to all users joined into the room
-module.exports = ({ socket, gameId }) => {
+exports.sendGameStatus = ({ socket, gameId }) => {
   const game = getGameByID(gameId);
   socket.emit("game-status", {
     id: game.id,

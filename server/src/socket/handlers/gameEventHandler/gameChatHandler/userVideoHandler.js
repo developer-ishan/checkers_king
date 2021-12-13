@@ -1,4 +1,6 @@
-const { getGameByID } = require("../gameManager");
+const {
+  getGameByID,
+} = require("../../../helpers/gameBoardHelpers/gamePlayManager");
 
 module.exports = ({ peerId, gameId, io }) => {
   console.log("at server.js:inside video handler ", peerId, gameId);
