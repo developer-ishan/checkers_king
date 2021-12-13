@@ -14,6 +14,8 @@ const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
           {turn === color ? "your turn" : "opponent's turn"}
         </p>
       </div>
+
+      {/* hamburger button */}
       <button
         className="p-1 ml-auto bg-gray-200 rounded-full sm:hidden"
         onClick={() => setIsGameOptionsModalOpen(true)}
@@ -23,6 +25,8 @@ const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
           className="w-3 h-3"
         />
       </button>
+
+      {/* controls on full screen size */}
       <div className="hidden ml-auto sm:block">
         <GameActionButton
           leaveGame={leaveGame}
@@ -31,8 +35,11 @@ const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
           botLevel={botLevel}
         />
       </div>
+
       {/* audio controls */}
       {/* maybe count of kitni goti kati */}
+
+      {/* modal containing controls for small screen size */}
       <SmallScreenInfoModal
         title="game Options"
         modalState={isGameOptionsModalOpen}

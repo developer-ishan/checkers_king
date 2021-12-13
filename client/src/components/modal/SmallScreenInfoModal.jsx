@@ -24,7 +24,7 @@ const SmallScreenInfoModal = ({
             <div class="flex flex-row">
               <a
                 href="#"
-                class="text-xs text-blue-700 text-xl hover:text-red-500 dark:text-pink-400 "
+                class="text-xs text-blue-700 text-xl hover:text-red-400 dark:text-pink-400 "
                 onClick={() => closeModal()}
               >
                 &#10006;
