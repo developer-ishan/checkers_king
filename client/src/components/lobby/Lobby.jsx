@@ -67,7 +67,7 @@ const Lobby = ({ heading }) => {
               style={{
                 ...object,
                 "animation-delay": "0s",
-                bottom: "-10px",
+                bottom: "-100px",
                 left: `${offset}%`,
               }}
               className="absolute block list-none animate-float-up"
@@ -80,8 +80,8 @@ const Lobby = ({ heading }) => {
             <li
               style={{
                 ...object,
-                "animation-delay": "5s",
-                bottom: "-100px",
+                "animation-delay": "1s",
+                bottom: "-300px",
                 left: `${offset}%`,
               }}
               className="absolute block list-none animate-float-up"

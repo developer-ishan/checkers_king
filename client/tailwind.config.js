@@ -27,6 +27,7 @@ module.exports = {
           "100%": {
             bottom: "110%",
             transform: "rotateZ(180deg)",
+            opacity: "0",
           },
         },
       },
