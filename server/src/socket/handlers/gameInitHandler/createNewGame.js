@@ -1,6 +1,6 @@
 const {
   createNewGame,
-  movePiece,
+  onMovePiece,
 } = require("../../helpers/gameBoardHelpers/gamePlayManager");
 const {
   sendGameStatus,
@@ -8,9 +8,6 @@ const {
 } = require("../../helpers/gameStatusHelper");
 const { aiBotMove } = require("../../helpers/gameBotHelpers/gameBot");
 const { userAlreadyExistsInOtherGame } = require("../../helpers/errorHelper");
-const {
-  performMandatoryMove,
-} = require("../../helpers/gameBoardHelpers/movePieceHelpers/mandatoryMoves");
 
 module.exports =
   ({ io, socket }) =>
@@ -33,6 +30,7 @@ module.exports =
     console.log(
       "sending game-status & joining respective room for " + newGame.id
     );
+
     socket.join(newGame.id);
     socket.emit("game-status", {
       id: newGame.id,
@@ -40,29 +38,23 @@ module.exports =
       turn: newGame.turn,
     });
     socket.emit("color", color);
-
     if (newGame.isBot) socket.emit("playing-with-bot", newGame.botLevel);
     else sendAllGames(io);
 
-    // handles the condition when the game is against the bot & bot has to move first
+    /* ------------------------------------- Special Bot Condition ------------------------------------- */
     if (newGame.isBot && newGame.players[0].color === "Black") {
+      // handles the condition when the game is against the bot & bot has to move first
       const nextMove = await aiBotMove({
         board: newGame.board,
         level: newGame.botLevel,
         turn: newGame.turn,
       });
       // next move is null if the bot doesn't have any possible moves, which is basically a win condition
-      let botGame = movePiece({
+      let botGame = onMovePiece({
         player: socket,
         selectedPiece: nextMove.selectedPiece,
         destination: nextMove.destination,
       });
       sendGameStatus({ socket, gameId: botGame.id });
-      performMandatoryMove({
-        socket,
-        game: botGame,
-        selectedPiece: nextMove.selectedPiece,
-        destination: nextMove.destination,
-      });
     }
   };

@@ -1,13 +1,10 @@
 const { ai_algorithm } = require("./botHelpers");
 
-exports.aiBotMove = async ({ board, turn, level }) => {
+exports.aiBotMove = ({ board, turn, level, mandatoryMoves }) => {
   console.log("ai_bot thinking of a clever move...");
+  console.log(board, turn, level, mandatoryMoves);
   const maxPlayer = turn === "Red";
 
-  // performing delay to maintain piece move visibility
-  // const timeDelay = level === 6 ? 200 : 300;
-  // await new Promise((resolve) => setTimeout(resolve, timeDelay));
-
-  const aiBotMove = ai_algorithm(board, level, maxPlayer);
+  const aiBotMove = ai_algorithm(board, level, maxPlayer, mandatoryMoves);
   return aiBotMove.bestMove;
 };

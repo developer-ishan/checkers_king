@@ -5,6 +5,7 @@ const { JWT_SECRET } = require("../../../config/keys");
 const User = require("../../../models/User");
 const { getPiecesCount, getAllMovesCountByPlayer } = require("../gameHelper");
 const { saveMatch } = require("../../../helpers/matchHelpers");
+const { giveMandatoryMove } = require("./movePieceHelpers/mandatoryMoves");
 
 // set of all the ongoing games
 var games = [];
@@ -129,8 +130,12 @@ const savePieceMoveToGame = ({ game, destination, selectedPiece }) => {
   game.pieceMoves.push(pieceMove);
 };
 
+const switchGameTurn = ({ game }) => {
+  game.turn = game.turn === "Red" ? "Black" : "Red";
+};
+
 // moves the piece on the board of the game player is currently playing
-exports.movePiece = ({ player, selectedPiece, destination }) => {
+exports.onMovePiece = ({ player, selectedPiece, destination }) => {
   const game = getGameForPlayer(player);
   if (game !== undefined) {
     const moveResults = movePiece({
@@ -140,10 +145,68 @@ exports.movePiece = ({ player, selectedPiece, destination }) => {
     });
     if (moveResults !== null) {
       savePieceMoveToGame({ game, selectedPiece, destination });
-      game.turn = game.turn === "Red" ? "Black" : "Red";
+      switchGameTurn({ game });
     }
   }
   return game;
+};
+
+exports.isMandatoryMove = (selectedPiece, destination) => {
+  const diffI = Math.abs(selectedPiece.i - destination.i);
+  const diffJ = Math.abs(selectedPiece.j - destination.j);
+  return diffI === 2 && diffJ === 2;
+};
+
+exports.initiateMandatoryMove = async ({
+  socket,
+  game,
+  selectedPiece,
+  destination,
+}) => {
+  console.log("initiating mandatory moves...");
+  let currPiece = destination;
+  let destPiece = giveMandatoryMove(game.board, currPiece);
+
+  switchGameTurn({ game });
+  while (destPiece !== null) {
+    console.log("moving piece to ", destPiece);
+    const moveResults = movePiece({
+      board: game.board,
+      destination: destPiece,
+      selectedPiece: currPiece,
+    });
+    if (moveResults === null) break;
+    console.log("made a move...");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    socket.emit("game-status", {
+      id: game.id,
+      board: game.board,
+      turn: game.turn,
+    });
+    socket.to(game.id).emit("game-status", {
+      id: game.id,
+      board: game.board,
+      turn: game.turn,
+    });
+    savePieceMoveToGame({
+      game,
+      destination: destPiece,
+      selectedPiece: currPiece,
+    });
+    currPiece = destPiece;
+    destPiece = giveMandatoryMove(game.board, currPiece);
+  }
+  switchGameTurn({ game });
+  socket.emit("game-status", {
+    id: game.id,
+    board: game.board,
+    turn: game.turn,
+  });
+  socket.to(game.id).emit("game-status", {
+    id: game.id,
+    board: game.board,
+    turn: game.turn,
+  });
 };
 
 // adds the player as an opponent to the game with id gameId
@@ -193,7 +256,9 @@ exports.endGame = async ({ player, winner }) => {
   const game = getGameForPlayer(player);
   if (game) {
     // handles condition for two different players
+    console.log("game is : ", game);
     if (game.isBot === false) {
+      console.log("saving game with opponent player");
       let p1 =
         game.players[0].color === winner ? game.players[0] : game.players[1];
       let p2 = p1 === game.players[0] ? game.players[1] : game.players[0];
@@ -211,6 +276,7 @@ exports.endGame = async ({ player, winner }) => {
       );
     } else {
       // handles condition for game with bots
+      console.log("saving game with bots to profile...");
       await saveMatch(
         game.players[0],
         null, // TODO: for bot maybe we can add level of the bot

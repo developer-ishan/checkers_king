@@ -1,32 +1,29 @@
 const {
-  movePiece,
+  onMovePiece,
   isGameOver,
   endGame,
+  initiateMandatoryMove,
+  isMandatoryMove,
 } = require("../../helpers/gameBoardHelpers/gamePlayManager");
 const { aiBotMove } = require("../../helpers/gameBotHelpers/gameBot");
 const {
   sendGameStatus,
   sendAllGames,
 } = require("../../helpers/gameStatusHelper");
-const {
-  performMandatoryMove,
-} = require("../../helpers/gameBoardHelpers/movePieceHelpers/mandatoryMoves");
-
-// checks if the current move supports mandatory move
 
 module.exports =
   ({ io, socket }) =>
   async ({ selectedPiece, destination }) => {
     console.log("inside move piece handler...");
-    let game = movePiece({
+    let game = onMovePiece({
       player: socket,
       selectedPiece,
       destination,
     });
-
     if (game === undefined) return;
     sendGameStatus({ socket, gameId: game.id });
-    await performMandatoryMove({ socket, game, selectedPiece, destination });
+    if (isMandatoryMove(selectedPiece, destination) && game.mandatoryMoves)
+      await initiateMandatoryMove({ socket, game, selectedPiece, destination });
 
     // checking if the game is over with a winner
     const winner = isGameOver({ player: socket });
@@ -43,26 +40,29 @@ module.exports =
     if (game.isBot) {
       // level should only be kept in range [1, 5]
       console.log("determining next move of bot...");
-      const nextMove = await aiBotMove({
+      const nextMove = aiBotMove({
         board: game.board,
         level: game.botLevel,
         turn: game.turn,
+        mandatoryMoves: game.mandatoryMoves,
       });
       // next move is null if the bot doesn't have any possible moves, which is basically a win condition
       if (nextMove != null) {
         console.log("predicted next move :- ", nextMove);
-        let botGame = movePiece({
+        let botGame = onMovePiece({
           player: socket,
           selectedPiece: nextMove.selectedPiece,
           destination: nextMove.destination,
         });
         sendGameStatus({ socket, gameId: botGame.id });
-        await performMandatoryMove({
-          socket,
-          game,
-          selectedPiece: nextMove.selectedPiece,
-          destination: nextMove.destination,
-        });
+        // handling mandatory moves in the game
+        if (isMandatoryMove(selectedPiece, destination) && game.mandatoryMoves)
+          await initiateMandatoryMove({
+            socket,
+            game,
+            selectedPiece: nextMove.selectedPiece,
+            destination: nextMove.destination,
+          });
 
         if (botGame === undefined) return;
       }

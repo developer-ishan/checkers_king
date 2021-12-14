@@ -23,11 +23,11 @@ const { sendAllGames } = require("./helpers/gameStatusHelper");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
-  sendAllGames(io);
 
   // on a new user socket connection
   io.on("connection", (socket) => {
     console.log("a user connected! ID :- " + socket.id);
+    sendAllGames(io);
 
     /* game initiation handler calls BEGIN */
     socket.on("create-game", createNewGame({ io, socket }));

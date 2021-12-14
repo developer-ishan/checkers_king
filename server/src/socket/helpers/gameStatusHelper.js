@@ -1,6 +1,6 @@
 const {
-  getGameByID,
   getGames,
+  getGameByID,
 } = require("../helpers/gameBoardHelpers/gamePlayManager");
 
 exports.sendAllGames = (io) => {
