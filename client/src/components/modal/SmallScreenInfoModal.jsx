@@ -3,17 +3,23 @@ import Modal from "react-modal";
 const SmallScreenInfoModal = ({
   modalState,
   setModalState,
+  cbOnRequestClose = undefined,
   title,
   children,
 }) => {
   const closeModal = () => {
     setModalState(false);
   };
+
+  //if callback on close not explicitly provided
+  //then it will normally close the modal
+  if (cbOnRequestClose === undefined) cbOnRequestClose = closeModal;
+
   return (
     <Modal
       className="absolute w-11/12 max-w-md transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
       isOpen={modalState}
-      onRequestClose={closeModal}
+      onRequestClose={cbOnRequestClose}
     >
       <div class="flex justify-center mx-auto">
         <div class="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
@@ -25,7 +31,7 @@ const SmallScreenInfoModal = ({
               <a
                 href="#"
                 class="text-xs text-blue-700 text-xl hover:text-red-400 dark:text-pink-400 "
-                onClick={() => closeModal()}
+                onClick={() => cbOnRequestClose()}
               >
                 &#10006;
               </a>
