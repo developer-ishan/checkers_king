@@ -1,6 +1,6 @@
 const BOARD_SIZE = 8;
 const pieceColor = {
-  0: "Empty",
+  0: "Empty", // empty
   1: "Red", // pawn
   2: "Black", // pawn
   3: "Red", // queen
@@ -32,7 +32,7 @@ const pieceMoves = {
 };
 
 const isValid = (x, y) => {
-  return x >= 0 && x < 8 && y >= 0 && y < 8;
+  return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
 };
 
 // fetches the number of possible moves for a piece

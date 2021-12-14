@@ -29,6 +29,13 @@ const giveDeepCopy = (board) => {
   return copy;
 };
 
+const setPieceScoreValues = () => {
+  RED_SCORE = Math.random() * 3;
+  REDQ_SCORE = Math.random() * 5;
+  BLACK_SCORE = Math.random() * 3;
+  BLACKQ_SCORE = Math.random() * 5;
+};
+
 // evaluation function of board; Tries to maximize score for RED & minimize score for BLACK
 const evaluatePosition = (board) => {
   // console.log(board);
@@ -48,6 +55,11 @@ const evaluatePosition = (board) => {
   return evalScore;
 };
 
+const performBotHeuristics = (board, depth, maxPlayer, mandatoryMoves) => {
+  setPieceScoreValues();
+  return ai_algorithm(board, depth, maxPlayer, mandatoryMoves);
+};
+
 // main AI bot function
 const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
   console.log({ depth, maxPlayer, mandatoryMoves });
@@ -55,47 +67,44 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
   if (depth <= 0) return { value: evaluatePosition(board) };
 
   if (maxPlayer) {
-    console.log("analysis function for red player");
+    // console.log("analysis function for red player");
     let maxEval = -INF,
       bestMove = null,
       pieces = getAllPieces({ board, color: "Red" });
-
-    RED_SCORE = Math.random() * 3;
-    REDQ_SCORE = Math.random() * 5;
-    BLACK_SCORE = Math.random() * 3;
-    BLACKQ_SCORE = Math.random() * 5;
-
-    console.log("got all pieces of red...");
 
     for (let i = 0; i < pieces.length; ++i) {
       let moves = getPossibleMoves({ board, piece: pieces[i] });
       for (let j = 0; j < moves.length; ++j) {
         let tmpBoard = giveDeepCopy(board);
         // simulates the current move in the temporary board
-        console.log(
-          "depth : " +
-            depth.toString() +
-            "; i : " +
-            (i + 1).toString() +
-            "; j : " +
-            (j + 1).toString()
-        );
+        // console.log(
+        //   "depth : " +
+        //     depth.toString() +
+        //     "; i : " +
+        //     (i + 1).toString() +
+        //     "; j : " +
+        //     (j + 1).toString()
+        // );
         movePiece({
           board: tmpBoard,
           selectedPiece: pieces[i],
           destination: moves[j],
         });
-        console.log("piece moved");
         if (mandatoryMoves) performMandatoryMove(tmpBoard, pieces[i], moves[j]);
 
         // if (evaluatePosition(tmpBoard) < 20) continue;
         const currentBoardScore = evaluatePosition(tmpBoard);
         console.log(currentBoardScore);
-        console.log("evaluating... further");
+        // console.log("evaluating... further");
 
         // if (evaluatePosition(tmpBoard) >= -10) {
-        let evaluation = ai_algorithm(tmpBoard, depth - 1, false);
-        console.log("evaluation value at depth " + depth.toString());
+        let evaluation = ai_algorithm(
+          tmpBoard,
+          depth - 1,
+          false,
+          mandatoryMoves
+        );
+        // console.log("evaluation value at depth " + depth.toString());
         console.log(evaluation);
         maxEval = Math.max(maxEval, evaluation.value);
         if (maxEval === evaluation.value)
@@ -105,47 +114,45 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
     }
     return { value: maxEval, bestMove };
   } else {
-    console.log("analysis function for black player");
+    // console.log("analysis function for black player");
     let minEval = INF,
       bestMove = null,
       pieces = getAllPieces({ board, color: "Black" });
-
-    RED_SCORE = Math.random() * 3;
-    REDQ_SCORE = Math.random() * 5;
-    BLACK_SCORE = Math.random() * 3;
-    BLACKQ_SCORE = Math.random() * 5;
-
-    console.log("got all pieces of black...");
 
     for (let i = 0; i < pieces.length; ++i) {
       let moves = getPossibleMoves({ board, piece: pieces[i] });
       for (let j = 0; j < moves.length; ++j) {
         let tmpBoard = giveDeepCopy(board);
         // simulates the current move in the temporary board
-        console.log(
-          "depth : " +
-            depth.toString() +
-            "; i : " +
-            (i + 1).toString() +
-            "; j : " +
-            (j + 1).toString()
-        );
+        // console.log(
+        //   "depth : " +
+        //     depth.toString() +
+        //     "; i : " +
+        //     (i + 1).toString() +
+        //     "; j : " +
+        //     (j + 1).toString()
+        // );
         movePiece({
           board: tmpBoard,
           selectedPiece: pieces[i],
           destination: moves[j],
         });
-        console.log("piece moved");
+        // console.log("piece moved");
         if (mandatoryMoves) performMandatoryMove(tmpBoard, pieces[i], moves[j]);
 
         // if (evaluatePosition(tmpBoard) > -20) continue;
         const currentBoardScore = evaluatePosition(tmpBoard);
         console.log(currentBoardScore);
-        console.log("evaluating... further");
+        // console.log("evaluating... further");
 
         // if (evaluatePosition(tmpBoard) <= 10) {
-        let evaluation = ai_algorithm(tmpBoard, depth - 1, true);
-        console.log("evaluation value at depth " + depth.toString());
+        let evaluation = ai_algorithm(
+          tmpBoard,
+          depth - 1,
+          true,
+          mandatoryMoves
+        );
+        // console.log("evaluation value at depth " + depth.toString());
         console.log(evaluation);
         minEval = Math.min(minEval, evaluation.value);
         if (minEval === evaluation.value)
@@ -158,5 +165,5 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
 };
 
 module.exports = {
-  ai_algorithm,
+  performBotHeuristics,
 };
