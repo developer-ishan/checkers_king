@@ -1,4 +1,7 @@
-const { getGameByID, saveChatToGame } = require("../gameManager");
+const {
+  getGameByID,
+  saveChatToGame,
+} = require("../../../helpers/gameBoardHelpers/gamePlayManager");
 
 module.exports = ({ gameId, msg, io, socket }) => {
   const from = socket.id;

@@ -1,38 +1,56 @@
-const createGame = require("./handlers/createGame");
-const joinGame = require("./handlers/joinGame");
-const movePiece = require("./handlers/onMovePiece");
-const onDisconnect = require("./handlers/onDisconnect");
-const onQuitGame = require("./handlers/onQuitGame");
+/* Game Initiation Handler Declarations */
+const createNewGame = require("./handlers/gameInitHandler/createNewGame");
+const joinGameBoard = require("./handlers/gameInitHandler/joinGameBoard");
+const randomPlayGuest = require("./handlers/gameInitHandler/randomPlayGuest");
+const randomPlayUser = require("./handlers/gameInitHandler/randomPlayUser");
 
-const sendGames = require("./helpers/sendGames");
-const saveChat = require("./handlers/saveChat");
-const offerDraw = require("./handlers/offerDraw");
-const rejectDraw = require("./handlers/rejectDraw");
-const acceptDraw = require("./handlers/acceptDraw");
+/* Game Event Handler Declarations */
+/*  -- Game Chat Handler Declarations */
+const sendUserMessage = require("./handlers/gameEventHandler/gameChatHandler/sendUserMessage");
+const userVideoHandler = require("./handlers/gameEventHandler/gameChatHandler/userVideoHandler");
 
-const randomPlayGuest = require("./handlers/randomPlayGuest");
-const randomPlayUser = require("./handlers/randomPlayUser");
-const videoHandler = require("./handlers/videoHandler");
+/*  -- Game Draw Handler Declarations */
+const acceptDraw = require("./handlers/gameEventHandler/gameDrawHandler/acceptDraw");
+const offerDraw = require("./handlers/gameEventHandler/gameDrawHandler/offerDraw");
+const rejectDraw = require("./handlers/gameEventHandler/gameDrawHandler/rejectDraw");
+
+const onMovePiece = require("./handlers/gameEventHandler/onMovePiece");
+const onDisconnect = require("./handlers/gameEventHandler/onDisconnect");
+const onQuitGame = require("./handlers/gameEventHandler/onQuitGame");
+
+/* Miscellaneous Declarations */
+const { sendAllGames } = require("./helpers/gameStatusHelper");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
 
-  // on a new user connection
+  // on a new user socket connection
   io.on("connection", (socket) => {
     console.log("a user connected! ID :- " + socket.id);
-    sendGames(socket);
+    sendAllGames(io);
 
-    socket.on("create-game", createGame({ io, socket }));
-
-    socket.on("join-game", joinGame({ io, socket }));
-
-    socket.on("move-piece", movePiece({ io, socket }));
-
-    socket.on("quit-game", onQuitGame({ io, socket }));
-
+    /* game initiation handler calls BEGIN */
+    socket.on("create-game", createNewGame({ io, socket }));
+    socket.on("join-game", joinGameBoard({ io, socket }));
     socket.on("random-play-guest", randomPlayGuest({ io, socket }));
-
     socket.on("random-play-user", randomPlayUser({ io, socket }));
+    /* game initiation handler calls END */
+
+    /* game event handler calls BEGIN */
+    /*  -- game chats handler calls BEGIN */
+    socket.on("send-msg", ({ gameId, msg }) => {
+      sendUserMessage({ gameId, msg, io, socket });
+    });
+
+    socket.on("opponent-video-ready", ({ peerId, gameId }) => {
+      userVideoHandler({ peerId, gameId, io });
+    });
+    /*  -- game chats handler calls END */
+
+    /*  -- game draw handler calls BEGIN */
+    socket.on("draw-accepted", ({ gameId }) => {
+      acceptDraw({ gameId, io, socket });
+    });
 
     socket.on("draw-offered", ({ gameId }) => {
       offerDraw({ gameId, io, socket });
@@ -41,23 +59,16 @@ exports.SocketServer = (io) => {
     socket.on("draw-rejected", ({ gameId }) => {
       rejectDraw({ gameId, io, socket });
     });
-
-    socket.on("draw-accepted", ({ gameId }) => {
-      acceptDraw({ gameId, io, socket });
-    });
-
-    socket.on("leave-room", ({ roomId }) => {
-      console.log("caught leave room ", roomId);
-      socket.leave(roomId);
-    });
-
-    socket.on("opponent-video-ready", ({ peerId, gameId }) => {
-      videoHandler({ peerId, gameId, io });
-    });
-    socket.on("send-msg", ({ gameId, msg }) => {
-      saveChat({ gameId, msg, io, socket });
-    });
+    /*  -- game draw handler calls END */
 
     socket.on("disconnect", onDisconnect({ io, socket }));
+    socket.on("move-piece", onMovePiece({ io, socket }));
+    socket.on("quit-game", onQuitGame({ io, socket }));
+    /* game event handler calls END */
+
+    /* miscellaneous event handlers */
+    socket.on("leave-room", ({ roomId }) => {
+      socket.leave(roomId);
+    });
   });
 };

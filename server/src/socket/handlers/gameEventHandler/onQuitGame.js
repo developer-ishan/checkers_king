@@ -1,5 +1,8 @@
-const { endGame, getColorOfPlayer } = require("../gameManager");
-const sendGames = require("../helpers/sendGames");
+const {
+  endGame,
+  getColorOfPlayer,
+} = require("../../helpers/gameBoardHelpers/gamePlayManager");
+const { sendAllGames } = require("../../helpers/gameStatusHelper");
 
 // user calling this function loses the game
 module.exports =
@@ -13,7 +16,8 @@ module.exports =
 
     const roomId = endedGame.id;
     io.to(roomId).emit("end-game");
+    console.log("ending the game... ", roomId);
     // removing all the users of this room
     io.socketsLeave(roomId);
-    sendGames(io);
+    sendAllGames(io);
   };

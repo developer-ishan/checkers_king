@@ -1,6 +1,10 @@
-const { randomPlayWithUser } = require("../randomManager");
-const sendGames = require("../helpers/sendGames");
-const sendGameStatus = require("../helpers/sendGameStatus");
+const {
+  randomPlayWithUser,
+} = require("../../helpers/gameBoardHelpers/randomPlayManager");
+const {
+  sendGameStatus,
+  sendAllGames,
+} = require("../../helpers/gameStatusHelper");
 
 // joins the socket into the room with id roomId
 const joinRoom = (socket, roomId) => {
@@ -27,6 +31,6 @@ module.exports =
       }
       // sending the game status to appropriate clients
       sendGameStatus({ socket, gameId: randomGame.id });
-      sendGames(io);
+      sendAllGames(io);
     }
   };

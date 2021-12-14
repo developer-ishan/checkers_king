@@ -27,12 +27,12 @@ const saveMatch = async (
   });
 
   // handles draw condition between players
-  if (isDraw || !isRated) {
-    game.players.push({ userId: p1.id, delta: 0, color: p1.color });
-    game.players.push({ userId: p2.id, delta: 0, color: p2.color });
-  } else if (isBot) {
+  if (isBot) {
     // handles games with bots
     game.players.push({ userId: p1.id, delta: 0, color: p1.color });
+  } else if (isDraw || !isRated) {
+    game.players.push({ userId: p1.id, delta: 0, color: p1.color });
+    game.players.push({ userId: p2.id, delta: 0, color: p2.color });
   } else {
     // handles game between two players
     game.players.push({

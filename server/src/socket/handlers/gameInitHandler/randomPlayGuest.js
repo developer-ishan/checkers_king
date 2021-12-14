@@ -1,6 +1,10 @@
-const { randomPlayWithGuest } = require("../randomManager");
-const sendGames = require("../helpers/sendGames");
-const sendGameStatus = require("../helpers/sendGameStatus");
+const {
+  randomPlayWithGuest,
+} = require("../../helpers/gameBoardHelpers/randomPlayManager");
+const {
+  sendGameStatus,
+  sendAllGames,
+} = require("../../helpers/gameStatusHelper");
 
 module.exports =
   ({ io, socket }) =>
@@ -18,6 +22,6 @@ module.exports =
       });
 
       sendGameStatus({ socket, gameId: randomGame.id });
-      sendGames(io);
+      sendAllGames(io);
     }
   };
