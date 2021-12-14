@@ -131,7 +131,7 @@ const Game = () => {
 
   const boardClass = () => {
     if (botLevel === -1)
-      return "col-span-12 col-start-1 text-center text-white md:col-span-8";
+      return "col-span-12 col-start-1 text-center text-white lg:col-span-8";
     //if playing against bot no need to small the size
     return "col-span-12 col-start-1 text-center text-white";
   };
@@ -177,9 +177,9 @@ const Game = () => {
             {/* if not playing with bot then only show these components*/}
             {botLevel === -1 && (
               <>
-                <div className="col-span-12 md:col-span-3 md:col-start-9">
+                <div className="col-span-12 lg:col-span-3 lg:col-start-9">
                   <div
-                    className="flex flex-col h-full"
+                    className="flex flex-col items-center justify-around h-full md:flex-row lg:flex-col"
                     style={{ height: "90vmin", minHeight: "80vh" }}
                   >
                     {/* video call component */}

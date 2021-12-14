@@ -164,7 +164,7 @@ const Navbar = () => {
         </a>
         {/* dark mode toggle */}
         <div class="flex justify-end items-center space-x-2 mx-auto relative">
-          <span class="text-xs font-extralight">Light </span>
+          <span class="text-xs font-semibold">Light </span>
           <div>
             <input
               type="checkbox"

@@ -59,7 +59,7 @@ const GameCall = ({ socket, gameId }) => {
   }, []);
 
   return (
-    <div>
+    <div className="self-center">
       <div className="relative max-w-md mx-auto bg-gray-300">
         {/* opponent */}
         {true && <video ref={remoteVideoRef} className="" />}

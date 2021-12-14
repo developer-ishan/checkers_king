@@ -28,11 +28,11 @@ const Chat = ({ sendChatMsg, chats }) => {
   };
 
   return (
-    <div className="flex flex-col flex-grow text-black dark:text-white">
+    <div className="flex flex-col flex-grow w-full h-full max-w-md text-black dark:text-white">
       {/* message window showing chats */}
       <div
         id="chatwindow"
-        className="relative flex-grow w-full p-1 my-2 space-y-2 overflow-auto bg-white border-2 dark:bg-gray-700 rounded-xl"
+        className="relative flex-grow w-full p-1 my-2 space-y-2 overflow-y-auto bg-white border-2 dark:bg-gray-700 rounded-xl"
       >
         {chats.length > 0 &&
           chats.map((chat) => {
