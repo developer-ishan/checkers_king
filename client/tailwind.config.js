@@ -19,6 +19,17 @@ module.exports = {
       skew: {
         "-15": "-15deg",
       },
+      animation: {
+        "float-up": "float-up 25s infinite",
+      },
+      keyframes: {
+        "float-up": {
+          "100%": {
+            bottom: "110%",
+            transform: "rotateZ(180deg)",
+          },
+        },
+      },
     },
   },
   variants: {
