@@ -10,33 +10,49 @@ const {
   sendGameStatus,
   sendAllGames,
 } = require("../../helpers/gameStatusHelper");
+const { emitUserError } = require("../../helpers/errorHelper");
+
+// check if the game has ended & a winner is declared
+const isWinnerDeclared = async (io, socket) => {
+  const winner = isGameOver({ player: socket });
+  console.log("Winner of the game ", winner);
+  if (winner !== false) {
+    let finishedGame = await endGame({ player: socket, winner });
+    io.to(finishedGame.id).emit("winner", winner);
+    sendAllGames(io);
+    io.socketsLeave(finishedGame.id);
+  }
+  return winner;
+};
 
 module.exports =
   ({ io, socket }) =>
   async ({ selectedPiece, destination }) => {
     console.log("inside move piece handler...");
-    let game = onMovePiece({
+    let game = await onMovePiece({
+      io,
       player: socket,
       selectedPiece,
       destination,
     });
-    if (game === undefined) return;
-    sendGameStatus({ socket, gameId: game.id });
-    if (isMandatoryMove(selectedPiece, destination) && game.mandatoryMoves)
-      await initiateMandatoryMove({ socket, game, selectedPiece, destination });
-
-    // checking if the game is over with a winner
-    const winner = isGameOver({ player: socket });
-    if (winner !== false) {
-      let finishedGame = await endGame({ player: socket, winner });
-      io.to(finishedGame.id).emit("winner", winner);
-      // sending current ongoing games to all the users
-      sendGames(io);
-      // removing all the sockets in the room
-      io.socketsLeave(finishedGame.id);
+    if (game === undefined) {
+      // error for invalid move or illegal player of game
+      emitUserError(
+        socket,
+        "Invalid Move!",
+        "Attention! the move you are trying to make seems invalid!!",
+        "Okay",
+        "/game"
+      );
       return;
     }
+    sendGameStatus(io, game.id);
+    const gameResults = await isWinnerDeclared(io, socket);
+    if (gameResults !== false) return;
 
+    console.log("moving to bot move...");
+
+    /* --------------------------------- User game with game bot --------------------------------- */
     if (game.isBot) {
       // level should only be kept in range [1, 5]
       console.log("determining next move of bot...");
@@ -49,31 +65,16 @@ module.exports =
       // next move is null if the bot doesn't have any possible moves, which is basically a win condition
       if (nextMove != null) {
         console.log("predicted next move :- ", nextMove);
-        let botGame = onMovePiece({
+        let botGame = await onMovePiece({
+          io,
           player: socket,
           selectedPiece: nextMove.selectedPiece,
           destination: nextMove.destination,
         });
-        sendGameStatus({ socket, gameId: botGame.id });
-        // handling mandatory moves in the game
-        if (isMandatoryMove(selectedPiece, destination) && game.mandatoryMoves)
-          await initiateMandatoryMove({
-            socket,
-            game,
-            selectedPiece: nextMove.selectedPiece,
-            destination: nextMove.destination,
-          });
-
-        if (botGame === undefined) return;
+        sendGameStatus(io, botGame.id);
       }
-
-      // checking for bot winning condition for a match
-      const winner = isGameOver({ player: socket });
-      if (winner !== false) {
-        let finishedGame = await endGame({ player: socket, winner });
-        io.to(finishedGame.id).emit("winner", winner);
-        sendAllGames(io);
-        io.socketsLeave(finishedGame.id);
-      }
+      const gameResults = await isWinnerDeclared(io, socket);
+      if (gameResults !== false) return;
     }
+    /* ------------------------- User game with game bot ------------------------- */
   };

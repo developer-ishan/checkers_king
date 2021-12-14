@@ -21,7 +21,7 @@ module.exports =
         player.socket.emit("color", player.color);
       });
 
-      sendGameStatus({ socket, gameId: randomGame.id });
+      sendGameStatus(io, randomGame.id);
       sendAllGames(io);
     }
   };

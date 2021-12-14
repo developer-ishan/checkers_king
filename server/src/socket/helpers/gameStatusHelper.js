@@ -3,19 +3,17 @@ const {
   getGameByID,
 } = require("../helpers/gameBoardHelpers/gamePlayManager");
 
+// emits the list of all the current ongoing games to all users
 exports.sendAllGames = (io) => {
   io.emit("games", getGames());
 };
 
 // emits the current state of the game to all users joined into the room
-exports.sendGameStatus = ({ socket, gameId }) => {
+exports.sendGameStatus = (io, gameId) => {
   const game = getGameByID(gameId);
-  socket.emit("game-status", {
+  io.to(gameId).emit("game-status", {
     id: game.id,
     board: game.board,
     turn: game.turn,
   });
-  socket
-    .to(gameId)
-    .emit("game-status", { id: game.id, board: game.board, turn: game.turn });
 };

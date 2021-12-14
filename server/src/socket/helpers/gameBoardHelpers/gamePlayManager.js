@@ -26,10 +26,11 @@ exports.getGameByID = (GameId) => {
 exports.getGames = () => {
   let res = [];
   games.map((g) => {
-    res.push({
-      id: g.id,
-      playerCount: g.players.length,
-    });
+    if (!g.isBot)
+      res.push({
+        id: g.id,
+        playerCount: g.players.length,
+      });
   });
   return res;
 };
@@ -37,6 +38,7 @@ exports.getGames = () => {
 // returns a game where the user with token belongs
 exports.getGameByUserId = async (token) => {
   let userId = null;
+
   if (token.startsWith("guest")) userId = token;
   else if (token) {
     try {
@@ -48,7 +50,7 @@ exports.getGameByUserId = async (token) => {
       console.log(err);
     }
   }
-  console.log("games array:", games);
+
   return games.find((game) => {
     console.log(`for ${game.id} players :${game.players}`);
     return game.players.find((p) => p.id.toString() === userId.toString());
@@ -68,11 +70,14 @@ exports.createNewGame = async ({
   console.log("inside createNewGame helper function...");
   let userId = null,
     matchId = crypto.randomBytes(4).toString("hex");
+
   // checking for registered user to create the game
   if (token.startsWith("guest")) {
+    // GUEST Player
     console.log("guest user identified....");
     userId = token;
   } else if (token) {
+    // REGISTERED USER Player
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
       const user = await User.findById(decoded);
@@ -99,18 +104,10 @@ exports.createNewGame = async ({
       [0, 2, 0, 2, 0, 2, 0, 2],
       [2, 0, 2, 0, 2, 0, 2, 0],
       [0, 2, 0, 2, 0, 2, 0, 2],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 1, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 2, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
-    isRated,
     botLevel,
+    isRated,
     mandatoryMoves,
     chat: [],
   };
@@ -120,6 +117,7 @@ exports.createNewGame = async ({
   return game;
 };
 
+// saving the piece move to respective game's data
 const savePieceMoveToGame = ({ game, destination, selectedPiece }) => {
   const pieceMove =
     game.turn[0] +
@@ -130,12 +128,52 @@ const savePieceMoveToGame = ({ game, destination, selectedPiece }) => {
   game.pieceMoves.push(pieceMove);
 };
 
+// switch the turn of user in the game
 const switchGameTurn = ({ game }) => {
   game.turn = game.turn === "Red" ? "Black" : "Red";
 };
 
+exports.isMandatoryMove = (selectedPiece, destination) => {
+  const diffI = Math.abs(selectedPiece.i - destination.i);
+  const diffJ = Math.abs(selectedPiece.j - destination.j);
+  return diffI === 2 && diffJ === 2;
+};
+
+const emitGameStatus = (io, game) => {
+  io.to(game.id).emit("game-status", {
+    id: game.id,
+    board: game.board,
+    turn: game.turn,
+  });
+};
+
+const initiateMandatoryMove = async (io, game, destination) => {
+  console.log("initiating mandatory moves...");
+  let currPiece = destination;
+  let destPiece = giveMandatoryMove(game.board, currPiece);
+
+  while (destPiece !== null) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    emitGameStatus(io, game);
+
+    const moveResults = movePiece({
+      board: game.board,
+      destination: destPiece,
+      selectedPiece: currPiece,
+    });
+    if (moveResults === null) break;
+    savePieceMoveToGame({
+      game,
+      destination: destPiece,
+      selectedPiece: currPiece,
+    });
+    currPiece = destPiece;
+    destPiece = giveMandatoryMove(game.board, currPiece);
+  }
+};
+
 // moves the piece on the board of the game player is currently playing
-exports.onMovePiece = ({ player, selectedPiece, destination }) => {
+exports.onMovePiece = async ({ io, player, selectedPiece, destination }) => {
   const game = getGameForPlayer(player);
   if (game !== undefined) {
     const moveResults = movePiece({
@@ -145,68 +183,15 @@ exports.onMovePiece = ({ player, selectedPiece, destination }) => {
     });
     if (moveResults !== null) {
       savePieceMoveToGame({ game, selectedPiece, destination });
+      if (
+        game.mandatoryMoves &&
+        this.isMandatoryMove(selectedPiece, destination)
+      )
+        await initiateMandatoryMove(io, game, destination);
       switchGameTurn({ game });
     }
   }
   return game;
-};
-
-exports.isMandatoryMove = (selectedPiece, destination) => {
-  const diffI = Math.abs(selectedPiece.i - destination.i);
-  const diffJ = Math.abs(selectedPiece.j - destination.j);
-  return diffI === 2 && diffJ === 2;
-};
-
-exports.initiateMandatoryMove = async ({
-  socket,
-  game,
-  selectedPiece,
-  destination,
-}) => {
-  console.log("initiating mandatory moves...");
-  let currPiece = destination;
-  let destPiece = giveMandatoryMove(game.board, currPiece);
-
-  switchGameTurn({ game });
-  while (destPiece !== null) {
-    console.log("moving piece to ", destPiece);
-    const moveResults = movePiece({
-      board: game.board,
-      destination: destPiece,
-      selectedPiece: currPiece,
-    });
-    if (moveResults === null) break;
-    console.log("made a move...");
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    socket.emit("game-status", {
-      id: game.id,
-      board: game.board,
-      turn: game.turn,
-    });
-    socket.to(game.id).emit("game-status", {
-      id: game.id,
-      board: game.board,
-      turn: game.turn,
-    });
-    savePieceMoveToGame({
-      game,
-      destination: destPiece,
-      selectedPiece: currPiece,
-    });
-    currPiece = destPiece;
-    destPiece = giveMandatoryMove(game.board, currPiece);
-  }
-  switchGameTurn({ game });
-  socket.emit("game-status", {
-    id: game.id,
-    board: game.board,
-    turn: game.turn,
-  });
-  socket.to(game.id).emit("game-status", {
-    id: game.id,
-    board: game.board,
-    turn: game.turn,
-  });
 };
 
 // adds the player as an opponent to the game with id gameId
