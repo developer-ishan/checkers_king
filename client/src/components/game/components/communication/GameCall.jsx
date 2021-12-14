@@ -60,7 +60,7 @@ const GameCall = ({ socket, gameId }) => {
 
   return (
     <div>
-      <div className="relative max-w-md mx-auto bg-indigo-300">
+      <div className="relative max-w-md mx-auto bg-gray-300">
         {/* opponent */}
         {true && <video ref={remoteVideoRef} className="" />}
         {!opponentsVideoStream && (
@@ -82,8 +82,17 @@ const GameCall = ({ socket, gameId }) => {
           </div>
         )}
       </div>
-      <div className="w-full p-2 mt-2 text-center text-white bg-indigo-500">
-        video controls
+      <div className="flex justify-around w-full p-2 text-center text-white bg-gray-300 ">
+        <img
+          src="https://img.icons8.com/ios/50/000000/no-camera--v1.png"
+          title="shut camera"
+          className="w-5 h-5"
+        />
+        <img
+          src="https://img.icons8.com/ios/50/000000/no-microphone.png"
+          title="mute mic"
+          className="w-5 h-5"
+        />
       </div>
     </div>
   );

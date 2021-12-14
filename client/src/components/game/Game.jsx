@@ -178,7 +178,10 @@ const Game = () => {
             {botLevel === -1 && (
               <>
                 <div className="col-span-12 md:col-span-3 md:col-start-9">
-                  <div className="flex flex-col h-full">
+                  <div
+                    className="flex flex-col h-full"
+                    style={{ height: "90vmin", minHeight: "80vh" }}
+                  >
                     {/* video call component */}
                     <GameCall socket={socket} gameId={game.id} />
                     {/* chat component */}
