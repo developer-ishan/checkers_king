@@ -12,6 +12,7 @@ const ErrorModal = ({
     setModalState(false);
     history.push(error.redirectTo);
   };
+
   //if callback on close not explicitly provided
   //then it will normally close the modal
   if (cbOnRequestClose === undefined) cbOnRequestClose = closeModal;

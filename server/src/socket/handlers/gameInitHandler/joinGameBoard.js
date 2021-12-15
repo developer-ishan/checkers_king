@@ -5,21 +5,28 @@ const {
 const { sendGameStatus } = require("../../helpers/gameStatusHelper");
 const {
   userAlreadyExistsInOtherGame,
-  emitUserError,
+  emitGameError,
 } = require("../../helpers/errorHelper");
+const {
+  getGamePlayersWithGameId,
+  rejoinGameWithGameId,
+} = require("../../helpers/gameBoardHelpers/playerManager");
 
 module.exports =
   ({ io, socket }) =>
   async (gameId, token) => {
     console.log("inside join game handler... trying to join game...");
     const alreadyExists = await userAlreadyExistsInOtherGame(socket, token);
-    if (alreadyExists) return;
+    if (alreadyExists) {
+      await rejoinGameWithGameId(socket, gameId, token);
+      return;
+    }
 
     console.log("existing game not found... joining game with id ", gameId);
     const game = getGameByID(gameId);
     if (game === undefined) {
       // emitting error in case the game with gameId isn't found
-      emitUserError(
+      emitGameError(
         socket,
         "Invalid Game !",
         "Sorry! this game doesn't exist!!",
@@ -36,10 +43,13 @@ module.exports =
       console.log("joining game as opponent...");
       const color = await addPlayerToGame({
         player: socket,
-        gameId: gameId,
-        token: token,
+        gameId,
+        token,
       });
+
+      io.to(game.id).emit("players-info", getGamePlayersWithGameId(game));
       socket.emit("color", color);
-    }
+    } else socket.emit("players-info", getGamePlayersWithGameId(game));
+
     sendGameStatus(io, gameId);
   };

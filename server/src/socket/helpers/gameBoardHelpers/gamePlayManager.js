@@ -6,6 +6,7 @@ const User = require("../../../models/User");
 const { getPiecesCount, getAllMovesCountByPlayer } = require("../gameHelper");
 const { saveMatch } = require("../../../helpers/matchHelpers");
 const { giveMandatoryMove } = require("./movePieceHelpers/mandatoryMoves");
+const { getUserDetailsWithToken } = require("../userManager");
 
 // set of all the ongoing games
 var games = [];
@@ -20,6 +21,10 @@ const getGameForPlayer = (player) => {
 // gets the game by the gameId assigned while creation
 exports.getGameByID = (GameId) => {
   return games.find((g) => g.id === GameId);
+};
+
+exports.getGamesList = () => {
+  return games;
 };
 
 // gets the trimmed information of ongoing games to join
@@ -44,7 +49,6 @@ exports.getGameByUserId = async (token) => {
     try {
       var decoded = jwt.verify(token, JWT_SECRET).sub;
       const user = await User.findById(decoded);
-      console.log(user.username, " created the game");
       if (user) userId = user._id;
     } catch (err) {
       console.log(err);
@@ -68,30 +72,22 @@ exports.createNewGame = async ({
   token,
 }) => {
   console.log("inside createNewGame helper function...");
-  let userId = null,
+  let user = await getUserDetailsWithToken(token),
     matchId = crypto.randomBytes(4).toString("hex");
-
-  // checking for registered user to create the game
-  if (token.startsWith("guest")) {
-    // GUEST Player
-    console.log("guest user identified....");
-    userId = token;
-  } else if (token) {
-    // REGISTERED USER Player
-    try {
-      var decoded = jwt.verify(token, JWT_SECRET).sub;
-      const user = await User.findById(decoded);
-      console.log("user identified :- " + user.username + "... creating!!");
-      if (user) userId = user._id;
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  const { userId, username, photo } = user;
 
   // creating game object with respective credentials
   const game = {
     turn: "Red",
-    players: [{ socket: player, color, id: userId }],
+    players: [
+      {
+        socket: player,
+        color,
+        id: userId,
+        username,
+        photo,
+      },
+    ],
     id: matchId,
     createTime: new Date(),
     pieceMoves: [],
@@ -197,29 +193,19 @@ exports.onMovePiece = async ({ io, player, selectedPiece, destination }) => {
 // adds the player as an opponent to the game with id gameId
 exports.addPlayerToGame = async ({ player, gameId, token }) => {
   const game = games.find((game) => game.id === gameId);
-  let userId = null;
-  // checking for registered user to create the game
-  if (token.startsWith("guest")) userId = token;
-  else if (token) {
-    try {
-      var decoded = jwt.verify(token, JWT_SECRET).sub;
-      const user = await User.findById(decoded);
-      if (user) {
-        console.log(user.username, " joined the game");
-        userId = user._id;
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  let user = await getUserDetailsWithToken(token);
+  const { userId, username, photo } = user;
+
   // determining the piece color of the opponent
-  let pColor = game.players[0].color === "Red" ? "Black" : "Red";
+  let color = game.players[0].color === "Red" ? "Black" : "Red";
   game.players.push({
-    color: pColor,
     socket: player,
+    color,
     id: userId,
+    username,
+    photo,
   });
-  return pColor;
+  return color;
 };
 
 // saves the chat into the game object

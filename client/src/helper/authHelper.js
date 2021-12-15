@@ -1,5 +1,5 @@
 import BASE from "../config";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 export const register = (user) => {
   return fetch(`${BASE}/api/auth/signup`, {
@@ -38,8 +38,8 @@ export const login = (user) => {
 
 export const authenticate = (data, next) => {
   if (typeof Window !== "undefined") {
-    Cookies.set("token",data.token)
-    Cookies.set("userId",data.userId)
+    Cookies.set("token", data.token);
+    Cookies.set("userId", data.userId);
     // localStorage.setItem("token", JSON.stringify(data));
     next();
   }
@@ -71,4 +71,26 @@ export const isAuthenticated = () => {
     }
     return false;
   } else return false;
+};
+
+// generates a random ID number for the guest joining for first time
+const generateRandomId = () => {
+  const incrementor1 = 123456789,
+    multiplier1 = 987654321;
+  const incrementor2 = 987654321,
+    multiplier2 = 123456789;
+  const randomNumber =
+    Math.floor(Math.random() * multiplier1 + incrementor1) +
+    Math.floor(Math.random() * multiplier2 + incrementor2);
+  return "guest" + randomNumber.toString();
+};
+
+export const getUserIdentification = () => {
+  const token = isAuthenticated();
+  if (token) return token;
+  else {
+    var guestId = Cookies.get("guestId");
+    if (!guestId) guestId = generateRandomId();
+    return guestId;
+  }
 };

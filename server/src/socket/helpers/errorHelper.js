@@ -10,6 +10,21 @@ const emitUserError = (
   errorBtn,
   redirectUrl
 ) => {
+  socket.emit("user-error", {
+    title: errorTitle,
+    msg: errorDesc,
+    buttonText: errorBtn,
+    redirectTo: redirectUrl,
+  });
+};
+
+const emitGameError = (
+  socket,
+  errorTitle,
+  errorDesc,
+  errorBtn,
+  redirectUrl
+) => {
   socket.emit("game-error", {
     title: errorTitle,
     msg: errorDesc,
@@ -35,4 +50,4 @@ const userAlreadyExistsInOtherGame = async (socket, token) => {
   return existingGame !== undefined;
 };
 
-module.exports = { emitUserError, userAlreadyExistsInOtherGame };
+module.exports = { emitUserError, emitGameError, userAlreadyExistsInOtherGame };

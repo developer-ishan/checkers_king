@@ -10,7 +10,7 @@ const {
   sendGameStatus,
   sendAllGames,
 } = require("../../helpers/gameStatusHelper");
-const { emitUserError } = require("../../helpers/errorHelper");
+const { emitGameError } = require("../../helpers/errorHelper");
 
 // check if the game has ended & a winner is declared
 const isWinnerDeclared = async (io, socket) => {
@@ -37,7 +37,7 @@ module.exports =
     });
     if (game === undefined) {
       // error for invalid move or illegal player of game
-      emitUserError(
+      emitGameError(
         socket,
         "Invalid Move!",
         "Attention! the move you are trying to make seems invalid!!",

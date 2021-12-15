@@ -20,13 +20,47 @@ const onQuitGame = require("./handlers/gameEventHandler/onQuitGame");
 
 /* Miscellaneous Declarations */
 const { sendAllGames } = require("./helpers/gameStatusHelper");
+const { addUserToList } = require("./helpers/userManager");
+const { emitUserError } = require("./helpers/errorHelper");
+const {
+  isUserAlreadyInGame,
+  getGameWithGameId,
+} = require("./helpers/gameBoardHelpers/playerManager");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
 
   // on a new user socket connection
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     console.log("a user connected! ID :- " + socket.id);
+
+    /* ---------------------------------- Check For Multiple Devices ----------------------------------*/
+    const addedUser = await addUserToList(socket, socket.handshake.query.token);
+    if (!addedUser) {
+      console.log("User already online... disconnecting!!");
+      emitUserError(
+        socket,
+        "Multiple Devices Detected!!",
+        "Attention! currently connected with > 1 device, close all other connections & retry!!",
+        "Close",
+        ""
+      );
+      socket.disconnect();
+    }
+    /* ---------------------------------- Check For Multiple Devices ----------------------------------*/
+
+    /* ---------------------------------- Check For Existing Games ----------------------------------*/
+    const existingGameID = await isUserAlreadyInGame(
+      socket.handshake.query.token
+    );
+    if (existingGameID) {
+      const game = getGameWithGameId(existingGameID);
+      console.log("existing game found... sending to user...");
+      console.log(game);
+      socket.emit("ongoing-game", game);
+    }
+    /* ---------------------------------- Check For Existing Games----------------------------------*/
+
     sendAllGames(io);
 
     /* game initiation handler calls BEGIN */

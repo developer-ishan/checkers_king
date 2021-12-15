@@ -9,7 +9,7 @@ const {
 const { aiBotMove } = require("../../helpers/gameBotHelpers/gameBot");
 const {
   userAlreadyExistsInOtherGame,
-  emitUserError,
+  emitGameError,
 } = require("../../helpers/errorHelper");
 
 module.exports =
@@ -31,7 +31,7 @@ module.exports =
     });
 
     if (!newGame) {
-      emitUserError(
+      emitGameError(
         socket,
         "Create Game Error!",
         "Sorry! we couldn't create a new game. Try again in a few moments!",
