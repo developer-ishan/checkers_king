@@ -32,8 +32,7 @@ const Navbar = () => {
     username: undefined,
     active: false,
     _id: undefined,
-    f_photo: undefined,
-    g_photo: undefined,
+    photo: undefined
   });
   useEffect(() => {
     const html = document.querySelector("html");
@@ -61,6 +60,7 @@ const Navbar = () => {
       setAuth(token);
       getMySummary(token)
         .then((data) => {
+          console.log(data);
           setUser(data);
         })
         .catch((err) => {
@@ -202,22 +202,7 @@ const Navbar = () => {
             {/* logged in user info */}
             <div className="flex items-center p-2">
               <div className="w-8 h-8 ">
-                {user?.f_photo ? (
-                  <img
-                    src={user?.f_photo}
-                    className="w-full rounded-full"
-                  ></img>
-                ) : user?.g_photo ? (
-                  <img
-                    src={user?.g_photo}
-                    className="w-full rounded-full"
-                  ></img>
-                ) : (
-                  <img
-                    className="w-full rounded-full"
-                    src="https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png"
-                  ></img>
-                )}
+                <img src={user?.photo} className="w-full rounded-full"></img>
               </div>
               <div>
                 {user?.username && (
