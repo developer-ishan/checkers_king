@@ -23,6 +23,7 @@ const Game = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
   const [drawDecision, setDrawDecision] = useState(null);
   const [matchResult, setMatchResult] = useState(null);
+  const [opponentStatus, setOpponentStatus] = useState(null);
   //these both are made from error modal
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
@@ -60,6 +61,18 @@ const Game = () => {
 
     socket.on("color", (color) => {
       setColor(color);
+    });
+
+    socket.on("opponent-status", (status) => {
+      /*opponent status state can have two values
+        1.null --> means everything is fine, no need to show modal
+        2.object--> this object contains the msg and action required by errorModal
+          this object is used for 2 situation
+          2.1 --> when waiting for opponent to join the game for first time
+          2.2 --> when waiting for opponent to rejoin the game after disconnetion
+      */
+      if (status === "ready") setOpponentStatus(null);
+      else setOpponentStatus(status);
     });
 
     socket.on("winner", (winner) => {
@@ -134,6 +147,10 @@ const Game = () => {
       return "col-span-12 col-start-1 text-center text-white lg:col-span-8";
     //if playing against bot no need to small the size
     return "col-span-12 col-start-1 text-center text-white";
+  };
+  const abandonGame = () => {
+    // call a socket to tell to abandon the game
+    alert("yet to be implemented");
   };
   return (
     <>
@@ -220,6 +237,18 @@ const Game = () => {
               modalState={matchResult}
               setModalState={setMatchResult}
               error={matchResult}
+            />
+          )}
+          {/* opponent status,this error will be shown on following cases
+            1.waiting for other player
+            2.opponent got disconnected .. waiting for rejoin
+          */}
+          {!isInviteModalOpen && opponentStatus && (
+            <ErrorModal
+              modalState={opponentStatus}
+              setModalState={setOpponentStatus}
+              cbOnRequestClose={abandonGame}
+              error={opponentStatus}
             />
           )}
         </div>

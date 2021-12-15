@@ -38,6 +38,7 @@ module.exports =
         token: token,
       });
       socket.emit("color", color);
+      socket.to(gameId).emit("opponent-status", "ready");
     }
     sendGameStatus({ socket, gameId });
     sendAllGames(io);

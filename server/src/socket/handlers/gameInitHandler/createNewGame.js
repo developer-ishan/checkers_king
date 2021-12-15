@@ -39,7 +39,18 @@ module.exports =
     });
     socket.emit("color", color);
     if (newGame.isBot) socket.emit("playing-with-bot", newGame.botLevel);
-    else sendAllGames(io);
+    else {
+      //TODO:check for number of players in the game
+      // after creation of game
+      //first player wait for the opponent
+      socket.emit("opponent-status", {
+        title: "waiting for opponent",
+        msg: "wait for opponent to join the game",
+        buttonText: "exit game",
+        redirectTo: "/",
+      });
+      sendAllGames(io);
+    }
 
     /* ------------------------------------- Special Bot Condition ------------------------------------- */
     if (newGame.isBot && newGame.players[0].color === "Black") {
