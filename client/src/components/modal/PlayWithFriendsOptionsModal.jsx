@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Modal from "react-modal";
+import { playSelectSound } from "../../helper/audioHelper";
 
 const PlayWithFriendsOptionsModal = ({
   modalState,
@@ -9,7 +10,11 @@ const PlayWithFriendsOptionsModal = ({
   handleCreateGame,
 }) => {
   const closeModal = () => {
+    playSelectSound();
     setModalState(false);
+  };
+  const playOptionSelectSound = () => {
+    playSelectSound();
   };
   return (
     <Modal
@@ -45,12 +50,13 @@ const PlayWithFriendsOptionsModal = ({
                       name="red"
                       id="red"
                       checked={gameOptions.checker === "Red"}
-                      onChange={() =>
+                      onChange={() => {
+                        playOptionSelectSound();
                         setGameOptions({
                           ...gameOptions,
                           checker: "Red",
-                        })
-                      }
+                        });
+                      }}
                     />
                     <p className="mx-2">Red</p>
                   </label>
@@ -60,12 +66,13 @@ const PlayWithFriendsOptionsModal = ({
                       name="black"
                       id="black"
                       checked={gameOptions.checker === "Black"}
-                      onChange={() =>
+                      onChange={() => {
+                        playOptionSelectSound();
                         setGameOptions({
                           ...gameOptions,
                           checker: "Black",
-                        })
-                      }
+                        });
+                      }}
                     />
                     <p className="mx-2">Black</p>
                   </label>
@@ -83,6 +90,7 @@ const PlayWithFriendsOptionsModal = ({
                   className="dark:text-pink-500"
                   checked={gameOptions.forceJump}
                   onChange={() => {
+                    playOptionSelectSound();
                     setGameOptions({
                       ...gameOptions,
                       forceJump: !gameOptions.forceJump,
@@ -102,12 +110,13 @@ const PlayWithFriendsOptionsModal = ({
                     name="rated"
                     id="rated"
                     checked={gameOptions.isRated === true}
-                    onChange={() =>
+                    onChange={() => {
+                      playOptionSelectSound();
                       setGameOptions({
                         ...gameOptions,
                         isRated: true,
-                      })
-                    }
+                      });
+                    }}
                   />
                   <p className="mx-2">Rated</p>
                 </label>
@@ -117,12 +126,13 @@ const PlayWithFriendsOptionsModal = ({
                     name="friendly"
                     id="friendly"
                     checked={gameOptions.isRated === false}
-                    onChange={() =>
+                    onChange={() => {
+                      playOptionSelectSound();
                       setGameOptions({
                         ...gameOptions,
                         isRated: false,
-                      })
-                    }
+                      });
+                    }}
                   />
                   <p className="mx-2">Friendly</p>
                 </label>

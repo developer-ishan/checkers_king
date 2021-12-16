@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
+import { playSelectSound } from "../../helper/audioHelper";
 const SmallScreenInfoModal = ({
   modalState,
   setModalState,
@@ -8,6 +9,7 @@ const SmallScreenInfoModal = ({
   children,
 }) => {
   const closeModal = () => {
+    playSelectSound();
     setModalState(false);
   };
 

@@ -8,10 +8,10 @@ import Modal from "react-modal";
 import introJs from "intro.js";
 import "intro.js/introjs.css";
 import ErrorModal from "../modal/ErrorModal";
+import { playWelcomeSound } from "../../helper/audioHelper";
 Modal.setAppElement("#root");
 
 const Home = ({ games, setGames }) => {
-  // const [music] = useState(new Audio(HomeSong));
   const [socket, setSocket] = useContext(SocketContext);
   const [isUserErrorModalOpen, setIsUserErrorModalOpen] = useState(false);
 
@@ -32,20 +32,13 @@ const Home = ({ games, setGames }) => {
       .setOptions({
         disableInteraction: true,
       })
-      .start();
+      .addHints();
   }, []);
+  // document.onclick = welcomeSound.play();
+  document.onclick = playWelcomeSound();
 
-  const playMusic = () => {
-    // music.play();
-    //TODO:later turn it on
-  };
-
-  // playMusic();
   return (
-    <div
-      className="min-h-screen bg-yellow-300 dark:bg-gray-900 dark:text-gray-200"
-      onMouseMove={() => playMusic()}
-    >
+    <div className="min-h-screen bg-yellow-300 dark:bg-gray-900 dark:text-gray-200">
       {error && (
         <ErrorModal
           modalState={isUserErrorModalOpen}

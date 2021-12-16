@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
+import { playSelectSound } from "../../helper/audioHelper";
 
 const RandomGameOptionsModal = ({
   modalState,
@@ -9,7 +10,11 @@ const RandomGameOptionsModal = ({
   handleStartGame,
 }) => {
   const closeModal = () => {
+    playSelectSound();
     setModalState(false);
+  };
+  const playOptionSelectSound = () => {
+    playSelectSound();
   };
   return (
     <Modal
@@ -39,7 +44,10 @@ const RandomGameOptionsModal = ({
             <div class="flex flex-col py-4">
               <div className="flex flex-row items-center justify-between my-1">
                 <h2 className="font-bold capitalize">play with bot</h2>
-                <label htmlFor="playwithbot">
+                <label
+                  htmlFor="playwithbot"
+                  onClick={() => playOptionSelectSound()}
+                >
                   <input
                     type="checkbox"
                     name="playwithbot"
@@ -54,7 +62,11 @@ const RandomGameOptionsModal = ({
               {gameOptions.bot === true && (
                 <>
                   <div className="flex flex-row items-center justify-between my-1">
-                    <label htmlFor="easy" className="flex items-center mx-1">
+                    <label
+                      htmlFor="easy"
+                      className="flex items-center mx-1"
+                      onClick={() => playOptionSelectSound()}
+                    >
                       <input
                         type="radio"
                         name="easy"
@@ -66,7 +78,11 @@ const RandomGameOptionsModal = ({
                       />
                       <p className="mx-2">Easy</p>
                     </label>
-                    <label htmlFor="medium" className="flex items-center mx-1">
+                    <label
+                      htmlFor="medium"
+                      className="flex items-center mx-1"
+                      onClick={() => playOptionSelectSound()}
+                    >
                       <input
                         type="radio"
                         name="medium"
@@ -78,7 +94,11 @@ const RandomGameOptionsModal = ({
                       />
                       <p className="mx-2">Medium</p>
                     </label>
-                    <label htmlFor="hard" className="flex items-center mx-1">
+                    <label
+                      htmlFor="hard"
+                      className="flex items-center mx-1"
+                      onClick={() => playOptionSelectSound()}
+                    >
                       <input
                         type="radio"
                         name="hard"
@@ -98,7 +118,11 @@ const RandomGameOptionsModal = ({
                     </h2>
 
                     <div className="flex items-center space-x-2">
-                      <label htmlFor="red" className="flex items-center mx-1">
+                      <label
+                        htmlFor="red"
+                        className="flex items-center mx-1"
+                        onClick={() => playOptionSelectSound()}
+                      >
                         <input
                           type="radio"
                           name="red"
@@ -113,7 +137,11 @@ const RandomGameOptionsModal = ({
                         />
                         <p className="mx-2">Red</p>
                       </label>
-                      <label htmlFor="black" className="flex items-center mx-1">
+                      <label
+                        htmlFor="black"
+                        className="flex items-center mx-1"
+                        onClick={() => playOptionSelectSound()}
+                      >
                         <input
                           type="radio"
                           name="black"
@@ -136,7 +164,10 @@ const RandomGameOptionsModal = ({
             {/* force jump */}
             <div class="flex flex-row items-center justify-between py-4">
               <h2 className="font-bold capitalize">mandatory moves : </h2>
-              <label htmlFor="forcedjumps">
+              <label
+                htmlFor="forcedjumps"
+                onClick={() => playOptionSelectSound()}
+              >
                 <input
                   type="checkbox"
                   name="forcedjumps"

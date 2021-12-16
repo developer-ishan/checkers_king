@@ -1,7 +1,12 @@
+import introJs from "intro.js";
 import React, { useEffect, useState, useContext } from "react";
 import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../../../../context/UserContext";
+import {
+  playClickSound,
+  playSelectSound,
+} from "../../../../helper/audioHelper";
 import {
   authenticate,
   isAuthenticated,
@@ -137,6 +142,7 @@ const Navbar = () => {
   };
   const handleToggle = () => {
     const html = document.querySelector("html");
+    playSelectSound();
     if (darkMode) {
       html.classList.remove("dark");
       localStorage.setItem("DarkMode", "false");
@@ -197,7 +203,7 @@ const Navbar = () => {
 
         {/* login handle */}
         <div
-          className="w-full px-2"
+          className="flex flex-col items-center justify-end w-full px-2 sm:flex-row"
           data-title="Account"
           data-intro="manage your account here , you will need one to save your matches"
         >
@@ -205,7 +211,10 @@ const Navbar = () => {
           {!auth && (
             <button
               className="block w-full px-4 py-2 mx-2 ml-auto text-xs font-bold text-white uppercase transition-all duration-150 bg-purple-500 rounded shadow outline-none sm:w-auto active:bg-purple-600 hover:shadow-md hover:bg-purple-600 focus:outline-none ease"
-              onClick={() => setIsLoginModalOpen(true)}
+              onClick={() => {
+                setIsLoginModalOpen(true);
+                playClickSound();
+              }}
             >
               login
             </button>
@@ -213,7 +222,7 @@ const Navbar = () => {
 
           {/* if logged in show user profiles */}
           {auth && (
-            <div className="flex flex-col items-center justify-end ml-auto sm:flex-row md:flex-row">
+            <div className="flex flex-col items-center justify-end w-full md:w-auto sm:flex-row md:flex-row">
               {/* logged in user info */}
               <div className="flex items-center p-2">
                 <div className="w-8 h-8 ">
@@ -265,6 +274,14 @@ const Navbar = () => {
               </button>
             </div>
           )}
+          <button
+            className="block w-full px-4 py-2 mx-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-gray-500 rounded shadow outline-none sm:w-auto active:bg-yellow-500 hover:shadow-md hover:bg-gray-600 focus:outline-none ease"
+            data-hint="click on this button to take tour of website"
+            data-hintposition="top-left"
+            onClick={() => introJs().start()}
+          >
+            take tour!
+          </button>
         </div>
         {/* modal containing the login form */}
         <SmallScreenInfoModal

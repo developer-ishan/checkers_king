@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+  playClickSound,
+  playSelectSound,
+} from "../../../../helper/audioHelper";
 
 const GameButton = ({
   onClickFn,
@@ -8,10 +12,15 @@ const GameButton = ({
 }) => {
   let classes = "transform -skew-x-15 ";
   classes = classes + " " + className;
+
   return (
     <button
       className={classes}
-      onClick={() => onClickFn()}
+      onClick={() => {
+        onClickFn();
+        // playSelectSound();
+        playClickSound();
+      }}
       style={{ boxShadow: `6px 6px 0 ${shadowColor}` }}
     >
       {children}

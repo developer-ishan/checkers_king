@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import { isAuthenticated } from "../../../../helper/authHelper";
 import GameButton from "../others/GameButton";
 import PlayWithFriendsOptionsModal from "../../../modal/PlayWithFriendsOptionsModal";
+import { playClickSound } from "../../../../helper/audioHelper";
 const CreateGame = ({ socket }) => {
   let history = useHistory();
   const [isGameOptionModalOpen, setIsGameOptionModalOpen] = useState(false);
@@ -13,6 +14,7 @@ const CreateGame = ({ socket }) => {
   });
 
   const handleCreateGame = () => {
+    playClickSound();
     const token = isAuthenticated();
     const { checker, forceJump, isRated } = gameOptions;
     // ARGS :- ("create-game" ,isBot, botLevel, color, mandatoryMoves, isRated, token)
