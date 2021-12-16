@@ -33,7 +33,7 @@ const JoinGame = ({ socket }) => {
           }}
           placeholder="Enter Game Code"
           autoComplete="off"
-          class="text-gray-400 text-center placeholder-gray-400  border-dashed border-4 w-full border-yellow-300 active:ring-yellow-300 focus:border-yellow-300 focus:ring-yellow-300"
+          class="text-gray-400 text-center dark:bg-gray-700 placeholder-gray-400  border-dashed border-4 w-full border-yellow-300 active:ring-yellow-300 focus:border-yellow-300 focus:ring-yellow-300"
         />
         <br />
         {/* <button

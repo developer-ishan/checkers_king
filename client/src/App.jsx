@@ -28,11 +28,9 @@ const App = () => {
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
-          <div className="h-full ">
-            {socket !== null && <Home games={games} setGames={setGames} />}
-            {/* {socket !== null && <Main games={games} setGames={setGames} />} */}
-            {socket === null && <h2>loading....</h2>}
-          </div>
+          {socket !== null && <Home games={games} setGames={setGames} />}
+          {/* {socket !== null && <Main games={games} setGames={setGames} />} */}
+          {socket === null && <Lobby heading="welcome" />}
         </Route>
         <Route exact path="/game">
           <div className="h-full ">

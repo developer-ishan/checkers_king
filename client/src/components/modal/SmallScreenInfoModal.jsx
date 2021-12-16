@@ -17,7 +17,7 @@ const SmallScreenInfoModal = ({
 
   return (
     <Modal
-      className="absolute w-11/12 max-w-md transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+      className="absolute w-4/5 max-w-xl transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
       isOpen={modalState}
       onRequestClose={cbOnRequestClose}
     >

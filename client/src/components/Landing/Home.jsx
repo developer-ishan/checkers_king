@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import Navbar from "./components/others/Navbar";
-import UserAction from "./components/others/UserAction";
 import HomeSong from "../../static/home.mp3";
 import { SocketContext } from "../../context/SocketContext";
-
+import Leaderboard from "./components/others/Leaderboard";
+import RandomPlay from "./components/gameCreateJoin/RandomPlay";
+import PlayWithFriends from "./components/gameCreateJoin/PlayWithFriends";
 const Home = ({ games, setGames }) => {
   const [music] = useState(new Audio(HomeSong));
   const [socket, setSocket] = useContext(SocketContext);
@@ -23,17 +24,29 @@ const Home = ({ games, setGames }) => {
   // playMusic();
   return (
     <div
-      className="bg-yellow-300 dark:bg-gray-900 dark:text-gray-200"
+      className="h-screen bg-yellow-300 dark:bg-gray-900 dark:text-gray-200"
       onMouseMove={() => playMusic()}
     >
       <Navbar />
-      <div className="grid grid-cols-12">
+      <div className="grid grid-cols-12 mx-auto max-w-screen-2xl">
         {/* left side */}
-        <div className="grid col-span-12 col-start-1 px-5 lg:col-span-8">
-          <UserAction socket={socket} />
+        <div className="col-span-12 col-start-1 px-5 lg:col-span-8">
+          <RandomPlay socket={socket} />
+          <PlayWithFriends socket={socket} />
         </div>
 
+        {/* rightside */}
+        <div className="col-span-12 lg:col-span-auto lg:col-start-9">
+          <Leaderboard />
+        </div>
+
+        {/* <RandomPlay socket={socket} />
+        <PlayWithFriends socket={socket} /> */}
+
         {/* right side */}
+        {/* <div className="col-span-12 row-span-1 row-start-1 px-5 lg:col-start-9">
+          <Leaderboard />
+        </div> */}
         {/* <div>
           <TopPlayers />
           <RecentMatches />

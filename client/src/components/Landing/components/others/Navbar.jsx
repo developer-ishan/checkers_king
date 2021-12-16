@@ -149,133 +149,135 @@ const Navbar = () => {
   };
 
   return (
-    <header class="flex flex-col pb-2 sm:flex-row w-full items-center mb-4 text-gray-700 bg-white dark:bg-gray-700 dark:text-white border-t border-gray-100 shadow-md body-font">
-      {/* logo and toggle btn */}
-      <div class=" w-full max-w-sm flex items-center justify-between px-6 py-3  md:flex-row ">
-        {/* logo */}
-        <a
-          href="/"
-          class="flex items-center font-medium text-gray-900 title-font md:mb-0"
-        >
-          <img src="/images/checkers-icon.png" alt="" />
-          <p className="m-2 text-xs leading-4 tracking-wider uppercase dark:text-white">
-            checkers <br /> king
-          </p>
-        </a>
-        {/* dark mode toggle */}
-        <div class="flex justify-end items-center space-x-2 mx-auto relative">
-          <span class="text-xs font-semibold">Light </span>
-          <div>
-            <input
-              type="checkbox"
-              name=""
-              id="checkbox"
-              class="hidden"
-              checked={darkMode}
-              onClick={handleToggle}
-            />
-            <label for="checkbox" class="cursor-pointer">
-              <div class="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
-                <div class="w-4 h-4 switch-ball bg-white rounded-full shadow"></div>
-              </div>
-            </label>
-          </div>
-          <span class="text-xs font-semibold">Dark</span>
-        </div>
-      </div>
-
-      {/* login handle */}
-      <div className="w-full px-2">
-        {/* if not logged in show signup button */}
-        {!auth && (
-          <button
-            className="block w-full px-4 py-2 mx-2 ml-auto text-xs font-bold text-white uppercase transition-all duration-150 bg-purple-500 rounded shadow outline-none sm:w-auto active:bg-purple-600 hover:shadow-md hover:bg-purple-600 focus:outline-none ease"
-            onClick={() => setIsLoginModalOpen(true)}
+    <div className="bg-white shadow-md dark:bg-gray-700">
+      <header class="mx-auto max-w-screen-2xl flex flex-col pb-2 sm:flex-row w-full items-center mb-4 text-gray-700  dark:text-white   body-font">
+        {/* logo and toggle btn */}
+        <div class=" w-full max-w-sm flex items-center justify-between px-6 py-3  md:flex-row ">
+          {/* logo */}
+          <a
+            href="/"
+            class="flex items-center font-medium text-gray-900 title-font md:mb-0"
           >
-            login
-          </button>
-        )}
-
-        {/* if logged in show user profiles */}
-        {auth && (
-          <div className="flex flex-col items-center justify-end ml-auto sm:flex-row md:flex-row">
-            {/* logged in user info */}
-            <div className="flex items-center p-2">
-              <div className="w-8 h-8 ">
-                {user?.f_photo ? (
-                  <img
-                    src={user?.f_photo}
-                    className="w-full rounded-full"
-                  ></img>
-                ) : user?.g_photo ? (
-                  <img
-                    src={user?.g_photo}
-                    className="w-full rounded-full"
-                  ></img>
-                ) : (
-                  <img
-                    className="w-full rounded-full"
-                    src="https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png"
-                  ></img>
-                )}
-              </div>
-              <div>
-                {user?.username && (
-                  <h1>
-                    <a href={`/user/${user._id}`} className="inline-block">
-                      {user.username}
-                    </a>
-                  </h1>
-                )}
-              </div>
+            <img src="/images/checkers-icon.png" alt="" />
+            <p className="m-2 text-xs leading-4 tracking-wider uppercase dark:text-white">
+              checkers <br /> king
+            </p>
+          </a>
+          {/* dark mode toggle */}
+          <div class="flex justify-end items-center space-x-2 mx-auto relative">
+            <span class="text-xs font-semibold">Light </span>
+            <div>
+              <input
+                type="checkbox"
+                name=""
+                id="checkbox"
+                class="hidden"
+                checked={darkMode}
+                onClick={handleToggle}
+              />
+              <label for="checkbox" class="cursor-pointer">
+                <div class="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
+                  <div class="w-4 h-4 switch-ball bg-white rounded-full shadow"></div>
+                </div>
+              </label>
             </div>
-            {/* logout button */}
-            <button
-              onClick={() => {
-                signout(() => {
-                  setAuth(false);
-                  setUser({
-                    username: undefined,
-                    active: false,
-                    _id: undefined,
-                    f_photo: undefined,
-                    g_photo: undefined,
-                  });
-                  history.push("/");
-                });
-              }}
-              className="w-full px-4 py-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-indigo-500 rounded shadow outline-none sm:w-min active:bg-indigo-600 hover:shadow-md hover:bg-indigo-600 focus:outline-none ease"
-            >
-              Logout
-            </button>
+            <span class="text-xs font-semibold">Dark</span>
           </div>
+        </div>
+
+        {/* login handle */}
+        <div className="w-full px-2">
+          {/* if not logged in show signup button */}
+          {!auth && (
+            <button
+              className="block w-full px-4 py-2 mx-2 ml-auto text-xs font-bold text-white uppercase transition-all duration-150 bg-purple-500 rounded shadow outline-none sm:w-auto active:bg-purple-600 hover:shadow-md hover:bg-purple-600 focus:outline-none ease"
+              onClick={() => setIsLoginModalOpen(true)}
+            >
+              login
+            </button>
+          )}
+
+          {/* if logged in show user profiles */}
+          {auth && (
+            <div className="flex flex-col items-center justify-end ml-auto sm:flex-row md:flex-row">
+              {/* logged in user info */}
+              <div className="flex items-center p-2">
+                <div className="w-8 h-8 ">
+                  {user?.f_photo ? (
+                    <img
+                      src={user?.f_photo}
+                      className="w-full rounded-full"
+                    ></img>
+                  ) : user?.g_photo ? (
+                    <img
+                      src={user?.g_photo}
+                      className="w-full rounded-full"
+                    ></img>
+                  ) : (
+                    <img
+                      className="w-full rounded-full"
+                      src="https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png"
+                    ></img>
+                  )}
+                </div>
+                <div>
+                  {user?.username && (
+                    <h1>
+                      <a href={`/user/${user._id}`} className="inline-block">
+                        {user.username}
+                      </a>
+                    </h1>
+                  )}
+                </div>
+              </div>
+              {/* logout button */}
+              <button
+                onClick={() => {
+                  signout(() => {
+                    setAuth(false);
+                    setUser({
+                      username: undefined,
+                      active: false,
+                      _id: undefined,
+                      f_photo: undefined,
+                      g_photo: undefined,
+                    });
+                    history.push("/");
+                  });
+                }}
+                className="w-full px-4 py-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-indigo-500 rounded shadow outline-none sm:w-min active:bg-indigo-600 hover:shadow-md hover:bg-indigo-600 focus:outline-none ease"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+        {/* modal containing the login form */}
+        <SmallScreenInfoModal
+          title="login"
+          modalState={isLoginModalOpen}
+          setModalState={setIsLoginModalOpen}
+        >
+          <LoginSignUpForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            handleLogIn={handleLogIn}
+            handleSignup={handleSignup}
+            loginLoading={loginLoading}
+            signUpLoading={signUpLoading}
+          />
+        </SmallScreenInfoModal>
+        {error && (
+          <ErrorModal
+            modalState={isErrorModalOpen}
+            setModalState={setIsErrorModalOpen}
+            error={error}
+          />
         )}
-      </div>
-      {/* modal containing the login form */}
-      <SmallScreenInfoModal
-        title="login"
-        modalState={isLoginModalOpen}
-        setModalState={setIsLoginModalOpen}
-      >
-        <LoginSignUpForm
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          handleLogIn={handleLogIn}
-          handleSignup={handleSignup}
-          loginLoading={loginLoading}
-          signUpLoading={signUpLoading}
-        />
-      </SmallScreenInfoModal>
-      {error && (
-        <ErrorModal
-          modalState={isErrorModalOpen}
-          setModalState={setIsErrorModalOpen}
-          error={error}
-        />
-      )}
-    </header>
+      </header>
+    </div>
   );
 };
 
