@@ -153,10 +153,16 @@ const Navbar = () => {
       <header class="mx-auto max-w-screen-2xl flex flex-col pb-2 sm:flex-row w-full items-center mb-4 text-gray-700  dark:text-white   body-font">
         {/* logo and toggle btn */}
         <div class=" w-full max-w-sm flex items-center justify-between px-6 py-3  md:flex-row ">
+          <span
+            data-title="Welcome!"
+            data-intro="i am a website tour , i will navigate you throught the website you can also use keyboard arrow keys to navigate"
+          ></span>
           {/* logo */}
           <a
             href="/"
             class="flex items-center font-medium text-gray-900 title-font md:mb-0"
+            data-title="Welcome!"
+            data-intro="we hope you will enjoy the game. see u on the leaderboard 🤠"
           >
             <img src="/images/checkers-icon.png" alt="" />
             <p className="m-2 text-xs leading-4 tracking-wider uppercase dark:text-white">
@@ -164,7 +170,11 @@ const Navbar = () => {
             </p>
           </a>
           {/* dark mode toggle */}
-          <div class="flex justify-end items-center space-x-2 mx-auto relative">
+          <div
+            class="flex justify-end items-center space-x-2 mx-auto relative"
+            data-title="dark mode"
+            data-intro="click on the toggle to change the theme"
+          >
             <span class="text-xs font-semibold">Light </span>
             <div>
               <input
@@ -186,7 +196,11 @@ const Navbar = () => {
         </div>
 
         {/* login handle */}
-        <div className="w-full px-2">
+        <div
+          className="w-full px-2"
+          data-title="Account"
+          data-intro="manage your account here , you will need one to save your matches"
+        >
           {/* if not logged in show signup button */}
           {!auth && (
             <button

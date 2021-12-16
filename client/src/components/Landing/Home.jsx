@@ -6,7 +6,8 @@ import Leaderboard from "./components/others/Leaderboard";
 import RandomPlay from "./components/gameCreateJoin/RandomPlay";
 import PlayWithFriends from "./components/gameCreateJoin/PlayWithFriends";
 import Modal from "react-modal";
-
+import introJs from "intro.js";
+import "intro.js/introjs.css";
 import ErrorModal from "../modal/ErrorModal";
 Modal.setAppElement("#root");
 
@@ -28,6 +29,11 @@ const Home = ({ games, setGames }) => {
       setError(error);
       setIsUserErrorModalOpen(true);
     });
+    introJs()
+      .setOptions({
+        disableInteraction: true,
+      })
+      .start();
   }, []);
 
   const playMusic = () => {
@@ -51,8 +57,8 @@ const Home = ({ games, setGames }) => {
       <Navbar />
       <div className="grid grid-cols-12 mx-auto max-w-screen-2xl">
         {/* left side */}
-        <div className="col-span-12 col-start-1 px-5 lg:col-span-8">
-          <RandomPlay socket={socket} />
+        <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
+          <RandomPlay socket={socket} d />
           <PlayWithFriends socket={socket} />
         </div>
 

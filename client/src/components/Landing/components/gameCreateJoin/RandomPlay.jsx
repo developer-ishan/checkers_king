@@ -46,14 +46,19 @@ const RandomPlay = ({ socket }) => {
             a tea house party
           </span>
         </h2>
-
-        <GameButton
-          className="p-2 font-bold text-indigo-500 bg-white"
-          onClickFn={() => setIsGameOptionModalOpen(true)}
-          shadowColor="#FBC638"
+        <span
+          data-title="play now!"
+          data-intro="in this section you can play with bot or with an online player"
         >
-          Play Now
-        </GameButton>
+          <GameButton
+            className="p-2 font-bold text-indigo-500 bg-white"
+            onClickFn={() => setIsGameOptionModalOpen(true)}
+            shadowColor="#FBC638"
+          >
+            Play Now
+          </GameButton>
+        </span>
+
         <div className="absolute bottom-0 right-0 hidden md:block ">
           <img
             alt="people playing games"
