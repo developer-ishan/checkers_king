@@ -30,7 +30,7 @@ module.exports =
         player.socket.emit("color", player.color);
       }
       // sending the game status to appropriate clients
-      sendGameStatus({ socket, gameId: randomGame.id });
+      sendGameStatus(io, randomGame.id);
       sendAllGames(io);
     }
   };

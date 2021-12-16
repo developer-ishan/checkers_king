@@ -32,8 +32,7 @@ const Navbar = () => {
     username: undefined,
     active: false,
     _id: undefined,
-    f_photo: undefined,
-    g_photo: undefined,
+    photo: undefined,
   });
   useEffect(() => {
     const html = document.querySelector("html");
@@ -61,6 +60,7 @@ const Navbar = () => {
       setAuth(token);
       getMySummary(token)
         .then((data) => {
+          console.log(data);
           setUser(data);
         })
         .catch((err) => {

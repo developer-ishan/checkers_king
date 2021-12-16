@@ -13,17 +13,20 @@ const giveMandatoryMove = (board, piece) => {
   return null;
 };
 
+// checks if mandatory moves can be performed in game
 const isMandatoryMove = (selectedPiece, destination) => {
   const diffI = Math.abs(selectedPiece.i - destination.i);
   const diffJ = Math.abs(selectedPiece.j - destination.j);
   return diffI === 2 && diffJ === 2;
 };
 
+// performing mandatory moves
 const performMandatoryMove = (board, selectedPiece, destination) => {
   if (isMandatoryMove(selectedPiece, destination)) {
     console.log("performing mandatory moves...");
     let currPiece = destination;
     let destPiece = giveMandatoryMove(board, currPiece);
+
     // iterating till the conditions for mandatory move is satisfied
     while (destPiece != null) {
       // simulating move without changing the turn in the game

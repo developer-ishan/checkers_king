@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
-import Cookies from "js-cookie";
 
 import { SocketContext } from "./context/SocketContext";
 import Game from "./components/game/Game";
@@ -12,14 +11,20 @@ import Replay from "./components/replay/Replay";
 import Test from "./Test";
 import Lobby from "./components/lobby/Lobby";
 
+import { getUserIdentification } from "./helper/authHelper";
+
 const App = () => {
   const [socket, setSocket] = useContext(SocketContext);
   const [games, setGames] = useState([]);
 
   // connecting socket-client to the socket server for communication
   useEffect(() => {
+    const userIdToken = getUserIdentification();
     const clientSocket = io(API, {
       transports: ["websocket"],
+      query: {
+        token: userIdToken,
+      },
     });
     setSocket(clientSocket);
   }, []);
