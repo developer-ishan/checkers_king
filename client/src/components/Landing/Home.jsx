@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import Navbar from "./components/others/Navbar";
-import HomeSong from "../../static/home.mp3";
 import { SocketContext } from "../../context/SocketContext";
 import Leaderboard from "./components/others/Leaderboard";
 import RandomPlay from "./components/gameCreateJoin/RandomPlay";
@@ -12,7 +11,7 @@ import ErrorModal from "../modal/ErrorModal";
 Modal.setAppElement("#root");
 
 const Home = ({ games, setGames }) => {
-  const [music] = useState(new Audio(HomeSong));
+  // const [music] = useState(new Audio(HomeSong));
   const [socket, setSocket] = useContext(SocketContext);
   const [isUserErrorModalOpen, setIsUserErrorModalOpen] = useState(false);
 
