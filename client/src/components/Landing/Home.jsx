@@ -24,7 +24,7 @@ const Home = ({ games, setGames }) => {
   // playMusic();
   return (
     <div
-      className="h-screen bg-yellow-300 dark:bg-gray-900 dark:text-gray-200"
+      className="min-h-screen bg-yellow-300 dark:bg-gray-900 dark:text-gray-200"
       onMouseMove={() => playMusic()}
     >
       <Navbar />
