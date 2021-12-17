@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { isAuthenticated } from "../../../../helper/authHelper";
+import { getUserIdentification, isAuthenticated } from "../../../../helper/authHelper";
 import GameButton from "../others/GameButton";
 
 const JoinGame = ({ socket }) => {
@@ -8,8 +8,8 @@ const JoinGame = ({ socket }) => {
   const history = useHistory();
 
   const joinGame = (e) => {
-    const token = isAuthenticated();
-    socket.emit("join-game", gameId, token);
+    const token = getUserIdentification();
+      socket.emit("join-game", gameId, token);
     history.push("/game");
   };
 

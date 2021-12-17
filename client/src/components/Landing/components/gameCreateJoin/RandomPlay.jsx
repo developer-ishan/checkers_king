@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { isAuthenticated } from "../../../../helper/authHelper";
 import GameButton from "../others/GameButton";
 import RandomGameOptionsModal from "../../../modal/RandomGameOptionsModal";
+import Cookies from "js-cookie";
 
 Modal.setAppElement("#root");
 
@@ -30,7 +31,13 @@ const RandomPlay = ({ socket }) => {
         false, // isRated field is false for bot by default
         token
       );
-    else socket.emit("random-play-user", forceJump, token);
+    else if(token)
+      socket.emit("random-play-user", forceJump, token);
+    else{
+      alert("Starting guest game!!");
+      const guestId = Cookies.get("guestId");
+      socket.emit("random-play-guest", guestId, forceJump);
+    }
     history.push("/game");
   };
 

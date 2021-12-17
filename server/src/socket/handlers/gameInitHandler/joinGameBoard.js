@@ -51,6 +51,6 @@ module.exports =
       socket.emit("color", color);
       socket.to(gameId).emit("opponent-status", "ready");
     } else socket.emit("players-info", getGamePlayersWithGameId(game));
-    sendAllGames(io);
+    // sendAllGames(io);
     sendGameStatus(io, gameId);
   };

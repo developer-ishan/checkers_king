@@ -9,6 +9,7 @@ const {
 module.exports =
   ({ io, socket }) =>
   async (guestId, mandatoryMoves) => {
+    console.log("Creating guest random game");
     const randomGame = await randomPlayWithGuest({
       player: socket,
       guestId,

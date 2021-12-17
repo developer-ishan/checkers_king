@@ -25,7 +25,9 @@ const saveMatch = async (
     startTime,
     endTime,
   });
-
+  if(p1.id.startsWith("guest") || p2.id.startsWith("guest")){
+    return;
+  }
   // handles draw condition between players
   if (isBot) {
     // handles games with bots

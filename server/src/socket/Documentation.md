@@ -102,8 +102,8 @@ Format :-
 3. random-play-guest
 Format :-
 (
-    guestId: "",
-    mandatoryMoves: bool
+    mandatoryMoves: bool,
+    guestId: ""
 )
 
 4. random-play-user

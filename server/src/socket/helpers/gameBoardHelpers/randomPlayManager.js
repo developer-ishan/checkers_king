@@ -55,6 +55,7 @@ exports.randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
 
   // if the conditions for match didn't match push guest into waiting queue
   waitingGuests.push({ player, guestId, mandatoryMoves });
+  console.log({ guestId, mandatoryMoves }, "Pushed to waiting guests");
   return null;
 };
 
