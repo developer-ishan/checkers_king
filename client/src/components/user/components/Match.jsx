@@ -70,7 +70,7 @@ const Match = ({ matchId, players, userId }) => {
           {self && (
             <div className="flex flex-col items-center">
               <img
-                src={self.profileUrl}
+                src={self.photo}
                 alt="player profile"
                 className="w-3/4 h-3/4"
               />
@@ -89,7 +89,7 @@ const Match = ({ matchId, players, userId }) => {
             {opponent && (
               <div className="flex flex-col items-center">
                 <img
-                  src={opponent.profileUrl}
+                  src={opponent.photo}
                   alt="player profile"
                   className="w-3/4 h-3/4"
                 />

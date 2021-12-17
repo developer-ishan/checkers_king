@@ -1,5 +1,6 @@
 const Match = require("../models/Match");
 const mongoose = require("mongoose");
+const keys = require("../config/keys");
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.getMyMatches = async (req, res, next) => {
@@ -63,14 +64,14 @@ exports.getMyMatches = async (req, res, next) => {
           userName: username,
           rating: rating,
           ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
-          profileUrl:
-            "https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png",
+          photo: keys.SERVER_BASE + "/public/dp/default.png",
         };
-        if ("google" in detail) {
-          player["profileUrl"] = detail.google.profileUrl;
+        if (detail.photo)
+          player.photo = keys.SERVER_BASE + "/public/dp/" + detail.photo;
+        else if ("google" in detail.methods) {
+          player.photo = detail.google.photo;
         } else if ("facebook" in detail) {
-          if (detail.facebook.photo)
-            player["profileUrl"] = detail.facebook.photo;
+          if (detail.facebook.photo) player.photo = detail.facebook.photo;
         }
         playersInfo.push(player);
       });
@@ -127,8 +128,44 @@ exports.getMatchById = async (req, res, next) => {
       return res
         .status(404)
         .json({ success: false, msg: "No Matches Found!!" });
-    return res.json(matches[0]);
+    let filteredData = [];
+    matches.forEach((match) => {
+      //creating an object of userId:ratingChange to refrence it later
+      let ratingChange = {};
+      match.players.forEach((player) => {
+        ratingChange[player.userId] = player.delta;
+      });
+
+      //filtering player info
+      let playersInfo = [];
+      match.details.forEach((detail) => {
+        const { _id, username, rating } = detail;
+        let player = {
+          id: _id,
+          userName: username,
+          rating: rating,
+          ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
+          photo: keys.SERVER_BASE + "/public/dp/default.png",
+        };
+        if (detail.photo)
+          player.photo = keys.SERVER_BASE + "/public/dp/" + detail.photo;
+        else if ("google" in detail.methods) {
+          player.photo = detail.google.photo;
+        } else if ("facebook" in detail) {
+          if (detail.facebook.photo) player.photo = detail.facebook.photo;
+        }
+        playersInfo.push(player);
+      });
+
+      const { _id } = match;
+      //this _id is actullay the id of the db object
+      //not the id which was shared between friends
+      filteredData.push({ matchId: _id, players: playersInfo });
+    });
+    console.log("all matches by this user", matches);
+    return res.json(filteredData[0]);
   } catch (err) {
+    console.log(err);
     return res.status(404).json({
       success: false,
       msg: "no such match found",
