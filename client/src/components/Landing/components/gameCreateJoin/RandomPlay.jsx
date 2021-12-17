@@ -17,7 +17,6 @@ const RandomPlay = ({ socket }) => {
     botLevel: 2,
     forceJump: true,
   });
-
   const handleStartGame = () => {
     const token = isAuthenticated();
     const { bot, botLevel, checker, forceJump } = gameOptions;
@@ -53,19 +52,27 @@ const RandomPlay = ({ socket }) => {
             a tea house party
           </span>
         </h2>
-
-        <GameButton
-          className="p-2 font-bold text-indigo-500 bg-white"
-          onClickFn={() => setIsGameOptionModalOpen(true)}
-          shadowColor="#FBC638"
+        <span
+          data-title="play now!"
+          data-intro="in this section you can play with bot or with an online player"
         >
-          Play Now
-        </GameButton>
-        <div className="absolute bottom-0 right-0 hidden md:block ">
+          <GameButton
+            className="p-2 font-bold text-indigo-500 bg-white"
+            onClickFn={() => {
+              setIsGameOptionModalOpen(true);
+            }}
+            shadowColor="#FBC638"
+          >
+            Play Now
+          </GameButton>
+        </span>
+
+        <div className="absolute top-0 bottom-0 right-0 hidden transform scale-125 -rotate-12 md:block ">
           <img
             alt="people playing games"
-            src="https://cdn.devdojo.com/images/september2020/cta-1.png"
-            className="h-full max-w-xs mb-4 opacity-75 "
+            // src="https://cdn.devdojo.com/images/september2020/cta-1.png"
+            src="/images/gamepad.svg"
+            className="h-full max-w-xs opacity-75 "
           />
         </div>
       </div>

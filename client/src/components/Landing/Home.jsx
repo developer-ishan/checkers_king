@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import Navbar from "./components/others/Navbar";
-import HomeSong from "../../static/home.mp3";
 import { SocketContext } from "../../context/SocketContext";
 import Leaderboard from "./components/others/Leaderboard";
 import RandomPlay from "./components/gameCreateJoin/RandomPlay";
 import PlayWithFriends from "./components/gameCreateJoin/PlayWithFriends";
 import Modal from "react-modal";
-
+import introJs from "intro.js";
+import "intro.js/introjs.css";
 import ErrorModal from "../modal/ErrorModal";
+import { playWelcomeSound } from "../../helper/audioHelper";
 Modal.setAppElement("#root");
 
 const Home = ({ games, setGames }) => {
-  const [music] = useState(new Audio(HomeSong));
   const [socket, setSocket] = useContext(SocketContext);
   const [isUserErrorModalOpen, setIsUserErrorModalOpen] = useState(false);
 
@@ -28,19 +28,17 @@ const Home = ({ games, setGames }) => {
       setError(error);
       setIsUserErrorModalOpen(true);
     });
+    introJs()
+      .setOptions({
+        disableInteraction: true,
+      })
+      .addHints();
   }, []);
+  // document.onclick = welcomeSound.play();
+  document.onclick = playWelcomeSound();
 
-  const playMusic = () => {
-    // music.play();
-    //TODO:later turn it on
-  };
-
-  // playMusic();
   return (
-    <div
-      className="min-h-screen bg-yellow-300 dark:bg-gray-900 dark:text-gray-200"
-      onMouseMove={() => playMusic()}
-    >
+    <div className="min-h-screen bg-yellow-300 dark:bg-gray-900 dark:text-gray-200">
       {error && (
         <ErrorModal
           modalState={isUserErrorModalOpen}
@@ -51,8 +49,8 @@ const Home = ({ games, setGames }) => {
       <Navbar />
       <div className="grid grid-cols-12 mx-auto max-w-screen-2xl">
         {/* left side */}
-        <div className="col-span-12 col-start-1 px-5 lg:col-span-8">
-          <RandomPlay socket={socket} />
+        <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
+          <RandomPlay socket={socket} d />
           <PlayWithFriends socket={socket} />
         </div>
 

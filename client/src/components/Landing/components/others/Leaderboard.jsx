@@ -2,7 +2,10 @@ import React from "react";
 
 const Leaderboard = () => {
   return (
-    <div>
+    <div
+      data-title="leaderboard"
+      data-intro="this board show the top players of the game"
+    >
       <div class="flex justify-center max-w-sm ">
         <div class="flex flex-col items-start justify-between w-4/5 h-auto overflow-hidden bg-white rounded-lg shadow-xl">
           <div class="flex flex-row  justify-center items-center w-full p-4 pb-0 pb-3 bg-pink-500 dark:bg-gray-800">
@@ -15,7 +18,11 @@ const Leaderboard = () => {
             />
           </div>
           <div class="w-full p-4 pt-0 text-gray-800 dark:text-white dark-gray-300 dark:bg-gray-700 divide-y divide-gray-400">
-            <div class="flex flex-row items-center justify-between py-4">
+            <div
+              class="flex flex-row items-center justify-between py-4"
+              data-title="players info"
+              data-intro="you can click on the name to see more info"
+            >
               <img
                 src="https://uifaces.co/our-content/donated/BMGfa1yq.png"
                 alt="user-1"
