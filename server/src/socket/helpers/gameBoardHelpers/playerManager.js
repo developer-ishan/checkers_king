@@ -1,6 +1,5 @@
 const { getGamesList, getGameByID } = require("./gamePlayManager");
 const { getUserDetailsWithToken } = require("../userManager");
-const { sendGameStatus } = require("../gameStatusHelper");
 
 const findPlayersWithID = (playerId) => {
   const games = getGamesList();

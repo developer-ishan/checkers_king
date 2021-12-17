@@ -12,6 +12,7 @@ import InviteCodeModal from "../modal/InviteCodeModal";
 import GameCall from "./components/communication/GameCall";
 import ErrorModal from "../modal/ErrorModal";
 import Lobby from "../lobby/Lobby";
+import { playWinSound } from "../../helper/audioHelper";
 Modal.setAppElement("#root");
 
 const Game = () => {
@@ -78,9 +79,10 @@ const Game = () => {
     socket.on("winner", (winner) => {
       let msgToUser;
       if (winner === null) msgToUser = "Game is declared Draw!!";
-      else if (winner === color)
+      else if (winner === color) {
         msgToUser = "congratulations you won the game!! 🥳🥳";
-      else msgToUser = "you lost the game!! 😢😢";
+        playWinSound();
+      } else msgToUser = "you lost the game!! 😢😢";
 
       setMatchResult({
         title: "match Result",

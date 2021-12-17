@@ -18,6 +18,7 @@ const isWinnerDeclared = async (io, socket) => {
   console.log("Winner of the game ", winner);
   if (winner !== false) {
     let finishedGame = await endGame({ player: socket, winner });
+    console.log(finishedGame.id, winner);
     io.to(finishedGame.id).emit("winner", winner);
     sendAllGames(io);
     io.socketsLeave(finishedGame.id);

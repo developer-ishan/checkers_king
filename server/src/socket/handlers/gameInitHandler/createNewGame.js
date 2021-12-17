@@ -10,14 +10,30 @@ const { aiBotMove } = require("../../helpers/gameBotHelpers/gameBot");
 const {
   userAlreadyExistsInOtherGame,
   emitGameError,
+  emitUserError,
 } = require("../../helpers/errorHelper");
+const {
+  isUserAlreadyInGame,
+} = require("../../helpers/gameBoardHelpers/playerManager");
 
 module.exports =
   ({ io, socket }) =>
   async (isBot, botLevel, color, mandatoryMoves, isRated, token) => {
+    /* -------------------------------------- Checking For Existing Game -------------------------------------- */
     console.log("create new game event caught... checking for existing game!!");
-    const alreadyExists = await userAlreadyExistsInOtherGame(socket, token);
-    if (alreadyExists) return;
+    const existingGameId = await isUserAlreadyInGame(token);
+
+    if (existingGameId) {
+      emitUserError(
+        socket,
+        "Multiple Game Detected !",
+        "Attention! you are already in an existing game! Kindly finish that first!!",
+        "Okay",
+        "/"
+      );
+      return;
+    }
+    /* -------------------------------------- Checking For Existing Game -------------------------------------- */
 
     console.log("existing game not found... creating a new game!!");
     const newGame = await createNewGame({

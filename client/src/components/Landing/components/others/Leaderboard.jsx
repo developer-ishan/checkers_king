@@ -24,7 +24,7 @@ const Leaderboard = () => {
               data-intro="you can click on the name to see more info"
             >
               <img
-                src="https://uifaces.co/our-content/donated/BMGfa1yq.png"
+                src="/images/default.png"
                 alt="user-1"
                 class="w-12 h-12 rounded-full"
               />
@@ -43,7 +43,7 @@ const Leaderboard = () => {
             </div>
             <div class="flex flex-row items-center justify-between py-4">
               <img
-                src="https://uifaces.co/our-content/donated/AVQ0V28X.jpg"
+                src="/images/default.png"
                 alt="user-1"
                 class="w-12 h-12 rounded-full"
               />
@@ -62,7 +62,7 @@ const Leaderboard = () => {
             </div>
             <div class="flex flex-row items-center justify-between pt-4">
               <img
-                src="https://uifaces.co/our-content/donated/UZ0VIIh3.png"
+                src="/images/default.png"
                 alt="user-1"
                 class="w-12 h-12 rounded-full"
               />

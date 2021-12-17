@@ -3,22 +3,31 @@ const {
   addPlayerToGame,
 } = require("../../helpers/gameBoardHelpers/gamePlayManager");
 const { sendGameStatus } = require("../../helpers/gameStatusHelper");
-const {
-  userAlreadyExistsInOtherGame,
-  emitGameError,
-} = require("../../helpers/errorHelper");
+const { emitGameError, emitUserError } = require("../../helpers/errorHelper");
 const {
   getGamePlayersWithGameId,
   rejoinGameWithGameId,
+  isUserAlreadyInGame,
 } = require("../../helpers/gameBoardHelpers/playerManager");
 
 module.exports =
   ({ io, socket }) =>
   async (gameId, token) => {
     console.log("inside join game handler... trying to join game...");
-    const alreadyExists = await userAlreadyExistsInOtherGame(socket, token);
-    if (alreadyExists) {
-      await rejoinGameWithGameId(socket, gameId, token);
+    const existingGameId = await isUserAlreadyInGame(token);
+    if (existingGameId) {
+      await rejoinGameWithGameId(socket, existingGameId, token);
+      return;
+    }
+
+    if (existingGameId && existingGameId !== gameId) {
+      emitUserError(
+        socket,
+        "Multiple Game Detected !",
+        "Attention! you are already in an existing game! Kindly finish that first!!",
+        "Okay",
+        "/"
+      );
       return;
     }
 

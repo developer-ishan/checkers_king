@@ -56,7 +56,6 @@ exports.SocketServer = (io) => {
     if (existingGameID) {
       const game = getGameWithGameId(existingGameID);
       console.log("existing game found... sending to user...");
-      console.log(game);
       socket.emit("ongoing-game", game);
     }
     /* ---------------------------------- Check For Existing Games----------------------------------*/
