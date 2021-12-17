@@ -87,6 +87,8 @@ const Navbar = () => {
             setPassword("");
             setLoginLoading(false);
             setIsLoginModalOpen(false);
+            console.log("reloading due to nav");
+            history.push("/");
           });
         } else {
           setError({

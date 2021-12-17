@@ -90,7 +90,10 @@ export const getUserIdentification = () => {
   if (token) return token;
   else {
     var guestId = Cookies.get("guestId");
-    if (!guestId) guestId = generateRandomId();
+    if (!guestId) {
+      guestId = generateRandomId();
+      Cookies.set("guestId", guestId);
+    }
     return guestId;
   }
 };

@@ -40,8 +40,8 @@ exports.SocketServer = (io) => {
       console.log("User already online... disconnecting!!");
       emitUserError(
         socket,
-        "Multiple Devices Detected!!",
-        "Attention! currently connected with > 1 device, close all other connections & retry!!",
+        "Multiple Devices/tabs Detected!!",
+        "Attention! you can connect 1 device only, close all other connections & retry!!",
         "Close",
         ""
       );

@@ -25,7 +25,7 @@ const ErrorModal = ({
       <div class="flex justify-center mx-auto">
         <div class="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
           <div class="flex flex-row items-baseline justify-around w-full p-4 pb-0 mb-3 ">
-            <h2 class="mx-auto text-2xl font-semibold tracking-wide capitalize">
+            <h2 class="mx-auto text-2xl font-semibold tracking-wide capitalize text-center">
               {error.title}
             </h2>
           </div>
