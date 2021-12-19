@@ -39,6 +39,7 @@ const Navbar = () => {
     _id: undefined,
     photo: undefined,
   });
+
   useEffect(() => {
     const html = document.querySelector("html");
     if (!("DarkMode" in localStorage)) {
@@ -59,20 +60,22 @@ const Navbar = () => {
       }
     }
   }, []);
+
   useEffect(() => {
     let token = isAuthenticated();
     if (token) {
+      console.log("getting user details with token...");
       setAuth(token);
       getMySummary(token)
         .then((data) => {
-          console.log(data);
           setUser(data);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, [auth]);
+  }, []);
+
   const handleLogIn = (e) => {
     e.preventDefault();
     if (email === "" || password === "") return;
@@ -102,6 +105,7 @@ const Navbar = () => {
       })
       .catch((err) => console.log("ERROR:", err));
   };
+
   const handleSignup = (e) => {
     e.preventDefault();
     if (email === "" || password === "") return;
@@ -140,6 +144,7 @@ const Navbar = () => {
       })
       .catch((err) => console.log("ERROR:", err));
   };
+
   const handleToggle = () => {
     const html = document.querySelector("html");
     playSelectSound();
@@ -156,9 +161,9 @@ const Navbar = () => {
 
   return (
     <div className="bg-white shadow-md dark:bg-gray-700">
-      <header class="mx-auto max-w-screen-2xl flex flex-col pb-2 sm:flex-row w-full items-center mb-4 text-gray-700  dark:text-white   body-font">
+      <header className="mx-auto max-w-screen-2xl flex flex-col pb-2 sm:flex-row w-full items-center mb-4 text-gray-700  dark:text-white   body-font">
         {/* logo and toggle btn */}
-        <div class=" w-full max-w-sm flex items-center justify-between px-6 py-3  md:flex-row ">
+        <div className=" w-full max-w-sm flex items-center justify-between px-6 py-3  md:flex-row ">
           <span
             data-title="Welcome!"
             data-intro="i am a website tour , i will navigate you throught the website you can also use keyboard arrow keys to navigate"
@@ -166,7 +171,7 @@ const Navbar = () => {
           {/* logo */}
           <a
             href="/"
-            class="flex items-center font-medium text-gray-900 title-font md:mb-0"
+            className="flex items-center font-medium text-gray-900 title-font md:mb-0"
             data-title="Welcome!"
             data-intro="we hope you will enjoy the game. see u on the leaderboard 🤠"
           >
@@ -177,27 +182,27 @@ const Navbar = () => {
           </a>
           {/* dark mode toggle */}
           <div
-            class="flex justify-end items-center space-x-2 mx-auto relative"
+            className="flex justify-end items-center space-x-2 mx-auto relative"
             data-title="dark mode"
             data-intro="click on the toggle to change the theme"
           >
-            <span class="text-xs font-semibold">Light </span>
+            <span className="text-xs font-semibold">Light </span>
             <div>
               <input
                 type="checkbox"
                 name=""
                 id="checkbox"
-                class="hidden"
+                className="hidden"
                 checked={darkMode}
                 onClick={handleToggle}
               />
-              <label for="checkbox" class="cursor-pointer">
-                <div class="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
-                  <div class="w-4 h-4 switch-ball bg-white rounded-full shadow"></div>
+              <label for="checkbox" className="cursor-pointer">
+                <div className="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
+                  <div className="w-4 h-4 switch-ball bg-white rounded-full shadow"></div>
                 </div>
               </label>
             </div>
-            <span class="text-xs font-semibold">Dark</span>
+            <span className="text-xs font-semibold">Dark</span>
           </div>
         </div>
 
@@ -226,10 +231,7 @@ const Navbar = () => {
               {/* logged in user info */}
               <div className="flex items-center p-2">
                 <div className="w-8 h-8 ">
-                  <img
-                    src={user?.photo}
-                    className="w-full rounded-full"
-                  ></img>
+                  <img src={user?.photo} className="w-full rounded-full"></img>
                 </div>
                 <div>
                   {user?.username && (

@@ -19,6 +19,7 @@ const onDisconnect = require("./handlers/gameEventHandler/onDisconnect");
 const onQuitGame = require("./handlers/gameEventHandler/onQuitGame");
 
 /* Miscellaneous Declarations */
+const onLobbyExit = require("./handlers/gameEventHandler/onLobbyExit");
 const { sendAllGames } = require("./helpers/gameStatusHelper");
 const { addUserToList } = require("./helpers/userManager");
 const { emitUserError } = require("./helpers/errorHelper");
@@ -103,5 +104,6 @@ exports.SocketServer = (io) => {
     socket.on("leave-room", ({ roomId }) => {
       socket.leave(roomId);
     });
+    socket.on("exit-game-lobby", onLobbyExit({ io, socket }));
   });
 };

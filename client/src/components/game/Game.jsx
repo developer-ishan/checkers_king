@@ -62,6 +62,7 @@ const Game = () => {
 
     socket.on("color", (color) => {
       setColor(color);
+      console.log("Setting color to ", color);
     });
 
     socket.on("opponent-status", (status) => {
@@ -78,14 +79,16 @@ const Game = () => {
 
     socket.on("winner", (winner) => {
       let msgToUser;
-      if (winner === null) msgToUser = "Game is declared Draw!!";
+      console.log("Color : ", color);
+      console.log("Winner : ", winner);
+      if (winner === null) msgToUser = "Game is declared draw!!";
       else if (winner === color) {
-        msgToUser = "congratulations you won the game!! 🥳🥳";
+        msgToUser = "Congratulations!! You won the game 🥳🥳";
         playWinSound();
-      } else msgToUser = "you lost the game!! 😢😢";
+      } else msgToUser = "You lost the game!! 😢😢";
 
       setMatchResult({
-        title: "match Result",
+        title: "Match Result",
         msg: `${msgToUser}`,
         buttonText: "okay",
         redirectTo: "/",

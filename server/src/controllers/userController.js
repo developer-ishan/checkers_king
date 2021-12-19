@@ -33,14 +33,13 @@ exports.getMySummary = async (req, res, next) => {
     val._id = req.user._id;
     val.active = req.user.active;
     if (req.user.photo) {
-      val.photo = keys.SERVER_BASE+"/public/dp/"+req.user.photo;
+      val.photo = keys.SERVER_BASE + "/public/dp/" + req.user.photo;
     } else if (req.user.facebook) {
       val.photo = req.user.facebook.photo;
     } else if (req.user.google) {
       val.photo = req.user.google.photo;
     }
     val.desc = req.user.desc;
-    console.log(val);
     res.json(val);
   } catch (err) {
     console.log(err);
@@ -65,7 +64,7 @@ exports.getUserById = async (req, res, next) => {
       google: user.google,
       facebook: user.facebook,
       desc: user.desc,
-      photo: photo
+      photo: photo,
     });
   } catch (err) {
     res.status(500).json(err);

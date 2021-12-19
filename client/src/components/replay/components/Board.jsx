@@ -95,11 +95,11 @@ const Board = ({ moves }) => {
           <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
         </div>
 
-        <div class="inline-flex">
+        <div className="inline-flex">
           {moves && boardStates.length > 1 && (
             <button
               onClick={prevMove}
-              class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
             >
               Prev
             </button>
@@ -107,7 +107,7 @@ const Board = ({ moves }) => {
           {moves && moveNum < moves.length && (
             <button
               onClick={nextMove}
-              class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
             >
               Next
             </button>

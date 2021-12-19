@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { UserContext } from "../../../context/UserContext";
 import axios from "axios";
 import { Line } from "rc-progress";
@@ -39,21 +39,21 @@ const DpEdit = () => {
     return true;
   };
 
-  const checkFileSize = (event) => {
-    let files = event.target.files;
-    let size = 2000000;
-    let err = [];
-    for (var x = 0; x < files.length; x++) {
-      if (files[x].size > size) {
-        err[x] = files[x].type + "is too large, please pick a smaller file\n";
-      }
-    }
-    for (var z = 0; z < err.length; z++) {
-      alert(err[z]);
-      event.target.value = null;
-    }
-    return true;
-  };
+  // const checkFileSize = (event) => {
+  //   let files = event.target.files;
+  //   let size = 2000000;
+  //   let err = [];
+  //   for (var x = 0; x < files.length; x++) {
+  //     if (files[x].size > size) {
+  //       err[x] = files[x].type + "is too large, please pick a smaller file\n";
+  //     }
+  //   }
+  //   for (var z = 0; z < err.length; z++) {
+  //     alert(err[z]);
+  //     event.target.value = null;
+  //   }
+  //   return true;
+  // };
 
   const onChangeHandler = (event) => {
     var files = event.target.files;
@@ -97,12 +97,12 @@ const DpEdit = () => {
           ...state,
           selectedFile: null,
         });
-        setUserState(prevState => {
+        setUserState((prevState) => {
           return {
             ...prevState,
-            photo: `${BASE}/public/dp/${res.data.filename}`
-          }
-        })
+            photo: `${BASE}/public/dp/${res.data.filename}`,
+          };
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -110,7 +110,7 @@ const DpEdit = () => {
       });
   };
   return (
-    <div className="container" style={{marginBottom: "10px"}}>
+    <div className="container" style={{ marginBottom: "10px" }}>
       <div className="row">
         <div className="col-md-6">
           <form method="post" action="#" id="#">
@@ -122,12 +122,14 @@ const DpEdit = () => {
               />
             </div>
             <div className="form-group">
-              {state.selectedFile && <Line
-                percent={Math.round(state.loaded, 2)}
-                strokeWidth="4"
-                strokeColor="#2db7f5"
-              />}
-              
+              {state.selectedFile && (
+                <Line
+                  percent={Math.round(state.loaded, 2)}
+                  strokeWidth="4"
+                  strokeColor="#2db7f5"
+                />
+              )}
+
               <button
                 type="button"
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

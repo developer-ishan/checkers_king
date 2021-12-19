@@ -1,7 +1,3 @@
-const {
-  getGameByUserId,
-} = require("../helpers/gameBoardHelpers/gamePlayManager");
-
 // helper to emit respective error to the user
 const emitUserError = (
   socket,

@@ -34,7 +34,6 @@ const App = () => {
       <Switch>
         <Route exact path="/">
           {socket !== null && <Home games={games} setGames={setGames} />}
-          {/* {socket !== null && <Main games={games} setGames={setGames} />} */}
           {socket === null && <Lobby heading="welcome" />}
         </Route>
         <Route exact path="/game">

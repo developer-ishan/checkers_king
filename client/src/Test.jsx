@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 const Test = () => {
   const [seconds, setSeconds] = useState(0);
-  const [running, setRunning] = useState(false);
   let interval = null;
   useEffect(() => {}, []);
 
