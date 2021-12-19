@@ -10,15 +10,21 @@ const {
 const {
   getGamePlayersWithGameId,
   rejoinGameWithGameId,
+  isUserAlreadyInGame,
 } = require("../../helpers/gameBoardHelpers/playerManager");
 
 module.exports =
   ({ io, socket }) =>
   async (gameId, token) => {
     console.log("inside join game handler... trying to join game...");
-    const alreadyExists = await userAlreadyExistsInOtherGame(socket, token);
-    if (alreadyExists) {
-      await rejoinGameWithGameId(socket, gameId, token);
+    const existingGameId = await isUserAlreadyInGame(token);
+    if (existingGameId) {
+      await rejoinGameWithGameId(socket, existingGameId, token);
+      return;
+    }
+
+    if (existingGameId && existingGameId !== gameId) {
+      await userAlreadyExistsInOtherGame(socket, token);
       return;
     }
 
@@ -51,6 +57,6 @@ module.exports =
       socket.emit("color", color);
       socket.to(gameId).emit("opponent-status", "ready");
     } else socket.emit("players-info", getGamePlayersWithGameId(game));
-    sendAllGames(io);
+    // sendAllGames(io);
     sendGameStatus(io, gameId);
   };

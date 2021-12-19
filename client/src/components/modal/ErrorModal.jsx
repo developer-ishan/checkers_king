@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 const ErrorModal = ({
   modalState,
   setModalState,
-  cbOnRequestClose = undefined,
+  cbOnRequestClose = null,
   error,
 }) => {
   let history = useHistory();
@@ -15,7 +15,7 @@ const ErrorModal = ({
 
   //if callback on close not explicitly provided
   //then it will normally close the modal
-  if (cbOnRequestClose === undefined) cbOnRequestClose = closeModal;
+  if (cbOnRequestClose === null) cbOnRequestClose = closeModal;
   return (
     <Modal
       className="absolute w-11/12 max-w-md transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"

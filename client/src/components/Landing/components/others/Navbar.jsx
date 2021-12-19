@@ -72,7 +72,7 @@ const Navbar = () => {
           console.log(err);
         });
     }
-  }, [auth]);
+  }, []);
   const handleLogIn = (e) => {
     e.preventDefault();
     if (email === "" || password === "") return;

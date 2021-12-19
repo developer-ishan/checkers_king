@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import BoardComponent from "./components/board/BoardComponent";
 import Chat from "./components/communication/Chat";
 
@@ -12,6 +12,7 @@ import InviteCodeModal from "../modal/InviteCodeModal";
 import GameCall from "./components/communication/GameCall";
 import ErrorModal from "../modal/ErrorModal";
 import Lobby from "../lobby/Lobby";
+import { getUserIdentification, signout } from "../../helper/authHelper";
 Modal.setAppElement("#root");
 
 const Game = () => {
@@ -26,6 +27,10 @@ const Game = () => {
   const [opponentStatus, setOpponentStatus] = useState(null);
   //these both are made from error modal
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [
+    isMultipleDeviceDetectedModalOpen,
+    setMultipleDeviceDetectedModalOpen,
+  ] = useState(null);
 
   const [botLevel, setBotLevel] = useState(-1); //initilay not playing with bot
   const [error, setError] = useState(null);
@@ -50,6 +55,11 @@ const Game = () => {
       // history.push("/");
       setError(error);
       setIsErrorModalOpen(true);
+    });
+    socket.on("ongoing-game", (gameDetails) => {
+      console.log("putting old game into play.....");
+      const token = getUserIdentification();
+      socket.emit("join-game", gameDetails.id, token);
     });
     socket.on("playing-with-bot", (botLevel) => setBotLevel(botLevel));
 
@@ -115,6 +125,9 @@ const Game = () => {
         redirecTo: "",
       });
     });
+    socket.on("user-error", (error) => {
+      setMultipleDeviceDetectedModalOpen(error);
+    });
   }, []);
 
   //socket is emitting the message sent by the opponent
@@ -152,8 +165,28 @@ const Game = () => {
     // call a socket to tell to abandon the game
     alert("yet to be implemented");
   };
+  const onClosingMultipleDeviceDetectedModal = () => {
+    const id = getUserIdentification();
+    //if user is guest we cannot do anything
+    if (id.startsWith("guest")) return;
+    //if a registered user ,logout and then redirect to home page
+    else {
+      setMultipleDeviceDetectedModalOpen(null);
+      signout(() => {
+        history.push("/");
+      });
+    }
+  };
   return (
     <>
+      {isMultipleDeviceDetectedModalOpen && (
+        <ErrorModal
+          modalState={isMultipleDeviceDetectedModalOpen}
+          setModalState={setMultipleDeviceDetectedModalOpen}
+          error={isMultipleDeviceDetectedModalOpen}
+          cbOnRequestClose={onClosingMultipleDeviceDetectedModal}
+        />
+      )}
       {!game && <Lobby heading="Lobby" />}
       {/* this modal showsup the error like game not exist or multiple game detected */}
       {error && (
