@@ -80,12 +80,12 @@ Format :-
 
 ```
 1. got-friend-request
-    senderId: sender._id,
+    userId: sender._id,
     username: sender.username,
     photo: filterPhoto(sender),
 
 1. ack-friend-request
-    receiverId: receiver._id,
+    userId: receiver._id,
     username: receiver.username,
     photo: filterPhoto(sender),
 ```
