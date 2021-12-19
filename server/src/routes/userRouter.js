@@ -1,5 +1,6 @@
 const {
   getMySummary,
+  getUserByUsername,
   getUserById,
   deleteUser,
   updateUser,
@@ -35,4 +36,5 @@ userRouter
 userRouter.get("/summary", userAuth, isVerified, getMySummary);
 userRouter.post("/dp", userAuth, isVerified, uploadProfilePic);
 userRouter.get("/summary/:userId", getUserById);
+userRouter.get("/search", getUserByUsername);
 module.exports = userRouter;

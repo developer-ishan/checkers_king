@@ -26,6 +26,8 @@ const {
   isUserAlreadyInGame,
   getGameWithGameId,
 } = require("./helpers/gameBoardHelpers/playerManager");
+const sendFriendRequest = require("./handlers/friendEventHandler/sendFriendRequest");
+const respondFriendRequest = require("./handlers/friendEventHandler/respondFriendRequest");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
@@ -69,6 +71,10 @@ exports.SocketServer = (io) => {
     socket.on("random-play-guest", randomPlayGuest({ io, socket }));
     socket.on("random-play-user", randomPlayUser({ io, socket }));
     /* game initiation handler calls END */
+
+    /* Friend requests*/
+    socket.on("send-friend-request", sendFriendRequest({ io, socket }));
+    socket.on("respond-friend-request", respondFriendRequest({ io, socket }));
 
     /* game event handler calls BEGIN */
     /*  -- game chats handler calls BEGIN */

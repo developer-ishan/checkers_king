@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 var generateName = require("sillyname");
+const { friendSchema } = require("./Friend");
 
 // Create a schema
 const userSchema = new Schema({
@@ -10,11 +11,11 @@ const userSchema = new Schema({
     required: true,
   },
   photo: {
-    type: String
+    type: String,
   },
-  isVerified : {
+  isVerified: {
     type: Boolean,
-    default: false
+    default: false,
   },
   local: {
     email: {
@@ -23,7 +24,7 @@ const userSchema = new Schema({
     },
     password: {
       type: String,
-    }
+    },
   },
   google: {
     type: Object,
@@ -48,6 +49,7 @@ const userSchema = new Schema({
     type: Number,
     default: 800,
   },
+  friends: [friendSchema],
 });
 
 userSchema.pre("save", async function (next) {
