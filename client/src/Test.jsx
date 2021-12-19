@@ -1,35 +1,18 @@
 import React, { useState, useEffect } from "react";
+import AutoCompleteInput from "./components/comm/AutoCompleteInput";
 
 const Test = () => {
-  const [seconds, setSeconds] = useState(0);
-  let interval = null;
   useEffect(() => {}, []);
-
+  const [selected, setSelected] = useState({});
   return (
-    <div className="App">
-      <header className="App-header">
-        {seconds} seconds have elapsed since mounting.
-      </header>
-      <button
-        onClick={() => {
-          if (!interval) {
-            interval = setInterval(() => {
-              setSeconds((seconds) => seconds + 1);
-            }, 1000);
-          }
-        }}
-      >
-        start
-      </button>
-      <br />
-      <button
-        onClick={() => {
-          clearInterval(interval);
-          interval = null;
-        }}
-      >
-        stop
-      </button>
+    <div>
+      <h1>Test Components</h1>
+      <AutoCompleteInput
+        url="http://localhost:9500/api/user/search?q="
+        selected={selected}
+        setSelected={setSelected}
+      />
+      <h1>Selected user: {selected.username}</h1>
     </div>
   );
 };
