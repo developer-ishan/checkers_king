@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 const ErrorModal = ({
   modalState,
   setModalState,
-  cbOnRequestClose = undefined,
+  cbOnRequestClose = null,
   error,
 }) => {
   let history = useHistory();
@@ -15,17 +15,17 @@ const ErrorModal = ({
 
   //if callback on close not explicitly provided
   //then it will normally close the modal
-  if (cbOnRequestClose === undefined) cbOnRequestClose = closeModal;
+  if (cbOnRequestClose === null) cbOnRequestClose = closeModal;
   return (
     <Modal
       className="absolute w-11/12 max-w-md transform top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
       isOpen={modalState}
       onRequestClose={cbOnRequestClose}
     >
-      <div className="flex justify-center mx-auto">
-        <div className="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
-          <div className="flex flex-row items-baseline justify-around w-full p-4 pb-0 mb-3 ">
-            <h2 className="mx-auto text-2xl font-semibold tracking-wide capitalize">
+      <div class="flex justify-center mx-auto">
+        <div class="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
+          <div class="flex flex-row items-baseline justify-around w-full p-4 pb-0 mb-3 ">
+            <h2 class="mx-auto text-2xl font-semibold tracking-wide capitalize text-center">
               {error.title}
             </h2>
           </div>

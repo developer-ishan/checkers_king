@@ -90,6 +90,8 @@ const Navbar = () => {
             setPassword("");
             setLoginLoading(false);
             setIsLoginModalOpen(false);
+            console.log("reloading due to nav");
+            history.push("/");
           });
         } else {
           setError({
@@ -161,9 +163,9 @@ const Navbar = () => {
 
   return (
     <div className="bg-white shadow-md dark:bg-gray-700">
-      <header className="mx-auto max-w-screen-2xl flex flex-col pb-2 sm:flex-row w-full items-center mb-4 text-gray-700  dark:text-white   body-font">
+      <header className="flex flex-col items-center w-full pb-2 mx-auto mb-4 text-gray-700 max-w-screen-2xl sm:flex-row dark:text-white body-font">
         {/* logo and toggle btn */}
-        <div className=" w-full max-w-sm flex items-center justify-between px-6 py-3  md:flex-row ">
+        <div className="flex items-center justify-between w-full max-w-sm px-6 py-3  md:flex-row">
           <span
             data-title="Welcome!"
             data-intro="i am a website tour , i will navigate you throught the website you can also use keyboard arrow keys to navigate"
@@ -182,7 +184,7 @@ const Navbar = () => {
           </a>
           {/* dark mode toggle */}
           <div
-            className="flex justify-end items-center space-x-2 mx-auto relative"
+            className="relative flex items-center justify-end mx-auto space-x-2"
             data-title="dark mode"
             data-intro="click on the toggle to change the theme"
           >
@@ -197,8 +199,8 @@ const Navbar = () => {
                 onClick={handleToggle}
               />
               <label for="checkbox" className="cursor-pointer">
-                <div className="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
-                  <div className="w-4 h-4 switch-ball bg-white rounded-full shadow"></div>
+                <div className="flex items-center h-5 bg-gray-300 rounded-full w-9 p2">
+                  <div className="w-4 h-4 bg-white rounded-full shadow switch-ball"></div>
                 </div>
               </label>
             </div>

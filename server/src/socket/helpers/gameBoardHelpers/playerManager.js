@@ -45,6 +45,7 @@ const rejoinGameWithGameId = async (socket, gameId, token) => {
     if (player.id === userDetails.userId) {
       player.socket = socket;
       socketPlayer = player;
+      socket.join(gameId);
     }
   });
   socket.emit("color", socketPlayer.color);
