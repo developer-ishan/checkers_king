@@ -38,6 +38,11 @@ exports.getMyMatches = async (req, res, next) => {
           as: "details",
         },
       },
+      {
+        $sort: {
+          startTime: -1,
+        },
+      },
     ]);
 
     if (!matches)
@@ -81,7 +86,6 @@ exports.getMyMatches = async (req, res, next) => {
       //not the id which was shared between friends
       filteredData.push({ matchId: _id, players: playersInfo });
     });
-    console.log("all matches by this user", matches);
     return res.json(filteredData);
   } catch (err) {
     return res.status(404).json({
@@ -162,7 +166,6 @@ exports.getMatchById = async (req, res, next) => {
       //not the id which was shared between friends
       filteredData.push({ matchId: _id, players: playersInfo });
     });
-    console.log("all matches by this user", matches);
     return res.json(filteredData[0]);
   } catch (err) {
     console.log(err);

@@ -6,7 +6,6 @@ var users = [];
 
 // getting the user details with token
 const getUserDetailsWithToken = async (token) => {
-  console.log("TOKEN FROM FRONTEND:", token);
   if (token.startsWith("guest")) {
     return {
       userId: token,
@@ -18,7 +17,6 @@ const getUserDetailsWithToken = async (token) => {
     try {
       var decodedId = jwt.verify(token, JWT_SECRET).sub;
       const userProfile = await User.findById(decodedId);
-      console.log("user profile", userProfile);
       return {
         userId: userProfile.id,
         username: userProfile.username,
@@ -48,7 +46,6 @@ const isUserAlreadyOnline = (userId) => {
 
 const addUserToList = async (socket, token) => {
   const userDetails = await getUserDetailsWithToken(token);
-  console.log("user Details", userDetails);
   if (userDetails && isUserAlreadyOnline(userDetails.userId)) return false;
   const { userId, username, isGuest } = userDetails;
   users.push({ userId, username, isGuest, id: socket.id });

@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { getPreviousMatches } from "../../../helper/userHelper";
+import React from "react";
 import Match from "./Match";
-const PreviousMatches = ({ userId }) => {
-  const [previousMatches, setPreviousMatches] = useState([]);
 
-  useEffect(() => {
-    getPreviousMatches(userId).then((res) => {
-      console.log("previous matches data:", res);
-      setPreviousMatches(res);
-    });
-  }, []);
+const PreviousMatches = ({ userId, previousMatches }) => {
   return (
     <div className="w-full grid-cols-12 gap-4 p-4 mx-auto space-y-3 rounded-lg shadow-lg indigo-gradient dark:dark-gradient">
       <h1 className="text-lg font-bold text-white capitalize sm:text-3xl">

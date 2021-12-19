@@ -13,7 +13,6 @@ const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
         <p className="px-2 py-1 text-black capitalize bg-yellow-300 rounded-full ">
           {turn === color ? "your turn" : "opponent's turn"}
         </p>
-
         <div className="ml-auto">
           {/* hamburger button */}
           <button

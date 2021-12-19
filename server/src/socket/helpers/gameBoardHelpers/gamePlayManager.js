@@ -269,7 +269,6 @@ exports.endGame = async ({ player, winner }) => {
         false
       );
     }
-    console.log("game saved");
     games.splice(games.indexOf(game), 1);
     return game;
   }
