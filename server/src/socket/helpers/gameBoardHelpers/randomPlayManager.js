@@ -19,7 +19,8 @@ const get_league = (rating) => {
   return ["Champion", 8, 2400, "🏆🏅"];
 };
 
-exports.randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
+/* ------------------------------------------------ Guest Player Functions ------------------------------------------------ */
+const randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
   // searching for player in queue with similar specifications
   for (let i = 0; i < waitingGuests.length; ++i) {
     let guest = waitingGuests[i];
@@ -55,11 +56,22 @@ exports.randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
 
   // if the conditions for match didn't match push guest into waiting queue
   waitingGuests.push({ player, guestId, mandatoryMoves });
-  console.log({ guestId, mandatoryMoves }, "Pushed to waiting guests");
+  // console.log({ guestId, mandatoryMoves }, "Pushed to waiting guests");
   return null;
 };
 
-exports.randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
+const findGuestWithGuestId = (guestId) => {
+  return waitingGuests.find((guest) => guest.guestId === guestId);
+};
+
+const exitGuestLobby = (guestId) => {
+  const lobbyPlayer = findGuestWithGuestId(guestId);
+  if (lobbyPlayer) waitingGuests.splice(waitingGuests.indexOf(lobbyPlayer));
+};
+/* ------------------------------------------------ Guest Player Functions ------------------------------------------------ */
+
+/* ------------------------------------------------ User Player Functions ------------------------------------------------ */
+const randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
   let user = null;
   // recognising the user as registered
   if (token) {
@@ -115,6 +127,23 @@ exports.randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
     mandatoryMoves,
     league: playerLeague,
   });
-  console.log(waitingPlayers);
+  // console.log({ token, mandatoryMoves }, "Pushed to waiting players");
   return null;
+};
+
+const findUserWithToken = (token) => {
+  return waitingPlayers.find((player) => player.token === token);
+};
+
+const exitUserLobby = (token) => {
+  const lobbyPlayer = findUserWithToken(token);
+  if (lobbyPlayer) waitingPlayers.splice(waitingPlayers.indexOf(lobbyPlayer));
+};
+/* ------------------------------------------------ User Player Functions ------------------------------------------------ */
+
+module.exports = {
+  randomPlayWithGuest,
+  randomPlayWithUser,
+  exitUserLobby,
+  exitGuestLobby,
 };

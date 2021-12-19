@@ -1,6 +1,5 @@
 const { getGamesList, getGameByID } = require("./gamePlayManager");
 const { getUserDetailsWithToken } = require("../userManager");
-const { sendGameStatus } = require("../gameStatusHelper");
 
 const findPlayersWithID = (playerId) => {
   const games = getGamesList();
@@ -46,6 +45,7 @@ const rejoinGameWithGameId = async (socket, gameId, token) => {
     if (player.id === userDetails.userId) {
       player.socket = socket;
       socketPlayer = player;
+      socket.join(gameId);
     }
   });
   socket.emit("color", socketPlayer.color);

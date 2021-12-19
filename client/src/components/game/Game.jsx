@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import BoardComponent from "./components/board/BoardComponent";
 import Chat from "./components/communication/Chat";
 
@@ -12,6 +12,8 @@ import InviteCodeModal from "../modal/InviteCodeModal";
 import GameCall from "./components/communication/GameCall";
 import ErrorModal from "../modal/ErrorModal";
 import Lobby from "../lobby/Lobby";
+import { playWinSound } from "../../helper/audioHelper";
+import { getUserIdentification, signout } from "../../helper/authHelper";
 Modal.setAppElement("#root");
 
 const Game = () => {
@@ -26,6 +28,10 @@ const Game = () => {
   const [opponentStatus, setOpponentStatus] = useState(null);
   //these both are made from error modal
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [
+    isMultipleDeviceDetectedModalOpen,
+    setMultipleDeviceDetectedModalOpen,
+  ] = useState(null);
 
   const [botLevel, setBotLevel] = useState(-1); //initilay not playing with bot
   const [error, setError] = useState(null);
@@ -51,6 +57,11 @@ const Game = () => {
       setError(error);
       setIsErrorModalOpen(true);
     });
+    socket.on("ongoing-game", (gameDetails) => {
+      console.log("putting old game into play.....");
+      const token = getUserIdentification();
+      socket.emit("join-game", gameDetails.id, token);
+    });
     socket.on("playing-with-bot", (botLevel) => setBotLevel(botLevel));
 
     socket.on("game-status", (game) => {
@@ -61,6 +72,7 @@ const Game = () => {
 
     socket.on("color", (color) => {
       setColor(color);
+      console.log("Setting color to ", color);
     });
 
     socket.on("opponent-status", (status) => {
@@ -77,13 +89,16 @@ const Game = () => {
 
     socket.on("winner", (winner) => {
       let msgToUser;
-      if (winner === null) msgToUser = "Game is declared Draw!!";
-      else if (winner === color)
-        msgToUser = "congratulations you won the game!! 🥳🥳";
-      else msgToUser = "you lost the game!! 😢😢";
+      console.log("Color : ", color);
+      console.log("Winner : ", winner);
+      if (winner === null) msgToUser = "Game is declared draw!!";
+      else if (winner === color) {
+        msgToUser = "Congratulations!! You won the game 🥳🥳";
+        playWinSound();
+      } else msgToUser = "You lost the game!! 😢😢";
 
       setMatchResult({
-        title: "match Result",
+        title: "Match Result",
         msg: `${msgToUser}`,
         buttonText: "okay",
         redirectTo: "/",
@@ -114,6 +129,9 @@ const Game = () => {
         buttonText: "okay",
         redirecTo: "",
       });
+    });
+    socket.on("user-error", (error) => {
+      setMultipleDeviceDetectedModalOpen(error);
     });
   }, []);
 
@@ -152,8 +170,28 @@ const Game = () => {
     // call a socket to tell to abandon the game
     alert("yet to be implemented");
   };
+  const onClosingMultipleDeviceDetectedModal = () => {
+    const id = getUserIdentification();
+    //if user is guest we cannot do anything
+    if (id.startsWith("guest")) return;
+    //if a registered user ,logout and then redirect to home page
+    else {
+      setMultipleDeviceDetectedModalOpen(null);
+      signout(() => {
+        history.push("/");
+      });
+    }
+  };
   return (
     <>
+      {isMultipleDeviceDetectedModalOpen && (
+        <ErrorModal
+          modalState={isMultipleDeviceDetectedModalOpen}
+          setModalState={setMultipleDeviceDetectedModalOpen}
+          error={isMultipleDeviceDetectedModalOpen}
+          cbOnRequestClose={onClosingMultipleDeviceDetectedModal}
+        />
+      )}
       {!game && <Lobby heading="Lobby" />}
       {/* this modal showsup the error like game not exist or multiple game detected */}
       {error && (

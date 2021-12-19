@@ -23,25 +23,25 @@ const RandomGameOptionsModal = ({
       onRequestClose={closeModal}
       preventScroll={true}
     >
-      <div class="flex justify-center mx-auto">
-        <div class="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
-          <div class="flex flex-row items-baseline justify-around w-full p-4 pb-0 mb-3">
-            <h2 class="mr-auto text-lg font-semibold tracking-wide uppercase">
+      <div className="flex justify-center mx-auto">
+        <div className="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
+          <div className="flex flex-row items-baseline justify-around w-full p-4 pb-0 mb-3">
+            <h2 className="mr-auto text-lg font-semibold tracking-wide uppercase">
               options
             </h2>
-            <div class="flex flex-row">
+            <div className="flex flex-row">
               <a
                 href="#"
-                class="text-xs text-blue-700 text-xl hover:text-red-500 dark:text-pink-400 "
+                className="text-xs text-blue-700 text-xl hover:text-red-500 dark:text-pink-400 "
                 onClick={() => closeModal()}
               >
                 &#10006;
               </a>
             </div>
           </div>
-          <div class="w-full p-4 pt-0 text-gray-800 bg-gray-100 dark:bg-gray-700 dark:text-white divide-y divide-gray-400">
+          <div className="w-full p-4 pt-0 text-gray-800 bg-gray-100 dark:bg-gray-700 dark:text-white divide-y divide-gray-400">
             {/* play with bot */}
-            <div class="flex flex-col py-4">
+            <div className="flex flex-col py-4">
               <div className="flex flex-row items-center justify-between my-1">
                 <h2 className="font-bold capitalize">play with bot</h2>
                 <label
@@ -112,7 +112,7 @@ const RandomGameOptionsModal = ({
                     </label>
                   </div>
                   {/* select checker */}
-                  <div class=" py-4">
+                  <div className=" py-4">
                     <h2 className="my-2 font-bold capitalize">
                       choose color :{" "}
                     </h2>
@@ -162,7 +162,7 @@ const RandomGameOptionsModal = ({
               )}
             </div>
             {/* force jump */}
-            <div class="flex flex-row items-center justify-between py-4">
+            <div className="flex flex-row items-center justify-between py-4">
               <h2 className="font-bold capitalize">mandatory moves : </h2>
               <label
                 htmlFor="forcedjumps"

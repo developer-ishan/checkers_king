@@ -164,7 +164,11 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
             title={title}
           >
             {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
-            <img src="/images/crown.png" className="w-8 h-8 text-white" />
+            <img
+              src="/images/crown.png"
+              alt="Crown_Logo"
+              className="w-8 h-8 text-white"
+            />
           </div>
         ); //red queen
       case 4:
@@ -175,7 +179,11 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
             title={title}
           >
             {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
-            <img src="/images/crown.png" className="w-8 h-8 text-white" />
+            <img
+              src="/images/crown.png"
+              alt="Crown_Logo"
+              className="w-8 h-8 text-white"
+            />
           </div>
         ); //black queen
 
@@ -184,9 +192,7 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
     }
   };
   //this ensure that the players color remains on the lower side
-  console.log("rotation color:", color);
   const rot = color === "Black" ? 0 : 180;
-  console.log("rotation degree:", rot);
 
   return (
     <div className="mb-3">

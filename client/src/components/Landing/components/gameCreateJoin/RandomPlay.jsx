@@ -30,10 +30,8 @@ const RandomPlay = ({ socket }) => {
         false, // isRated field is false for bot by default
         token
       );
-    else if(token)
-      socket.emit("random-play-user", forceJump, token);
-    else{
-      alert("Starting guest game!!");
+    else if (token) socket.emit("random-play-user", forceJump, token);
+    else {
       const guestId = Cookies.get("guestId");
       socket.emit("random-play-guest", guestId, forceJump);
     }

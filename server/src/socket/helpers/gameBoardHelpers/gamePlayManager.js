@@ -92,14 +92,22 @@ exports.createNewGame = async ({
     createTime: new Date(),
     pieceMoves: [],
     board: [
-      [1, 0, 1, 0, 1, 0, 1, 0],
-      [0, 1, 0, 1, 0, 1, 0, 1],
-      [1, 0, 1, 0, 1, 0, 1, 0],
+      // [1, 0, 1, 0, 1, 0, 1, 0],
+      // [0, 1, 0, 1, 0, 1, 0, 1],
+      // [1, 0, 1, 0, 1, 0, 1, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 2, 0, 2, 0, 2, 0, 2],
+      // [2, 0, 2, 0, 2, 0, 2, 0],
+      // [0, 2, 0, 2, 0, 2, 0, 2],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 2, 0, 2, 0, 2, 0, 2],
-      [2, 0, 2, 0, 2, 0, 2, 0],
-      [0, 2, 0, 2, 0, 2, 0, 2],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
     botLevel,
@@ -227,12 +235,13 @@ exports.endGame = async ({ player, winner }) => {
   const game = getGameForPlayer(player);
   if (game) {
     // handles condition for two different players
-    console.log("game is : ", game);
     if (game.isBot === false) {
       console.log("saving game with opponent player");
+      // p1 is the winning player & p2 is the losing player
       let p1 =
         game.players[0].color === winner ? game.players[0] : game.players[1];
       let p2 = p1 === game.players[0] ? game.players[1] : game.players[0];
+
       let isDraw = winner === false ? true : false;
       await saveMatch(
         p1,
@@ -256,13 +265,13 @@ exports.endGame = async ({ player, winner }) => {
         new Date(),
         game.chat,
         false, // considering that you cannot propose draw with bot
-        game.isBot,
-        game.isRated
+        true,
+        false
       );
     }
     console.log("game saved");
     games.splice(games.indexOf(game), 1);
-    return game.id;
+    return game;
   }
   return null;
 };

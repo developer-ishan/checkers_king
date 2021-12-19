@@ -1,13 +1,5 @@
 import React from "react";
 
-const player = {
-  0: "Empty",
-  1: "Red", // pawn
-  2: "Black", // pawn
-  3: "Red", // queen
-  4: "Black", // queen
-};
-
 const BoardComponent = ({ boardMatrix, color }) => {
   // for styling the boxes of the board
   const whiteBoxStyle =
@@ -39,14 +31,22 @@ const BoardComponent = ({ boardMatrix, color }) => {
         return (
           <div className="absolute grid w-5/6 text-yellow-500 bg-red-500 border-2 border-red-700 border-solid rounded-full shadow-inner sm:border-4 md:border-8 place-content-center h-5/6">
             {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
-            <img src="/images/crown.png" className="w-8 h-8 text-white" />
+            <img
+              src="/images/crown.png"
+              alt="Crown_Image"
+              className="w-8 h-8 text-white"
+            />
           </div>
         ); //red queen
       case 4:
         return (
           <div className="absolute grid w-5/6 bg-gray-800 border-2 border-gray-900 border-solid rounded-full shadow-inner sm:border-4 md:border-8 place-content-center h-5/6">
             {/* <img src="https://img.icons8.com/nolan/50/crown.png" /> */}
-            <img src="/images/crown.png" className="w-8 h-8 text-white" />
+            <img
+              src="/images/crown.png"
+              alt="Crown_Image"
+              className="w-8 h-8 text-white"
+            />
           </div>
         ); //black queen
 
@@ -55,9 +55,7 @@ const BoardComponent = ({ boardMatrix, color }) => {
     }
   };
   //this ensure that the players color remains on the lower side
-  console.log("rotation color:", color);
   const rot = color === "Black" ? 0 : 180;
-  console.log("rotation degree:", rot);
 
   return (
     <div

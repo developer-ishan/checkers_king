@@ -81,12 +81,12 @@ const LoginSignUpForm = ({
         <div className="flex space-x-1 text-center">
           <a
             href={`${BASE}/api/auth/oauth/facebook`}
-            class="fa fa-facebook bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 w-full  rounded"
+            className="fa fa-facebook bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 w-full  rounded"
           ></a>
 
           <a
             href={`${BASE}/api/auth/oauth/google`}
-            class="fa fa-google bg-red-600 hover:bg-red-700 text-white px-4 py-2 w-full  rounded"
+            className="fa fa-google bg-red-600 hover:bg-red-700 text-white px-4 py-2 w-full  rounded"
           ></a>
         </div>
       </div>

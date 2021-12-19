@@ -169,6 +169,10 @@ Format :-
     peerId: "",
     gameId: ""
 }
+
+9. exit-game-lobby
+Format :-
+token
 ```
 
 #### Friend Events

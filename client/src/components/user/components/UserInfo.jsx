@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { getUserById, updateUser } from "../../../helper/userHelper";
 import EdiText from "react-editext";
 import Cookies from "js-cookie";
-import { UserContext } from "../../../context/UserContext";
 import DpEdit from "./DpEdit";
 import BASE from "../../../config";
 
 const UserInfo = ({ userId }) => {
-  const [userState, setUserState] = useContext(UserContext);
   const [user, setUser] = useState({ username: "", active: true, photo: "" });
   const [userName, setUserName] = useState("");
   const [userNameValidationMsg, setUserNameValidationMsg] = useState("");
@@ -70,6 +68,7 @@ const UserInfo = ({ userId }) => {
       <div className="col-span-12 sm:col-span-4 lg:col-span-12">
         <img
           src={`${BASE}/public/dp/${user.photo}`}
+          alt="User_DP"
           // className="object-cover h-full mx-auto rounded-xl"
         />
         {canEdit() && <DpEdit />}

@@ -1,7 +1,3 @@
-const {
-  getGameByUserId,
-} = require("../helpers/gameBoardHelpers/gamePlayManager");
-
 // helper to emit respective error to the user
 const emitUserError = (
   socket,
@@ -18,6 +14,7 @@ const emitUserError = (
   });
 };
 
+// helper to emit errors related to game
 const emitGameError = (
   socket,
   errorTitle,
@@ -33,21 +30,4 @@ const emitGameError = (
   });
 };
 
-// checking if the user already exists in another game
-const userAlreadyExistsInOtherGame = async (socket, token) => {
-  const existingGame = await getGameByUserId(token);
-
-  if (existingGame !== undefined) {
-    console.log("user already in an existing game... throwing error");
-    emitUserError(
-      socket,
-      "Multiple Game Detected !",
-      "Attention! you are already in an existing game! Kindly finish that first!!",
-      "Okay",
-      "/"
-    );
-  }
-  return existingGame !== undefined;
-};
-
-module.exports = { emitUserError, emitGameError, userAlreadyExistsInOtherGame };
+module.exports = { emitUserError, emitGameError };

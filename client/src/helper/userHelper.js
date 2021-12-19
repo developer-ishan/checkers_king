@@ -2,10 +2,10 @@ import Cookies from "js-cookie";
 import BASE from "../config";
 import { isAuthenticated } from "./authHelper";
 export const getMySummary = (token) => {
-  var myHeaders = new Headers();
+  let myHeaders = new Headers();
   myHeaders.append("Authorization", `Bearer ${token}`);
 
-  var requestOptions = {
+  let requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
@@ -19,10 +19,10 @@ export const getMySummary = (token) => {
 export const getUserById = (userId) => {
   const token = isAuthenticated();
   if (token && Cookies.get("userId") === userId) {
-    var myHeaders = new Headers();
+    let myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
 
-    var requestOptions = {
+    let requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
@@ -32,9 +32,9 @@ export const getUserById = (userId) => {
       .then((response) => response.json())
       .catch((error) => console.log("error", error));
   } else {
-    var myHeaders = new Headers();
+    let myHeaders = new Headers();
 
-    var requestOptions = {
+    let requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
@@ -48,11 +48,11 @@ export const getUserById = (userId) => {
 
 export const updateUser = (updatedData) => {
   console.log(JSON.stringify(updatedData));
-  var myHeaders = new Headers();
+  let myHeaders = new Headers();
   const token = isAuthenticated();
   myHeaders.append("Authorization", `Bearer ${token}`);
   myHeaders.append("Content-Type", "application/json");
-  var requestOptions = {
+  let requestOptions = {
     method: "PUT",
     headers: myHeaders,
     redirect: "follow",
@@ -66,10 +66,10 @@ export const updateUser = (updatedData) => {
 
 export const getPreviousMatches = (userId) => {
   const token = isAuthenticated();
-  var myHeaders = new Headers();
+  let myHeaders = new Headers();
   myHeaders.append("Authorization", `Bearer ${token}`);
 
-  var requestOptions = {
+  let requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",

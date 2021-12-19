@@ -42,7 +42,6 @@ exports.getMySummary = async (req, res, next) => {
     if(!req.user.photo)
       req.user.photo = keys.SERVER_BASE + "/public/dp/default.png"
     val.desc = req.user.desc;
-    console.log(val);
     res.json(val);
   } catch (err) {
     console.log(err);

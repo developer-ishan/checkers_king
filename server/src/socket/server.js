@@ -19,6 +19,7 @@ const onDisconnect = require("./handlers/gameEventHandler/onDisconnect");
 const onQuitGame = require("./handlers/gameEventHandler/onQuitGame");
 
 /* Miscellaneous Declarations */
+const onLobbyExit = require("./handlers/gameEventHandler/onLobbyExit");
 const { sendAllGames } = require("./helpers/gameStatusHelper");
 const { addUserToList } = require("./helpers/userManager");
 const { emitUserError } = require("./helpers/errorHelper");
@@ -42,8 +43,8 @@ exports.SocketServer = (io) => {
       console.log("User already online... disconnecting!!");
       emitUserError(
         socket,
-        "Multiple Devices Detected!!",
-        "Attention! currently connected with > 1 device, close all other connections & retry!!",
+        "Multiple Devices/tabs Detected!!",
+        "Attention! you can connect 1 device only, close all other connections & retry!!",
         "Close",
         ""
       );
@@ -58,7 +59,6 @@ exports.SocketServer = (io) => {
     if (existingGameID) {
       const game = getGameWithGameId(existingGameID);
       console.log("existing game found... sending to user...");
-      console.log(game);
       socket.emit("ongoing-game", game);
     }
     /* ---------------------------------- Check For Existing Games----------------------------------*/
@@ -110,5 +110,6 @@ exports.SocketServer = (io) => {
     socket.on("leave-room", ({ roomId }) => {
       socket.leave(roomId);
     });
+    socket.on("exit-game-lobby", onLobbyExit({ io, socket }));
   });
 };
