@@ -6,6 +6,7 @@ export const UserContext = createContext();
 export const UserProvider = (props) => {
   const [userState, setUserState] = useState({
     photo: `${BASE}/public/dp/default.png`,
+    requests: []
   });
 
   useEffect(() => {
