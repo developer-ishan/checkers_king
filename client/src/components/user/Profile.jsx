@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router";
 import { SocketContext } from "../../context/SocketContext";
 import { getUserIdentification, signout } from "../../helper/authHelper";
+import { getPreviousMatches } from "../../helper/userHelper";
+
 import Navbar from "../Landing/components/others/Navbar";
 import ErrorModal from "../modal/ErrorModal";
 import PreviousMatches from "./components/PreviousMatches";
 import UserInfo from "./components/UserInfo";
+import RatingChart from "./components/RatingChart";
 
 const Profile = () => {
   const { userId } = useParams();
@@ -13,11 +16,17 @@ const Profile = () => {
     isMultipleDeviceDetectedModalOpen,
     setMultipleDeviceDetectedModalOpen,
   ] = useState(null);
+  const [previousMatches, setPreviousMatches] = useState([]);
   const [socket, setSocket] = useContext(SocketContext);
 
   useEffect(() => {
     socket.on("user-error", (error) => {
       setMultipleDeviceDetectedModalOpen(error);
+    });
+
+    getPreviousMatches(userId).then((res) => {
+      console.log("previous matches : ", res);
+      setPreviousMatches(res);
     });
   }, []);
 
@@ -42,11 +51,17 @@ const Profile = () => {
 
       <div className="relative grid grid-cols-12 gap-3 p-2 mx-auto max-w-7xl">
         <div className="h-full col-span-12 lg:col-span-3 ">
-          <UserInfo userId={userId} />
+          <UserInfo userId={userId} matchesCount={previousMatches.length} />
+        </div>
+
+        <div className="h-full col-span-12 lg:col-span-9 ">
+          {previousMatches.length !== 0 && (
+            <RatingChart userId={userId} previousMatches={previousMatches} />
+          )}
         </div>
 
         <div className="col-span-12 lg:col-span-9">
-          <PreviousMatches userId={userId} />
+          <PreviousMatches userId={userId} previousMatches={previousMatches} />
         </div>
       </div>
 

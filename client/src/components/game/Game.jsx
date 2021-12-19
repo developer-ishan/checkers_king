@@ -1,10 +1,9 @@
 import React, { useEffect, useContext, useState } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import BoardComponent from "./components/board/BoardComponent";
 import Chat from "./components/communication/Chat";
 
 import { SocketContext } from "../../context/SocketContext";
-import { GameContext } from "../../context/GameContext";
 import GameBar from "./components/board/GameBar";
 import Modal from "react-modal";
 import DrawModal from "../modal/DrawModal";
@@ -18,7 +17,6 @@ Modal.setAppElement("#root");
 
 const Game = () => {
   const [socket, setSocket] = useContext(SocketContext);
-  const { gameValue, colorValue } = useContext(GameContext);
   const [chats, setChats] = useState([]); //store the chats of current game
   const [game, setGame] = useState(null);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
@@ -35,57 +33,62 @@ const Game = () => {
 
   const [botLevel, setBotLevel] = useState(-1); //initilay not playing with bot
   const [error, setError] = useState(null);
-  const [color, setColor] = colorValue;
-  const [gameId, setGameId] = useState(null);
+  const [color, setColor] = useState(null);
+
   let history = useHistory();
 
   const movePiece = ({ selectedPiece, destination }) => {
+    console.log("move-piece event emitted...");
     socket.emit("move-piece", { selectedPiece, destination });
   };
 
   const quitGame = () => {
-    console.log("quit-game event triggered...");
+    console.log("quit-game event emitted...");
     socket.emit("quit-game");
   };
 
   useEffect(() => {
+    console.log("use-effect called...");
+
+    socket.on("color", (color) => {
+      console.log("Setting color to ", color);
+      setColor(color);
+    });
+
+    socket.on("opponent-status", (status) => {
+      /*opponent status state can have two values
+          1.null --> means everything is fine, no need to show modal
+          2.object--> this object contains the msg and action required by errorModal
+            this object is used for 2 situation
+            2.1 --> when waiting for opponent to join the game for first time
+            2.2 --> when waiting for opponent to rejoin the game after disconnetion
+        */
+      if (status === "ready") setOpponentStatus(null);
+      else setOpponentStatus(status);
+    });
+
+    socket.on("game-status", (game) => {
+      console.log("game-status : ", game);
+      console.log("piece-color : ", color);
+      setGame(game);
+    });
+
     // TODO: add a modal to display the error
     socket.on("game-error", (error) => {
-      console.log("error detected", error);
+      console.log("game-error detected", error);
       // alert(error.title);
       // history.push("/");
       setError(error);
       setIsErrorModalOpen(true);
     });
+
     socket.on("ongoing-game", (gameDetails) => {
       console.log("putting old game into play.....");
       const token = getUserIdentification();
       socket.emit("join-game", gameDetails.id, token);
     });
+
     socket.on("playing-with-bot", (botLevel) => setBotLevel(botLevel));
-
-    socket.on("game-status", (game) => {
-      console.log("received game from backend", game);
-      // setGameId(game.id);
-      setGame(game);
-    });
-
-    socket.on("color", (color) => {
-      setColor(color);
-      console.log("Setting color to ", color);
-    });
-
-    socket.on("opponent-status", (status) => {
-      /*opponent status state can have two values
-        1.null --> means everything is fine, no need to show modal
-        2.object--> this object contains the msg and action required by errorModal
-          this object is used for 2 situation
-          2.1 --> when waiting for opponent to join the game for first time
-          2.2 --> when waiting for opponent to rejoin the game after disconnetion
-      */
-      if (status === "ready") setOpponentStatus(null);
-      else setOpponentStatus(status);
-    });
 
     socket.on("winner", (winner) => {
       let msgToUser;
@@ -106,9 +109,10 @@ const Game = () => {
     });
 
     socket.on("end-game", () => {
-      console.log("end-game event caught...");
+      console.log("end-game event emitted...");
       history.push("/");
     });
+
     socket.on("draw-offered", () => {
       setIsDrawModalOpen(true);
     });
@@ -130,10 +134,12 @@ const Game = () => {
         redirecTo: "",
       });
     });
+
     socket.on("user-error", (error) => {
+      console.log("user-error detected...");
       setMultipleDeviceDetectedModalOpen(error);
     });
-  }, []);
+  }, [color]);
 
   //socket is emitting the message sent by the opponent
   //catching it here
