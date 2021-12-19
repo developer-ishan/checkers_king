@@ -19,7 +19,7 @@ module.exports =
     if (randomGame !== null) {
       randomGame.players.map((player) => {
         player.socket.join(randomGame.id);
-        player.socket.emit("color", player.color);
+        io.to(player.socket.id).emit("color", player.color);
       });
 
       sendGameStatus(io, randomGame.id);

@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import DpEdit from "./DpEdit";
 import BASE from "../../../config";
 
-const UserInfo = ({ userId }) => {
+const UserInfo = ({ userId, matchesCount }) => {
   const [user, setUser] = useState({ username: "", active: true, photo: "" });
   const [userName, setUserName] = useState("");
   const [userNameValidationMsg, setUserNameValidationMsg] = useState("");
@@ -108,7 +108,7 @@ const UserInfo = ({ userId }) => {
         </div>
         <div className="">
           <p className="text-xs italic font-bold">matches played</p>
-          <h1 className="text-xl font-bold">140</h1>
+          <h1 className="text-xl font-bold">{matchesCount}</h1>
         </div>
         <div className="">
           <p className="text-xs italic font-bold">about</p>

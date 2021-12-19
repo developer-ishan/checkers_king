@@ -10,7 +10,6 @@ const GameCall = ({ socket, gameId }) => {
     const peer = new Peer();
     peer.on("open", (id) => {
       console.log("your peerid is:", id);
-      console.log("sending gameId:", gameId);
       socket.emit("opponent-video-ready", { peerId: id, gameId });
     });
 
