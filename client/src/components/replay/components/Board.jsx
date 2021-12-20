@@ -83,7 +83,7 @@ const Board = ({ moves }) => {
   };
   return (
     <div
-      className="absolute inset-0"
+      className="h-full min-h-screen"
       style={{
         backgroundImage:
           "url('https://images.unsplash.com/photo-1525034687081-c702010cb70d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')",
@@ -94,27 +94,29 @@ const Board = ({ moves }) => {
         <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
           <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
         </div>
-
-        <div className="inline-flex">
-          {moves && boardStates.length > 1 && (
-            <button
-              onClick={prevMove}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-            >
-              Prev
-            </button>
-          )}
-          {moves && moveNum < moves.length && (
-            <button
-              onClick={nextMove}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-            >
-              Next
-            </button>
-          )}
+        <div className="col-span-12 lg:col-span-3 lg:col-start-9">
+          <button
+            onClick={prevMove}
+            className="px-4 py-2 font-bold text-gray-800 bg-gray-300 rounded-l hover:bg-gray-400"
+          >
+            Prev
+          </button>
+          {/* )} */}
+          {/* {moves && moveNum < moves.length && ( */}
+          <button
+            onClick={nextMove}
+            className="px-4 py-2 font-bold text-gray-800 bg-gray-300 rounded-r hover:bg-gray-400"
+          >
+            Next
+          </button>
         </div>
-        <div>{boardStates.length}</div>
+        <div className="inline-flex">
+          {/* {moves && boardStates.length > 1 && ( */}
+
+          {/* )} */}
+        </div>
       </div>
+      <div>{boardStates.length}</div>
     </div>
   );
 };

@@ -65,10 +65,11 @@ const BoardComponent = ({ boardMatrix, color }) => {
         width: "90vmin",
       }}
     >
-      <div className="flex">
-        <p className="inline-block p-2 mr-auto text-base text-left text-white transform bg-indigo-500 sm:text-lg md:text-xl lg:text-2xl -skew-x-15">
-          player name
-        </p>
+      <div
+        className="flex items-center justify-start p-1 bg-indigo-500"
+        style={{ width: "90vmin" }}
+      >
+        Lovedeep singh
       </div>
 
       {/* board start*/}
@@ -99,10 +100,11 @@ const BoardComponent = ({ boardMatrix, color }) => {
         {/* small boxes end */}
       </div>
       {/* board end */}
-      <div className="flex justify-items-end">
-        <p className="inline-block p-2 ml-auto text-base text-left text-white transform bg-indigo-500 sm:text-lg md:text-xl lg:text-2xl -skew-x-15">
-          player name
-        </p>
+      <div
+        className="flex items-center justify-start p-1 bg-indigo-500"
+        style={{ width: "90vmin" }}
+      >
+        Lovedeep singh
       </div>
     </div>
   );
