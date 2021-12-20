@@ -1,9 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-<<<<<<< HEAD
 import { Link, Redirect, useHistory } from "react-router-dom";
-=======
-import { useHistory } from "react-router-dom";
->>>>>>> 8299b538214c0a856724d8459490ca2bedce3945
 import BoardComponent from "./components/board/BoardComponent";
 import Chat from "./components/communication/Chat";
 
@@ -38,14 +34,9 @@ const Game = () => {
 
   const [botLevel, setBotLevel] = useState(-1); //initilay not playing with bot
   const [error, setError] = useState(null);
-<<<<<<< HEAD
-  const [color, setColor] = colorValue;
-  const [gameId, setGameId] = useState(null);
   const [playersInfo, setPlayersInfo] = useState(null);
-=======
   const [color, setColor] = useState(null);
 
->>>>>>> 8299b538214c0a856724d8459490ca2bedce3945
   let history = useHistory();
 
   const movePiece = ({ selectedPiece, destination }) => {
