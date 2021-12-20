@@ -6,19 +6,14 @@ const Match = ({ matchId, players, userId }) => {
   const [opponent, setOpponent] = useState(null);
 
   useEffect(() => {
-    console.log("MOUNTED MATCH");
     const selfId = userId;
     let selfUserIndex = null;
     players.forEach((player, index) => {
-      console.log("runnig at", index);
       if (!selfUserIndex && player.id === selfId) {
-        console.log("found at", index);
         selfUserIndex = index;
         return;
       }
     });
-    console.log("playersObject:", players);
-    console.log("selfIndex:", selfUserIndex);
     setSelf(players[selfUserIndex]);
     setOpponent(players[1 - selfUserIndex]);
   }, []);

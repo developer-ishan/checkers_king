@@ -76,6 +76,20 @@ Format :-
 }
 ```
 
+#### Friend Events
+
+```
+1. got-friend-request
+    userId: sender._id,
+    username: sender.username,
+    photo: filterPhoto(sender),
+
+1. ack-friend-request
+    userId: receiver._id,
+    username: receiver.username,
+    photo: filterPhoto(sender),
+```
+
 ## Client-To-Server
 
 #### Game-Initiation-Events
@@ -159,4 +173,11 @@ Format :-
 9. exit-game-lobby
 Format :-
 token
+```
+
+#### Friend Events
+
+```
+1. send-friend-request
+2. respond-friend-request
 ```
