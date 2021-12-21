@@ -84,8 +84,12 @@ const UserInfo = ({ userId, matchesCount }) => {
     });
   };
   return (
-    <div className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 rounded-lg shadow-lg indigo-gradient dark:dark-gradient">
-      <div className="flex flex-col col-span-12 sm:col-span-4 lg:col-span-12 space-between">
+    <div
+      className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 capitalize rounded-lg shadow-lg indigo-gradient dark:dark-gradient"
+      data-title="general information"
+      data-intro="here you can see the basic details of the user"
+    >
+      <div className="flex flex-col justify-center col-span-12 sm:col-span-4 lg:col-span-12">
         <div className="relative group">
           <img
             src={`${BASE}/public/dp/${user.photo}`}
@@ -93,7 +97,7 @@ const UserInfo = ({ userId, matchesCount }) => {
             className="w-32 h-32 mx-auto rounded-full lg:w-40 lg:h-40"
             // className="object-cover h-full mx-auto rounded-xl"
           />
-          <div className="absolute inset-0 grid w-10 h-10 mx-auto transition duration-200 bg-gray-300 rounded-full opacity-0 place-content-center form-group sm:w-16 sm:h-16 md:w-32 md:h-32 lg:w-40 lg:h-40 group-hover:opacity-90">
+          <div className="absolute inset-0 grid w-32 h-32 mx-auto transition duration-200 bg-gray-300 rounded-full opacity-0 lg:w-40 lg:h-40 place-content-center group-hover:opacity-90">
             {canEdit() && (
               <button
                 className="text-white capitalize"
@@ -126,7 +130,7 @@ const UserInfo = ({ userId, matchesCount }) => {
             <DpEdit state={newDp} setState={setNewDp} />
           )}
       </div>
-      <div className="col-span-12 space-y-2 text-white sm:col-span-8 lg:col-span-12">
+      <div className="flex-wrap items-center justify-around col-span-12 space-y-2 text-white sm:text-center lg:text-left sm:flex lg:block sm:col-span-8 lg:col-span-12">
         <div className="">
           <p className="text-xs italic font-bold">username</p>
           <EdiText

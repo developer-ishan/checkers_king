@@ -164,7 +164,13 @@ exports.getMatchById = async (req, res, next) => {
       const { _id } = match;
       //this _id is actullay the id of the db object
       //not the id which was shared between friends
-      filteredData.push({ matchId: _id, players: playersInfo });
+      filteredData.push({
+        matchId: _id,
+        players: playersInfo,
+        moves: match.moves,
+        startTime: match.startTime,
+        endTime: match.endTime,
+      });
     });
     return res.json(filteredData[0]);
   } catch (err) {
