@@ -97,9 +97,6 @@ const Game = () => {
       setGame(game);
     });
     socket.on("players-info", (players) => {
-      console.log("players-info before", players);
-      players.sort((a, b) => a.color > b.color);
-      console.log("players-info after", players);
       setPlayersInfo(players);
     });
 
@@ -141,7 +138,12 @@ const Game = () => {
 
     socket.on("end-game", () => {
       console.log("end-game event emitted...");
-      history.push("/");
+      setMatchResult({
+        title: "opponent quit",
+        msg: `Congratulations!! You won the game 🥳🥳`,
+        buttonText: "okay",
+        redirectTo: "/",
+      });
     });
 
     socket.on("draw-offered", () => {
@@ -219,29 +221,7 @@ const Game = () => {
       });
     }
   };
-  const selfInfo = (color) => {
-    let player;
-    console.log("inside selfinfo:", playersInfo);
-    playersInfo.forEach((p) => {
-      if (p.color === color) player = p;
-    });
-    return (
-      <Link
-        to={`/user/${player.id}`}
-        className="flex items-center"
-        title={`click to see ${player.username}'s full profile`}
-      >
-        <img
-          src={`${API}/public/dp/${player.photo}`}
-          alt="player's profile pic"
-          className="w-8 h-8 mx-1 rounded-full"
-        />
-
-        {player.username}
-      </Link>
-    );
-  };
-  const opponentInfo = (color) => {
+  const blackPlayerInfo = () => {
     //it means match is against the bot
     if (botLevel !== -1) {
       return (
@@ -262,7 +242,46 @@ const Game = () => {
     //match is against a real player
     let player;
     playersInfo.forEach((p) => {
-      if (p.color !== color) player = p;
+      if (p.color === "Black") player = p;
+    });
+    return (
+      <Link
+        to={`/user/${player.id}`}
+        className="flex items-center "
+        title={`click to see ${player.username}'s full profile`}
+      >
+        <img
+          src={`${API}/public/dp/${player.photo}`}
+          alt="player's profile pic"
+          className="w-8 h-8 mx-1 rounded-full"
+        />
+
+        {player.username}
+      </Link>
+    );
+  };
+  const redPlayerInfo = () => {
+    //it means match is against the bot
+    if (botLevel !== -1) {
+      return (
+        <Link
+          className="flex items-center "
+          title={`this is a bot,not a real player`}
+        >
+          <img
+            src={`/images/default.png`}
+            alt="bot's profile pic"
+            className="w-8 h-8 mx-1 rounded-full"
+          />
+
+          {`BOT_LVL${botLevel}`}
+        </Link>
+      );
+    }
+    //match is against a real player
+    let player;
+    playersInfo.forEach((p) => {
+      if (p.color === "Red") player = p;
     });
     return (
       <Link
@@ -321,28 +340,34 @@ const Game = () => {
             {/* actual board where game is played */}
             <div className={boardClass()}>
               <div className="flex flex-col items-center">
-                <div
-                  className="flex items-center justify-between p-1 bg-indigo-500"
-                  style={{ width: "90vmin" }}
-                >
-                  {(botLevel !== -1 ||
-                    (playersInfo && playersInfo.length > 1)) &&
-                    opponentInfo(color)}
-                  <p>00:56 s</p>
-                </div>
+                {playersInfo && (
+                  <div
+                    className="flex items-center justify-between p-1 bg-indigo-500"
+                    style={{ width: "90vmin" }}
+                  >
+                    {color === undefined || color === "Black"
+                      ? redPlayerInfo()
+                      : blackPlayerInfo()}
+                    <p>00:57 s</p>
+                  </div>
+                )}
                 <BoardComponent
                   board={game.board}
                   color={color}
                   movePiece={movePiece}
                   turn={game.turn}
                 />
-                <div
-                  className="flex items-center justify-between p-1 bg-indigo-500"
-                  style={{ width: "90vmin" }}
-                >
-                  {playersInfo && selfInfo(color)}
-                  <p>00:56 s</p>
-                </div>
+                {playersInfo && (
+                  <div
+                    className="flex items-center justify-between p-1 bg-indigo-500"
+                    style={{ width: "90vmin" }}
+                  >
+                    {color === undefined || color === "Black"
+                      ? blackPlayerInfo()
+                      : redPlayerInfo()}
+                    <p>00:57 s</p>
+                  </div>
+                )}
               </div>
             </div>
             {/* if not playing with bot then only show these components*/}
@@ -354,9 +379,14 @@ const Game = () => {
                     style={{ height: "90vmin", minHeight: "80vh" }}
                   >
                     {/* video call component */}
-                    <GameCall socket={socket} gameId={game.id} />
+                    {color && <GameCall socket={socket} gameId={game.id} />}
                     {/* chat component */}
-                    <Chat sendChatMsg={sendChatMsg} chats={chats} />
+                    <Chat
+                      sendChatMsg={sendChatMsg}
+                      chats={chats}
+                      color={color}
+                      playersInfo={playersInfo}
+                    />
                   </div>
                 </div>
               </>

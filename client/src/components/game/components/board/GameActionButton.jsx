@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-const GameActionButton = ({ offerDraw, leaveGame, botLevel, gameId }) => {
+const GameActionButton = ({
+  offerDraw,
+  leaveGame,
+  botLevel,
+  gameId,
+  color,
+}) => {
   const [isCopied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(gameId);
@@ -29,7 +35,7 @@ const GameActionButton = ({ offerDraw, leaveGame, botLevel, gameId }) => {
         )}
       </p>
       {/* offer draw button only show if not playing against bot */}
-      {botLevel === -1 && (
+      {botLevel === -1 && color && (
         <button
           className="w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-white uppercase transition-all duration-150 bg-yellow-500 rounded shadow outline-none sm:w-auto active:bg-red-600 hover:shadow-md hover:bg-yellow-600 focus:outline-none ease"
           onClick={() => offerDraw()}
@@ -37,12 +43,15 @@ const GameActionButton = ({ offerDraw, leaveGame, botLevel, gameId }) => {
           draw
         </button>
       )}
-      {/* leave btn*/}
+      {/* quit btn for players and leave btn for spectators*/}
+      {/* leave game is working for both because inside the leaveGame functino
+        there is a condition which check where to call quit or leave
+      */}
       <button
         className="w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-white uppercase transition-all duration-150 bg-red-500 rounded shadow outline-none sm:w-auto active:bg-red-600 hover:shadow-md hover:bg-red-600 focus:outline-none ease"
         onClick={() => leaveGame()}
       >
-        leave
+        {color ? "quit" : "leave"}
       </button>
     </div>
   );

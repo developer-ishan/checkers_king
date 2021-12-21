@@ -11,7 +11,8 @@ const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
       <div className="flex flex-row items-center px-2 py-2 bg-transparent">
         {/* turn indicator */}
         <p className="px-2 py-1 text-black capitalize bg-yellow-300 rounded-full ">
-          {turn === color ? "your turn" : "opponent's turn"}
+          {color && (turn === color ? "your turn" : "opponent's turn")}
+          {!color && `${turn} player's turn`}
         </p>
         <div className="ml-auto">
           {/* hamburger button */}
@@ -31,6 +32,7 @@ const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
               offerDraw={offerDraw}
               gameId={gameId}
               botLevel={botLevel}
+              color={color}
             />
           </div>
         </div>
