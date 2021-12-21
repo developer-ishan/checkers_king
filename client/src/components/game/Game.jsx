@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import BoardComponent from "./components/board/BoardComponent";
 import Chat from "./components/communication/Chat";
 
@@ -13,6 +13,7 @@ import ErrorModal from "../modal/ErrorModal";
 import Lobby from "../lobby/Lobby";
 import { playWinSound } from "../../helper/audioHelper";
 import { getUserIdentification, signout } from "../../helper/authHelper";
+import { API } from "../../config/backend";
 Modal.setAppElement("#root");
 
 const Game = () => {
@@ -33,6 +34,7 @@ const Game = () => {
 
   const [botLevel, setBotLevel] = useState(-1); //initilay not playing with bot
   const [error, setError] = useState(null);
+  const [playersInfo, setPlayersInfo] = useState(null);
   const [color, setColor] = useState(null);
 
   let history = useHistory();
@@ -87,8 +89,37 @@ const Game = () => {
       const token = getUserIdentification();
       socket.emit("join-game", gameDetails.id, token);
     });
-
     socket.on("playing-with-bot", (botLevel) => setBotLevel(botLevel));
+
+    socket.on("game-status", (game) => {
+      console.log("received game from backend", game);
+      // setGameId(game.id);
+      setGame(game);
+    });
+    socket.on("players-info", (players) => {
+      console.log("players-info before", players);
+      players.sort((a, b) => a.color > b.color);
+      console.log("players-info after", players);
+      setPlayersInfo(players);
+    });
+
+    socket.on("color", (color) => {
+      setColor(color);
+      console.log("Setting color to ", color);
+    });
+
+    socket.on("opponent-status", (status) => {
+      console.log("opponent status", status);
+      /*opponent status state can have two values
+        1.null --> means everything is fine, no need to show modal
+        2.object--> this object contains the msg and action required by errorModal
+          this object is used for 2 situation
+          2.1 --> when waiting for opponent to join the game for first time
+          2.2 --> when waiting for opponent to rejoin the game after disconnetion
+      */
+      if (status === "ready") setOpponentStatus(null);
+      else setOpponentStatus(status);
+    });
 
     socket.on("winner", (winner) => {
       let msgToUser;
@@ -188,6 +219,67 @@ const Game = () => {
       });
     }
   };
+  const selfInfo = (color) => {
+    let player;
+    console.log("inside selfinfo:", playersInfo);
+    playersInfo.forEach((p) => {
+      if (p.color === color) player = p;
+    });
+    return (
+      <Link
+        to={`/user/${player.id}`}
+        className="flex items-center"
+        title={`click to see ${player.username}'s full profile`}
+      >
+        <img
+          src={`${API}/public/dp/${player.photo}`}
+          alt="player's profile pic"
+          className="w-8 h-8 mx-1 rounded-full"
+        />
+
+        {player.username}
+      </Link>
+    );
+  };
+  const opponentInfo = (color) => {
+    //it means match is against the bot
+    if (botLevel !== -1) {
+      return (
+        <Link
+          className="flex items-center "
+          title={`this is a bot,not a real player`}
+        >
+          <img
+            src={`/images/default.png`}
+            alt="bot's profile pic"
+            className="w-8 h-8 mx-1 rounded-full"
+          />
+
+          {`BOT_LVL${botLevel}`}
+        </Link>
+      );
+    }
+    //match is against a real player
+    let player;
+    playersInfo.forEach((p) => {
+      if (p.color !== color) player = p;
+    });
+    return (
+      <Link
+        to={`/user/${player.id}`}
+        className="flex items-center "
+        title={`click to see ${player.username}'s full profile`}
+      >
+        <img
+          src={`${API}/public/dp/${player.photo}`}
+          alt="player's profile pic"
+          className="w-8 h-8 mx-1 rounded-full"
+        />
+
+        {player.username}
+      </Link>
+    );
+  };
   return (
     <>
       {isMultipleDeviceDetectedModalOpen && (
@@ -228,12 +320,30 @@ const Game = () => {
           <div className="grid grid-cols-12 px-2 mt-4">
             {/* actual board where game is played */}
             <div className={boardClass()}>
-              <BoardComponent
-                board={game.board}
-                color={color}
-                movePiece={movePiece}
-                turn={game.turn}
-              />
+              <div className="flex flex-col items-center">
+                <div
+                  className="flex items-center justify-between p-1 bg-indigo-500"
+                  style={{ width: "90vmin" }}
+                >
+                  {(botLevel !== -1 ||
+                    (playersInfo && playersInfo.length > 1)) &&
+                    opponentInfo(color)}
+                  <p>00:56 s</p>
+                </div>
+                <BoardComponent
+                  board={game.board}
+                  color={color}
+                  movePiece={movePiece}
+                  turn={game.turn}
+                />
+                <div
+                  className="flex items-center justify-between p-1 bg-indigo-500"
+                  style={{ width: "90vmin" }}
+                >
+                  {playersInfo && selfInfo(color)}
+                  <p>00:56 s</p>
+                </div>
+              </div>
             </div>
             {/* if not playing with bot then only show these components*/}
             {botLevel === -1 && (

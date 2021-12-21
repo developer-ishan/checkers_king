@@ -195,7 +195,7 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
   const rot = color === "Black" ? 0 : 180;
 
   return (
-    <div className="mb-3">
+    <div className="">
       {/* board start*/}
       <div
         style={{

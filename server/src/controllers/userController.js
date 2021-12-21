@@ -39,8 +39,8 @@ exports.getMySummary = async (req, res, next) => {
     } else if (req.user.google) {
       val.photo = req.user.google.photo;
     }
-    if(!req.user.photo)
-      req.user.photo = keys.SERVER_BASE + "/public/dp/default.png"
+    if (!req.user.photo)
+      req.user.photo = keys.SERVER_BASE + "/public/dp/default.png";
     val.desc = req.user.desc;
     res.json(val);
   } catch (err) {
@@ -91,8 +91,10 @@ exports.uploadProfilePic = (req, res, next) => {
 
 exports.getUserByUsername = async (req, res, next) => {
   const q = req.query.q;
+  if(!q)
+    return res.json([]);
   const foundUsers = await User.find(
-    { username: { $regex: ".*" + q + ".*" } },
+    { username: { $regex: ".*" + q + ".*", $options: "i" } },
     "username photo methods rating desc google facebook"
   );
   if (!foundUsers)
@@ -100,7 +102,7 @@ exports.getUserByUsername = async (req, res, next) => {
       success: false,
       msg: "No such user found",
     });
-  const filteredFoundUsers = foundUsers.map(user => {
+  const filteredFoundUsers = foundUsers.map((user) => {
     const ret = {};
     ret.username = user.username;
     ret.photo = user.photo;
@@ -114,9 +116,8 @@ exports.getUserByUsername = async (req, res, next) => {
     } else if (user.google) {
       ret.photo = user.google.photo;
     }
-    if(!ret.photo)
-      ret.photo = keys.SERVER_BASE + "/public/dp/default.png"
+    if (!ret.photo) ret.photo = keys.SERVER_BASE + "/public/dp/default.png";
     return ret;
-  })
+  });
   res.json(filteredFoundUsers);
 };

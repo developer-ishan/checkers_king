@@ -14,6 +14,7 @@ const {
 } = require("../../helpers/errorHelper");
 const {
   isUserAlreadyInGame,
+  getGamePlayersWithGameId,
 } = require("../../helpers/gameBoardHelpers/playerManager");
 
 module.exports =
@@ -64,8 +65,10 @@ module.exports =
       turn: newGame.turn,
     });
     socket.emit("color", color);
-    if (newGame.isBot) socket.emit("playing-with-bot", newGame.botLevel);
-    else {
+    if (newGame.isBot) {
+      socket.emit("playing-with-bot", newGame.botLevel);
+      socket.emit("players-info", getGamePlayersWithGameId(newGame));
+    } else {
       //TODO:check for number of players in the game
       // after creation of game
       //first player wait for the opponent

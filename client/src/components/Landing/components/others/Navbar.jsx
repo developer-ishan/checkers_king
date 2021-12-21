@@ -165,7 +165,7 @@ const Navbar = () => {
     <div className="bg-white shadow-md dark:bg-gray-700">
       <header className="flex flex-col items-center w-full pb-2 mx-auto mb-4 text-gray-700 max-w-screen-2xl sm:flex-row dark:text-white body-font">
         {/* logo and toggle btn */}
-        <div className="flex items-center justify-between w-full max-w-sm px-6 py-3  md:flex-row">
+        <div className="flex items-center justify-between w-full max-w-sm px-6 py-3 md:flex-row">
           <span
             data-title="Welcome!"
             data-intro="i am a website tour , i will navigate you throught the website you can also use keyboard arrow keys to navigate"
@@ -233,7 +233,10 @@ const Navbar = () => {
               {/* logged in user info */}
               <div className="flex items-center p-2">
                 <div className="w-8 h-8 ">
-                  <img src={user?.photo} className="w-full rounded-full"></img>
+                  <img
+                    src={user?.photo}
+                    className="w-full h-full rounded-full"
+                  ></img>
                 </div>
                 <div>
                   {user?.username && (

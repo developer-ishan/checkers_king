@@ -30,11 +30,11 @@ const Replay = () => {
   }, []);
 
   return (
-    <div className="relative">
+    <div className="">
       {loading ? (
         <Lobby heading="Loading replay" />
       ) : (
-        <Board moves={data.moves} />
+        <Board moves={data.moves} playersInfo={data.players} />
       )}
     </div>
   );
