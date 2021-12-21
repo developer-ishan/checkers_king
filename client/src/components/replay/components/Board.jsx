@@ -8,7 +8,7 @@ const BLACK_QUEEN = 4;
 const TOP_ROW = 0;
 const BOTTOM_ROW = 7;
 
-const Board = ({ moves }) => {
+const Board = ({ moves, playersInfo }) => {
   const initialBoard = [
     [1, 0, 1, 0, 1, 0, 1, 0],
     [0, 1, 0, 1, 0, 1, 0, 1],
@@ -91,32 +91,39 @@ const Board = ({ moves }) => {
       }}
     >
       <div className="grid grid-cols-12 px-2 mt-4">
+        {/* left side :containing board */}
         <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
           <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
         </div>
-        <div className="col-span-12 lg:col-span-3 lg:col-start-9">
-          <button
-            onClick={prevMove}
-            className="px-4 py-2 font-bold text-gray-800 bg-gray-300 rounded-l hover:bg-gray-400"
-          >
-            Prev
-          </button>
-          {/* )} */}
-          {/* {moves && moveNum < moves.length && ( */}
-          <button
-            onClick={nextMove}
-            className="px-4 py-2 font-bold text-gray-800 bg-gray-300 rounded-r hover:bg-gray-400"
-          >
-            Next
-          </button>
-        </div>
-        <div className="inline-flex">
-          {/* {moves && boardStates.length > 1 && ( */}
-
-          {/* )} */}
+        {/* right side: containing controls and chats */}
+        <div className="col-span-12 lg:col-span-3 lg:col-start-9 ">
+          {/* button controls */}
+          <div>
+            <div className="">
+              <p className="text-center ">
+                {/* move:{boardStates.length}/{moves.length} */}
+              </p>
+            </div>
+            {moves && boardStates.length > 1 && (
+              <button
+                onClick={prevMove}
+                className="w-full px-4 py-2 my-2 font-bold text-gray-800 bg-gray-100 rounded-l hover:bg-gray-200"
+              >
+                Prev
+              </button>
+            )}
+            {moves && moveNum < moves.length && (
+              <button
+                onClick={nextMove}
+                className="w-full px-4 py-2 font-bold text-white bg-gray-800 rounded-r hover:bg-gray-700"
+              >
+                Next
+              </button>
+            )}
+          </div>
+          {/* chats replay */}
         </div>
       </div>
-      <div>{boardStates.length}</div>
     </div>
   );
 };
