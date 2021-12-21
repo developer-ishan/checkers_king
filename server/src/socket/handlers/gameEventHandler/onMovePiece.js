@@ -48,8 +48,6 @@ module.exports =
     const gameResults = await isWinnerDeclared(io, socket);
     if (gameResults !== false) return;
 
-    console.log("moving to bot move...");
-
     /* --------------------------------- User game with game bot --------------------------------- */
     if (game.isBot) {
       // level should only be kept in range [1, 5]

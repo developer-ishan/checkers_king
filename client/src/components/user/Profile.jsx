@@ -27,6 +27,7 @@ const Profile = () => {
     getPreviousMatches(userId).then((res) => {
       console.log("previous matches : ", res);
       setPreviousMatches(res);
+      console.log("profile MOUNTED", userId);
     });
   }, []);
 
@@ -45,23 +46,29 @@ const Profile = () => {
     }
   };
   return (
-    <div className="space-y-3 bg-gray-100 dark:bg-gray-900">
+    <div className="mx-auto space-y-3 bg-gray-100 dark:bg-gray-900 max-w-screen-2xl">
       {/*TODO:either set the navbar global or do something of it  */}
       <Navbar />
 
       <div className="relative grid grid-cols-12 gap-3 p-2 mx-auto max-w-7xl">
-        <div className="h-full col-span-12 lg:col-span-3 ">
+        <div className="top-0 col-span-12 lg:h-screen lg:sticky lg:col-span-3 ">
           <UserInfo userId={userId} matchesCount={previousMatches.length} />
         </div>
 
-        <div className="h-full col-span-12 lg:col-span-9 ">
-          {previousMatches.length !== 0 && (
-            <RatingChart userId={userId} previousMatches={previousMatches} />
-          )}
-        </div>
-
         <div className="col-span-12 lg:col-span-9">
-          <PreviousMatches userId={userId} previousMatches={previousMatches} />
+          <div
+            data-title="player graph"
+            data-intro="this show players performance in the past"
+          >
+            <RatingChart userId={userId} previousMatches={previousMatches} />
+          </div>
+
+          <div className="col-span-12 lg:col-span-9">
+            <PreviousMatches
+              userId={userId}
+              previousMatches={previousMatches}
+            />
+          </div>
         </div>
       </div>
 

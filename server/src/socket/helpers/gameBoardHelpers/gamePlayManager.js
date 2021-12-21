@@ -92,22 +92,22 @@ exports.createNewGame = async ({
     createTime: new Date(),
     pieceMoves: [],
     board: [
-      // [1, 0, 1, 0, 1, 0, 1, 0],
-      // [0, 1, 0, 1, 0, 1, 0, 1],
-      // [1, 0, 1, 0, 1, 0, 1, 0],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
       // [0, 0, 0, 0, 0, 0, 0, 0],
       // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 2, 0, 2, 0, 2, 0, 2],
-      // [2, 0, 2, 0, 2, 0, 2, 0],
-      // [0, 2, 0, 2, 0, 2, 0, 2],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 1, 0, 0, 0, 0],
-      [0, 0, 0, 0, 2, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 1, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 2, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
     botLevel,
@@ -157,7 +157,7 @@ const initiateMandatoryMove = async (io, game, destination) => {
   let destPiece = giveMandatoryMove(game.board, currPiece);
 
   while (destPiece !== null) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 200));
     emitGameStatus(io, game);
 
     const moveResults = movePiece({
@@ -195,7 +195,7 @@ exports.onMovePiece = async ({ io, player, selectedPiece, destination }) => {
       switchGameTurn({ game });
     }
   }
-  await new Promise((resolve) => setTimeout(resolve, 300));
+  await new Promise((resolve) => setTimeout(resolve, 100));
   return game;
 };
 

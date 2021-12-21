@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getUserById, updateUser } from "../../../helper/userHelper";
 import EdiText from "react-editext";
 import Cookies from "js-cookie";
@@ -11,13 +11,15 @@ const UserInfo = ({ userId, matchesCount }) => {
   const [userNameValidationMsg, setUserNameValidationMsg] = useState("");
   const [descValidationMsg, setDescValidationMsg] = useState("");
   const [desc, setDesc] = useState("");
+  const [newDp, setNewDp] = useState({ selectedFile: null, loaded: 0 });
+  const fileSelector = useRef(null);
 
   useEffect(() => {
     console.log("MOUNTED");
     getUserById(userId)
       .then((data) => {
-        console.log(data);
-        const { username, desc, photo } = data;
+        console.log("USER INFO", data);
+        const { username, desc, photo, rating } = data;
         setUserName(username);
         setDesc(desc);
         setUser({ ...data, photo });
@@ -27,6 +29,13 @@ const UserInfo = ({ userId, matchesCount }) => {
 
   const canEdit = () => {
     return Cookies.get("userId") === userId;
+  };
+  const onChangeHandler = (event) => {
+    var files = event.target.files;
+    setNewDp({
+      selectedFile: files,
+      loaded: 0,
+    });
   };
   const userNameValidation = (userName) => {
     if (userName.length < 1) {
@@ -46,6 +55,17 @@ const UserInfo = ({ userId, matchesCount }) => {
     });
     // return true;
   };
+  const get_league = (rating) => {
+    if (rating < 800) return ["🥉", "Bronze"];
+    if (rating < 1000) return ["🥈", "Silver"];
+    if (rating < 1200) return ["🥇", "Gold"];
+    if (rating < 1400) return ["✨", "Platinum"];
+    if (rating < 1600) return ["💎", "Diamond"];
+    if (rating < 1800) return ["🔴💎", "Ruby"];
+    if (rating < 2000) return ["🧑🏻‍💼", "Master"];
+    if (rating < 2200) return ["🧑🏻‍🎓", "Grandmaster"];
+    return ["🏆🏅", "Champion"];
+  };
   const descValidation = (desc) => {
     if (desc.length < 1) {
       setDescValidationMsg("description cannot be empty");
@@ -64,16 +84,53 @@ const UserInfo = ({ userId, matchesCount }) => {
     });
   };
   return (
-    <div className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 rounded-lg shadow-lg indigo-gradient dark:dark-gradient">
-      <div className="col-span-12 sm:col-span-4 lg:col-span-12">
-        <img
-          src={`${BASE}/public/dp/${user.photo}`}
-          alt="User_DP"
-          // className="object-cover h-full mx-auto rounded-xl"
-        />
-        {canEdit() && <DpEdit />}
+    <div
+      className="grid w-full grid-cols-12 gap-4 p-4 mx-auto space-y-2 capitalize rounded-lg shadow-lg indigo-gradient dark:dark-gradient"
+      data-title="general information"
+      data-intro="here you can see the basic details of the user"
+    >
+      <div className="flex flex-col justify-center col-span-12 sm:col-span-4 lg:col-span-12">
+        <div className="relative group">
+          <img
+            src={`${BASE}/public/dp/${user.photo}`}
+            alt="User_DP"
+            className="w-32 h-32 mx-auto rounded-full lg:w-40 lg:h-40"
+            // className="object-cover h-full mx-auto rounded-xl"
+          />
+          <div className="absolute inset-0 grid w-32 h-32 mx-auto transition duration-200 bg-gray-300 rounded-full opacity-0 lg:w-40 lg:h-40 place-content-center group-hover:opacity-90">
+            {canEdit() && (
+              <button
+                className="text-white capitalize"
+                onClick={() => fileSelector.current.click()}
+              >
+                edit
+              </button>
+            )}
+            {!canEdit() && (
+              <a
+                className="text-white capitalize"
+                target="_blank"
+                href={`${BASE}/public/dp/${user.photo}`}
+              >
+                view
+              </a>
+            )}
+          </div>
+          <input
+            type="file"
+            className="hidden form-control"
+            accept="image/*"
+            ref={fileSelector}
+            onChange={onChangeHandler}
+          />
+        </div>
+        {canEdit() &&
+          newDp.selectedFile &&
+          fileSelector.current.files.length !== 0 && (
+            <DpEdit state={newDp} setState={setNewDp} />
+          )}
       </div>
-      <div className="col-span-12 space-y-2 text-white sm:col-span-8 lg:col-span-12">
+      <div className="flex-wrap items-center justify-around col-span-12 space-y-2 text-white sm:text-center lg:text-left sm:flex lg:block sm:col-span-8 lg:col-span-12">
         <div className="">
           <p className="text-xs italic font-bold">username</p>
           <EdiText
@@ -85,10 +142,11 @@ const UserInfo = ({ userId, matchesCount }) => {
             }}
             viewContainerClassName="flex flex-col md:flex-row lg:flex-col space-around"
             saveButtonClassName="bg-green-400 text-white text-xs p-1 rounded m-1"
-            editButtonClassName="bg-indigo-500 text-white text-xs p-1 rounded"
-            editButtonContent="edit"
-            saveButtonContent="save"
-            cancelButtonContent="cancel"
+            editButtonClassName="bg-indigo-500 text-white text-xs rounded"
+            editOnViewClick={true}
+            editButtonContent=""
+            saveButtonContent="✔️"
+            cancelButtonContent="🛑"
             cancelButtonClassName="bg-red-500 text-white text-xs p-1 rounded m-1"
             validation={userNameValidation}
             validationMessage={userNameValidationMsg}
@@ -105,6 +163,10 @@ const UserInfo = ({ userId, matchesCount }) => {
         <div className="">
           <p className="text-xs italic font-bold">Rating</p>
           <h1 className="text-xl font-bold">{user?.rating}</h1>
+        </div>
+        <div className="">
+          <p className="text-xs italic font-bold">league</p>
+          <h1 className="text-xl font-bold">{get_league(user?.rating)}</h1>
         </div>
         <div className="">
           <p className="text-xs italic font-bold">matches played</p>

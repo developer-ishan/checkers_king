@@ -5,76 +5,49 @@ import { Line } from "rc-progress";
 import BASE from "../../../config";
 import { isAuthenticated } from "../../../helper/authHelper";
 
-const DpEdit = () => {
+const DpEdit = ({ state, setState }) => {
   const [userState, setUserState] = useContext(UserContext);
 
-  const [state, setState] = useState({ selectedFile: null, loaded: 0 });
+  const checkFileSize = (file) => {
+    let size = 2000000;
+    if (file.size > size) return false;
+    return true;
+  };
 
-  const checkMimeType = (event) => {
-    let files = event.target.files;
-    let err = []; // create empty array
+  const checkFileType = (file) => {
     const types = ["image/png", "image/jpeg", "image/gif"];
-    for (var x = 0; x < files.length; x++) {
-      if (types.every((type) => files[x].type !== type)) {
-        err[x] = files[x].type + " is not a supported format\n";
-        // assign message to array
-      }
-    }
-    for (var z = 0; z < err.length; z++) {
-      // loop create alert massage
-      event.target.value = null;
-      alert(err[z]);
-    }
+    if (types.every((type) => file.type !== type)) return false;
+
     return true;
-  };
-
-  const maxSelectFile = (event) => {
-    let files = event.target.files; // create file object
-    if (files.length > 3) {
-      const msg = "Only 3 images can be uploaded at a time";
-      event.target.value = null; // discard selected file
-      alert(msg);
-      return false;
-    }
-    return true;
-  };
-
-  // const checkFileSize = (event) => {
-  //   let files = event.target.files;
-  //   let size = 2000000;
-  //   let err = [];
-  //   for (var x = 0; x < files.length; x++) {
-  //     if (files[x].size > size) {
-  //       err[x] = files[x].type + "is too large, please pick a smaller file\n";
-  //     }
-  //   }
-  //   for (var z = 0; z < err.length; z++) {
-  //     alert(err[z]);
-  //     event.target.value = null;
-  //   }
-  //   return true;
-  // };
-
-  const onChangeHandler = (event) => {
-    var files = event.target.files;
-    setState({
-      selectedFile: files,
-      loaded: 0,
-    });
-    if (maxSelectFile(event) && checkMimeType(event) && checkMimeType(event)) {
-      // if return true allow to setState
-      setState({
-        selectedFile: files,
-        loaded: 0,
-      });
-    }
   };
 
   const onClickHandler = () => {
-    const data = new FormData();
-    for (var x = 0; x < state.selectedFile.length; x++) {
-      data.append("photo", state.selectedFile[x]);
+    //just for safety
+    if (state.selectedFile.length === 0) return;
+
+    const file = state.selectedFile[0];
+    //checking file type
+    if (!checkFileType(file)) {
+      alert(file.type + " is not supported format\n");
+      setState({
+        ...state,
+        selectedFile: null,
+      });
+      return;
     }
+    //checking file size
+    if (!checkFileSize(file)) {
+      alert("file too large, please pick a smaller file\n");
+      setState({
+        ...state,
+        selectedFile: null,
+      });
+      return;
+    }
+
+    //if everything ok
+    const data = new FormData();
+    data.append("photo", file);
     const token = isAuthenticated();
     axios
       .post(`${BASE}/api/user/dp`, data, {
@@ -115,13 +88,6 @@ const DpEdit = () => {
         <div className="col-md-6">
           <form method="post" action="#" id="#">
             <div className="form-group">
-              <input
-                type="file"
-                className="form-control"
-                onChange={onChangeHandler}
-              />
-            </div>
-            <div className="form-group">
               {state.selectedFile && (
                 <Line
                   percent={Math.round(state.loaded, 2)}
@@ -132,7 +98,7 @@ const DpEdit = () => {
 
               <button
                 type="button"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
                 onClick={onClickHandler}
               >
                 Upload

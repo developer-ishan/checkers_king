@@ -23,7 +23,6 @@ const isMandatoryMove = (selectedPiece, destination) => {
 // performing mandatory moves
 const performMandatoryMove = (board, selectedPiece, destination) => {
   if (isMandatoryMove(selectedPiece, destination)) {
-    console.log("performing mandatory moves...");
     let currPiece = destination;
     let destPiece = giveMandatoryMove(board, currPiece);
 
@@ -40,7 +39,6 @@ const performMandatoryMove = (board, selectedPiece, destination) => {
       currPiece = destPiece;
       destPiece = giveMandatoryMove(board, currPiece);
     }
-    console.log("mandatory move performed...");
   }
 };
 
