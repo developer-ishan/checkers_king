@@ -85,6 +85,7 @@ module.exports =
         board: newGame.board,
         level: newGame.botLevel,
         turn: newGame.turn,
+        mandatoryMoves: newGame.mandatoryMoves,
       });
       // next move is null if the bot doesn't have any possible moves, which is basically a win condition
       let botGame = await onMovePiece({

@@ -195,6 +195,7 @@ exports.onMovePiece = async ({ io, player, selectedPiece, destination }) => {
       switchGameTurn({ game });
     }
   }
+  await new Promise((resolve) => setTimeout(resolve, 300));
   return game;
 };
 

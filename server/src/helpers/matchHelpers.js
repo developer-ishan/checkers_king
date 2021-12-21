@@ -32,15 +32,15 @@ const saveMatch = async (
     endTime,
   });
 
-  if (isPlayerAGuest(p1.id, p2.id)) {
-    console.log("game with a guest... not saving and returning...");
-    return;
-  }
   // handles draw condition between players
   if (isBot) {
     // handles games with bots
     console.log("saving game against bot...");
     game.players.push({ userId: p1.id, delta: 0, color: p1.color });
+  } else if (isPlayerAGuest(p1.id, p2.id)) {
+    // not saving the game in case one of the player is guest
+    console.log("game with a guest... not saving and returning...");
+    return;
   } else if (isDraw || !isRated) {
     console.log("saving unrated game");
     game.players.push({ userId: p1.id, delta: 0, color: p1.color });
