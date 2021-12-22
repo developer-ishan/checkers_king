@@ -8,6 +8,8 @@ import {
   LineElement,
   Title,
   Legend,
+  Filler,
+  Tooltip,
 } from "chart.js";
 
 ChartJS.register(
@@ -15,60 +17,70 @@ ChartJS.register(
   LinearScale,
   Title,
   Legend,
+  Filler,
+  Tooltip,
   PointElement,
   LineElement
 );
 
-const RatingChart = ({ userId, previousMatches }) => {
-  var xLabels = [];
-  var yData = [];
-
+const RatingChart = ({ xLabels, yLabels }) => {
   useEffect(() => {
-    let currRating = 800,
-      matchNumber = 0;
-    xLabels.push(matchNumber.toString());
-    yData.push(currRating);
+    console.log("rendering line chart...");
+  }, [xLabels, yLabels]);
 
-    for (let itr = previousMatches.length - 1; itr >= 0; --itr) {
-      matchNumber++;
-      xLabels.push(matchNumber.toString());
-      if (previousMatches[itr].players[0].id === userId) {
-        currRating += previousMatches[itr].players[0].ratingChange;
-        yData.push(currRating);
-      } else {
-        currRating += previousMatches[itr].players[1].ratingChange;
-        yData.push(currRating);
-      }
-    }
-    // console.log(xLabels);
-    // console.log(yData);
-  }, [previousMatches]);
+  const data = {
+    labels: xLabels,
+    datasets: [
+      {
+        data: yLabels,
+        label: "User Ratings",
+        fill: true,
+        backgroundColor: "rgba(16, 185, 129, 0.4)",
+        borderColor: "rgba(16, 185, 129, 1)",
+        pointBackgroundColor: "rgb(255,99,132)",
+        borderWidth: 4,
+        tension: 0.3,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRation: false,
+    radius: 4,
+    hoverRadius: 6,
+    animations: {
+      tension: {
+        duration: 1000,
+        easing: "linear",
+        from: 0,
+        to: 0.3,
+        loop: false,
+      },
+    },
+    scales: {
+      yAxes: [
+        {
+          scaleLabel: {
+            display: true,
+            labelString: "Ratings",
+          },
+        },
+      ],
+      xAxes: [
+        {
+          scaleLabel: {
+            display: true,
+            labelString: "Match Number",
+          },
+        },
+      ],
+    },
+  };
 
   return (
     <div>
-      <p>Rating Chart</p>
-      <Line
-        data={{
-          // x-axis label values
-          labels: xLabels,
-          datasets: [
-            {
-              label: "Match Ratings",
-              // y-axis data plotting values
-              data: yData,
-              fill: false,
-              borderWidth: 2,
-              backgroundColor: "rgb(255, 99, 132)",
-              borderColor: "green",
-              responsive: true,
-            },
-          ],
-        }}
-        options={{
-          title: { display: true, text: "User Ratings History", fontSize: 20 },
-          legend: { display: true, position: "right" },
-        }}
-      />
+      <Line data={data} options={options} />
     </div>
   );
 };

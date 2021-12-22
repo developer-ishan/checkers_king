@@ -25,7 +25,7 @@ const UserInfo = ({ userId, matchesCount }) => {
         setUser({ ...data, photo });
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [userId]);
 
   const canEdit = () => {
     return Cookies.get("userId") === userId;

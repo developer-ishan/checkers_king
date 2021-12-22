@@ -19,6 +19,9 @@ const Profile = () => {
   const [previousMatches, setPreviousMatches] = useState([]);
   const [socket, setSocket] = useContext(SocketContext);
 
+  var xLabels = [];
+  var yLabels = [];
+
   useEffect(() => {
     socket.on("user-error", (error) => {
       setMultipleDeviceDetectedModalOpen(error);
@@ -29,7 +32,26 @@ const Profile = () => {
       setPreviousMatches(res);
       console.log("profile MOUNTED", userId);
     });
-  }, []);
+  }, [userId, socket]);
+
+  useEffect(() => {
+    let currRating = 800,
+      matchNumber = 0;
+    xLabels.push(matchNumber.toString());
+    yLabels.push(currRating);
+
+    for (let itr = previousMatches.length - 1; itr >= 0; --itr) {
+      matchNumber++;
+      xLabels.push(matchNumber.toString());
+      if (previousMatches[itr].players[0].id === userId) {
+        currRating += previousMatches[itr].players[0].ratingChange;
+        yLabels.push(currRating);
+      } else {
+        currRating += previousMatches[itr].players[1].ratingChange;
+        yLabels.push(currRating);
+      }
+    }
+  }, [previousMatches, userId]);
 
   const history = useHistory();
 
@@ -52,7 +74,9 @@ const Profile = () => {
 
       <div className="relative grid grid-cols-12 gap-3 p-2 mx-auto max-w-7xl">
         <div className="top-0 col-span-12 lg:h-screen lg:sticky lg:col-span-3 ">
-          <UserInfo userId={userId} matchesCount={previousMatches.length} />
+          {previousMatches && (
+            <UserInfo userId={userId} matchesCount={previousMatches.length} />
+          )}
         </div>
 
         <div className="col-span-12 lg:col-span-9">
@@ -60,7 +84,9 @@ const Profile = () => {
             data-title="player graph"
             data-intro="this show players performance in the past"
           >
-            <RatingChart userId={userId} previousMatches={previousMatches} />
+            {previousMatches.length && (
+              <RatingChart xLabels={xLabels} yLabels={yLabels} />
+            )}
           </div>
 
           <div className="col-span-12 lg:col-span-9">
