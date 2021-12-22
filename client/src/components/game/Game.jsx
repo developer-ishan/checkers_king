@@ -11,7 +11,7 @@ import InviteCodeModal from "../modal/InviteCodeModal";
 import GameCall from "./components/communication/GameCall";
 import ErrorModal from "../modal/ErrorModal";
 import Lobby from "../lobby/Lobby";
-import { playWinSound } from "../../helper/audioHelper";
+import { playLoseSound, playWinSound } from "../../helper/audioHelper";
 import { getUserIdentification, signout } from "../../helper/authHelper";
 import { API } from "../../config/backend";
 Modal.setAppElement("#root");
@@ -91,18 +91,9 @@ const Game = () => {
     });
     socket.on("playing-with-bot", (botLevel) => setBotLevel(botLevel));
 
-    socket.on("game-status", (game) => {
-      console.log("received game from backend", game);
-      // setGameId(game.id);
-      setGame(game);
-    });
     socket.on("players-info", (players) => {
+      console.log("setting players info");
       setPlayersInfo(players);
-    });
-
-    socket.on("color", (color) => {
-      setColor(color);
-      console.log("Setting color to ", color);
     });
 
     socket.on("opponent-status", (status) => {
@@ -119,14 +110,25 @@ const Game = () => {
     });
 
     socket.on("winner", (winner) => {
+      console.log("inside winner event", winner);
       let msgToUser;
-      console.log("Color : ", color);
+      console.log("Color in winner socket : ", color);
       console.log("Winner : ", winner);
       if (winner === null) msgToUser = "Game is declared draw!!";
-      else if (winner === color) {
+      else if (color === null) {
+        // let username;
+        // username =
+        //   winner === "Red"
+        //     ? redPlayerInfo().username
+        //     : blackPlayerInfo().username;
+        msgToUser = `${winner} player won the game`;
+      } else if (winner === color) {
         msgToUser = "Congratulations!! You won the game 🥳🥳";
         playWinSound();
-      } else msgToUser = "You lost the game!! 😢😢";
+      } else {
+        playLoseSound();
+        msgToUser = "You lost the game!! 😢😢";
+      }
 
       setMatchResult({
         title: "Match Result",
@@ -136,11 +138,30 @@ const Game = () => {
       });
     });
 
-    socket.on("end-game", () => {
-      console.log("end-game event emitted...");
+    socket.on("end-game", (winner) => {
+      console.log("winner of end-game:", winner, color);
+      console.log("playersinfo inside end-game game", playersInfo);
+      console.log("color in end-agme", color);
+      let msgToUser, title;
+      if (!color) {
+        // let user;
+        // user = winner === "Red" ? redPlayerInfo() : blackPlayerInfo();
+
+        msgToUser = `${winner} player won the game`;
+        title = (winner === "Red" ? "Black" : "Red") + "quited the game";
+      } else if (winner === color) {
+        msgToUser = "Congratulations!! You won the game 🥳🥳";
+        title = "opponent quit";
+        playWinSound();
+      } else {
+        playLoseSound();
+        msgToUser = "You lost the game!! 😢😢";
+        title = "you Quited";
+      }
+
       setMatchResult({
         title: "opponent quit",
-        msg: `Congratulations!! You won the game 🥳🥳`,
+        msg: `${msgToUser}`,
         buttonText: "okay",
         redirectTo: "/",
       });
@@ -195,8 +216,10 @@ const Game = () => {
 
   const leaveGame = () => {
     if (color !== null) quitGame();
-    else socket.emit("leave-room", { roomId: game.id });
-    history.push("/");
+    else {
+      socket.emit("leave-room", { roomId: game.id });
+      history.push("/");
+    }
   };
 
   const boardClass = () => {
