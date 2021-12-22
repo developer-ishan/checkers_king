@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ChatWindow from "../../game/components/communication/ChatWindow";
 import BoardComponent from "./BoardComponent";
 
 const RED_PAWN = 1;
@@ -8,7 +9,7 @@ const BLACK_QUEEN = 4;
 const TOP_ROW = 0;
 const BOTTOM_ROW = 7;
 
-const Board = ({ moves, playersInfo }) => {
+const Board = ({ moves, playersInfo, chats }) => {
   const initialBoard = [
     [1, 0, 1, 0, 1, 0, 1, 0],
     [0, 1, 0, 1, 0, 1, 0, 1],
@@ -122,6 +123,9 @@ const Board = ({ moves, playersInfo }) => {
             )}
           </div>
           {/* chats replay */}
+          <div>
+            <ChatWindow chats={chats.messages} playersInfo={playersInfo} />
+          </div>
         </div>
       </div>
     </div>

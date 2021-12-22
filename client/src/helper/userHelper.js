@@ -79,3 +79,19 @@ export const getPreviousMatches = (userId) => {
     .then((response) => response.json())
     .catch((error) => console.log("error", error));
 };
+
+export const getChatsByMatchId = (matchId) => {
+  const token = isAuthenticated();
+  let myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  let requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  return fetch(`${BASE}/api/chat/${matchId}`, requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};

@@ -3,14 +3,16 @@ import { useParams, useHistory } from "react-router";
 import { API } from "../../config/backend";
 import Board from "./components/Board";
 import Lobby from "../lobby/Lobby";
+import { getChatsByMatchId } from "../../helper/userHelper";
 const Replay = () => {
   const { matchId } = useParams();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
+  const [chats, setChats] = useState({});
   const history = useHistory();
   useEffect(() => {
     setLoading(true);
-    if (matchId)
+    if (matchId) {
       fetch(`${API}/api/match/details/${matchId}`)
         .then((res) => {
           if (res.ok) {
@@ -26,7 +28,9 @@ const Replay = () => {
         .catch((err) => {
           console.log(err);
         });
-    else history.push("/404");
+
+      getChatsByMatchId(matchId).then((res) => setChats(res));
+    } else history.push("/404");
   }, []);
 
   return (
@@ -34,7 +38,7 @@ const Replay = () => {
       {loading ? (
         <Lobby heading="Loading replay" />
       ) : (
-        <Board moves={data.moves} playersInfo={data.players} />
+        <Board moves={data.moves} playersInfo={data.players} chats={chats} />
       )}
     </div>
   );
