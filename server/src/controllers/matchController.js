@@ -1,6 +1,7 @@
 const Match = require("../models/Match");
 const mongoose = require("mongoose");
 const keys = require("../config/keys");
+const { filterPhoto } = require("../helpers/photoHelper");
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.getMyMatches = async (req, res, next) => {
@@ -143,21 +144,15 @@ exports.getMatchById = async (req, res, next) => {
       //filtering player info
       let playersInfo = [];
       match.details.forEach((detail) => {
-        const { _id, username, rating } = detail;
+        const { _id, username, rating, color } = detail;
         let player = {
           id: _id,
           userName: username,
           rating: rating,
           ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
-          photo: keys.SERVER_BASE + "/public/dp/default.png",
+          photo: filterPhoto(detail),
+          color: color
         };
-        if (detail.photo)
-          player.photo = keys.SERVER_BASE + "/public/dp/" + detail.photo;
-        else if ("google" in detail.methods) {
-          player.photo = detail.google.photo;
-        } else if ("facebook" in detail) {
-          if (detail.facebook.photo) player.photo = detail.facebook.photo;
-        }
         playersInfo.push(player);
       });
 
