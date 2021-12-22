@@ -140,7 +140,7 @@ exports.getMatchById = async (req, res, next) => {
       //filtering player info
       let playersInfo = [];
       match.details.forEach((detail) => {
-        const { _id, username, rating, color } = detail;
+        const { _id, username, rating } = detail;
         let player = {
           id: _id,
           userName: username,
