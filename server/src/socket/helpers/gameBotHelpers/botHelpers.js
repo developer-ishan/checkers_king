@@ -1,7 +1,15 @@
+const RED_PAWN = 1;
+const BLACK_PAWN = 2;
+const RED_QUEEN = 3;
+const BLACK_QUEEN = 4;
+const TOP_ROW = 0;
+const BOTTOM_ROW = 7;
+
 const {
   getPossibleMoves,
   getPiecesCount,
   getAllPieces,
+  getPiecePositions,
 } = require("../gameHelper");
 const movePiece = require("../gameBoardHelpers/movePieceHelpers/movePiece");
 const {
@@ -10,7 +18,7 @@ const {
 
 const INF = 99999;
 
-let RED_SCORE, BLACK_SCORE, REDQ_SCORE, BLACKQ_SCORE;
+let RED_SCORE, BLACK_SCORE, REDQ_SCORE, BLACKQ_SCORE, MAX_LIM, MIN_LIM;
 
 const pieceColor = {
   0: "Empty",
@@ -38,21 +46,28 @@ const setPieceScoreValues = () => {
 
 // evaluation function of board; Tries to maximize score for RED & minimize score for BLACK
 const evaluatePosition = (board) => {
-  const redPieceCnt = getPiecesCount({ board, type: 1 });
-  const blackPieceCnt = getPiecesCount({ board, type: 2 });
-  const redQPieceCnt = getPiecesCount({ board, type: 3 });
-  const blackQPieceCnt = getPiecesCount({ board, type: 4 });
+  const redPieceCnt = getPiecesCount({ board, type: RED_PAWN });
+  const blackPieceCnt = getPiecesCount({ board, type: BLACK_PAWN });
+  const redQPieceCnt = getPiecesCount({ board, type: RED_QUEEN });
+  const blackQPieceCnt = getPiecesCount({ board, type: BLACK_QUEEN });
 
-  const evalScore =
+  const redQPieces = getPiecePositions({ board, type: RED_QUEEN });
+  const blackQPieces = getPiecePositions({ board, type: BLACK_QUEEN });
+
+  var evalScore =
     redPieceCnt * RED_SCORE -
     blackPieceCnt * BLACK_SCORE +
     redQPieceCnt * REDQ_SCORE -
     blackQPieceCnt * BLACKQ_SCORE;
+
   return evalScore;
 };
 
 const performBotHeuristics = (board, depth, maxPlayer, mandatoryMoves) => {
   setPieceScoreValues();
+  let value = evaluatePosition(board);
+  MAX_LIM = Math.abs(value);
+  MIN_LIM = -1 * Math.abs(value);
   return ai_algorithm(board, depth, maxPlayer, mandatoryMoves);
 };
 
@@ -62,13 +77,12 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
   if (depth <= 0) return { value: evaluatePosition(board) };
 
   if (maxPlayer) {
-    // console.log("analysis function for red player");
     let maxEval = -INF,
       bestMove = null,
       pieces = getAllPieces({ board, color: "Red" });
 
     for (let i = 0; i < pieces.length; ++i) {
-      if (evaluatePosition(board) > -25) {
+      if (evaluatePosition(board) >= MIN_LIM) {
         let moves = getPossibleMoves({ board, piece: pieces[i] });
         for (let j = 0; j < moves.length; ++j) {
           let tmpBoard = giveDeepCopy(board);
@@ -103,7 +117,7 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
       pieces = getAllPieces({ board, color: "Black" });
 
     for (let i = 0; i < pieces.length; ++i) {
-      if (evaluatePosition(board) < 25) {
+      if (evaluatePosition(board) <= MAX_LIM) {
         let moves = getPossibleMoves({ board, piece: pieces[i] });
         for (let j = 0; j < moves.length; ++j) {
           let tmpBoard = giveDeepCopy(board);

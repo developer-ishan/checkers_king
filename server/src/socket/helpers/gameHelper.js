@@ -62,12 +62,26 @@ const getPossibleMoves = ({ board, piece }) => {
 // gets the count of a particular type of piece on board
 const getPiecesCount = ({ board, type }) => {
   let cnt = 0;
+
   for (let i = 0; i < BOARD_SIZE; ++i) {
     for (let j = 0; j < BOARD_SIZE; ++j) {
       if (board[i][j] === type) cnt++;
     }
   }
+
   return cnt;
+};
+
+const getPiecePositions = ({ board, type }) => {
+  let piece = [];
+
+  for (let i = 0; i < BOARD_SIZE; ++i) {
+    for (let j = 0; j < BOARD_SIZE; ++j) {
+      if (board[i][j] == type) piece.push(i);
+    }
+  }
+
+  return piece;
 };
 
 // gets all the pieces of a color from the board
@@ -94,6 +108,7 @@ const getAllMovesCountByPlayer = ({ board, color }) => {
 module.exports = {
   getPossibleMoves,
   getPiecesCount,
+  getPiecePositions,
   getAllPieces,
   getAllMovesCountByPlayer,
 };

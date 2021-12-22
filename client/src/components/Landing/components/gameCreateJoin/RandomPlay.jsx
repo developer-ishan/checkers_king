@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
-import { isAuthenticated } from "../../../../helper/authHelper";
+import { getUserIdentification } from "../../../../helper/authHelper";
 import GameButton from "../others/GameButton";
 import RandomGameOptionsModal from "../../../modal/RandomGameOptionsModal";
 import Cookies from "js-cookie";
@@ -18,7 +18,7 @@ const RandomPlay = ({ socket }) => {
     forceJump: true,
   });
   const handleStartGame = () => {
-    const token = isAuthenticated();
+    const token = getUserIdentification();
     const { bot, botLevel, checker, forceJump } = gameOptions;
     if (bot)
       socket.emit(

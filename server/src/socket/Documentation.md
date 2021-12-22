@@ -47,6 +47,9 @@ Format :-
 
 7. end-game - {ends the game and makes the players & spectators leave the board}
 Format :-
+
+8. head-count - {sending the count of people in the room}
+Format :- roomSocketCnt
 ```
 
 #### Game-Status-Events
