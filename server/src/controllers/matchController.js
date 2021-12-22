@@ -1,6 +1,7 @@
 const Match = require("../models/Match");
 const mongoose = require("mongoose");
 const keys = require("../config/keys");
+const { filterPhoto } = require("../helpers/photoHelper");
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.getMyMatches = async (req, res, next) => {
@@ -44,7 +45,6 @@ exports.getMyMatches = async (req, res, next) => {
         },
       },
     ]);
-
     if (!matches)
       return res
         .status(404)
@@ -56,8 +56,10 @@ exports.getMyMatches = async (req, res, next) => {
     matches.forEach((match) => {
       //creating an object of userId:ratingChange to refrence it later
       let ratingChange = {};
+      let color = {};
       match.players.forEach((player) => {
         ratingChange[player.userId] = player.delta;
+        color[player.userId] = player.color;
       });
 
       //filtering player info
@@ -69,15 +71,9 @@ exports.getMyMatches = async (req, res, next) => {
           userName: username,
           rating: rating,
           ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
-          photo: keys.SERVER_BASE + "/public/dp/default.png",
+          photo: filterPhoto(detail),
+          color: color[_id]
         };
-        if (detail.photo)
-          player.photo = keys.SERVER_BASE + "/public/dp/" + detail.photo;
-        else if ("google" in detail.methods) {
-          player.photo = detail.google.photo;
-        } else if ("facebook" in detail) {
-          if (detail.facebook.photo) player.photo = detail.facebook.photo;
-        }
         playersInfo.push(player);
       });
 
@@ -127,7 +123,6 @@ exports.getMatchById = async (req, res, next) => {
         },
       },
     ]);
-
     if (!matches || matches.length === 0)
       return res
         .status(404)
@@ -136,8 +131,10 @@ exports.getMatchById = async (req, res, next) => {
     matches.forEach((match) => {
       //creating an object of userId:ratingChange to refrence it later
       let ratingChange = {};
+      let color = {}
       match.players.forEach((player) => {
         ratingChange[player.userId] = player.delta;
+        color[player.userId] = player.color;
       });
 
       //filtering player info
@@ -149,15 +146,9 @@ exports.getMatchById = async (req, res, next) => {
           userName: username,
           rating: rating,
           ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
-          photo: keys.SERVER_BASE + "/public/dp/default.png",
+          photo: filterPhoto(detail),
+          color: color[_id]
         };
-        if (detail.photo)
-          player.photo = keys.SERVER_BASE + "/public/dp/" + detail.photo;
-        else if ("google" in detail.methods) {
-          player.photo = detail.google.photo;
-        } else if ("facebook" in detail) {
-          if (detail.facebook.photo) player.photo = detail.facebook.photo;
-        }
         playersInfo.push(player);
       });
 

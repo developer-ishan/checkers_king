@@ -1,3 +1,5 @@
+const { filterPhoto } = require("../../../helpers/photoHelper");
+
 module.exports =
   ({ io, socket }) =>
   async (token, senderId, response) => {
