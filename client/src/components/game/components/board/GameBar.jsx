@@ -53,6 +53,7 @@ const GameBar = ({ turn, leaveGame, offerDraw, botLevel, gameId, color }) => {
           offerDraw={offerDraw}
           gameId={gameId}
           botLevel={botLevel}
+          color={color}
         />
       </SmallScreenInfoModal>
     </div>

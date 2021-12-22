@@ -15,7 +15,7 @@ module.exports =
     if (endedGame === null) return;
 
     const roomId = endedGame.id;
-    io.to(roomId).emit("end-game");
+    io.to(roomId).emit("end-game", winner);
     console.log("ending the game... ", roomId);
     // removing all the users of this room
     io.socketsLeave(roomId);
