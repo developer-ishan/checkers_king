@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { isAuthenticated } from "../../../../helper/authHelper";
+import { getUserIdentification } from "../../../../helper/authHelper";
 import GameButton from "../others/GameButton";
 import PlayWithFriendsOptionsModal from "../../../modal/PlayWithFriendsOptionsModal";
 import { playClickSound } from "../../../../helper/audioHelper";
@@ -15,10 +15,10 @@ const CreateGame = ({ socket }) => {
 
   const handleCreateGame = () => {
     playClickSound();
-    const token = isAuthenticated();
+    const token = getUserIdentification();
     const { checker, forceJump, isRated } = gameOptions;
     // ARGS :- ("create-game" ,isBot, botLevel, color, mandatoryMoves, isRated, token)
-    socket.emit("create-game", false, 4, checker, forceJump, isRated, token);
+    socket.emit("create-game", false, -1, checker, forceJump, isRated, token);
     history.push("/game");
   };
 

@@ -15,7 +15,7 @@ module.exports = async ({ gameId, io, socket }) => {
   });
   socket.to(opponent[0].socket.id).emit("draw-accepted");
   // performing the end game procedures
-  let finishedGame = await endGame({ player: socket, winner: false });
+  let finishedGame = await endGame({ player: socket, winner: "Draw" });
   io.to(finishedGame.id).emit("winner", null);
   sendAllGames(io);
   io.socketsLeave(finishedGame.id);

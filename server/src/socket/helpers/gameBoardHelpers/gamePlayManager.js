@@ -100,19 +100,12 @@ exports.createNewGame = async ({
       [0, 2, 0, 2, 0, 2, 0, 2],
       [2, 0, 2, 0, 2, 0, 2, 0],
       [0, 2, 0, 2, 0, 2, 0, 2],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 1, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 2, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
     botLevel,
     isRated,
     mandatoryMoves,
+    withoutAttack: 0,
     chat: [],
   };
 
@@ -137,12 +130,14 @@ const switchGameTurn = ({ game }) => {
   game.turn = game.turn === "Red" ? "Black" : "Red";
 };
 
+// check for the mandatory move in the game
 exports.isMandatoryMove = (selectedPiece, destination) => {
   const diffI = Math.abs(selectedPiece.i - destination.i);
   const diffJ = Math.abs(selectedPiece.j - destination.j);
   return diffI === 2 && diffJ === 2;
 };
 
+// emitting the game status to the game-room
 const emitGameStatus = (io, game) => {
   io.to(game.id).emit("game-status", {
     id: game.id,
@@ -151,13 +146,15 @@ const emitGameStatus = (io, game) => {
   });
 };
 
+// performing the mandatory move in the game
 const initiateMandatoryMove = async (io, game, destination) => {
   console.log("initiating mandatory moves...");
   let currPiece = destination;
   let destPiece = giveMandatoryMove(game.board, currPiece);
 
+  // while the next mandatory move cannot be performed
   while (destPiece !== null) {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 300));
     emitGameStatus(io, game);
 
     const moveResults = movePiece({
@@ -185,13 +182,19 @@ exports.onMovePiece = async ({ io, player, selectedPiece, destination }) => {
       destination,
       selectedPiece,
     });
+
     if (moveResults !== null) {
+      // on successful move by the function
       savePieceMoveToGame({ game, selectedPiece, destination });
       if (
         game.mandatoryMoves &&
         this.isMandatoryMove(selectedPiece, destination)
       )
         await initiateMandatoryMove(io, game, destination);
+      // draw condition of the game in case of no attack in 40 moves
+      if (this.isMandatoryMove(selectedPiece, destination))
+        game.withoutAttack = 0;
+      else game.withoutAttack++;
       switchGameTurn({ game });
     }
   }
@@ -243,7 +246,7 @@ exports.endGame = async ({ player, winner }) => {
         game.players[0].color === winner ? game.players[0] : game.players[1];
       let p2 = p1 === game.players[0] ? game.players[1] : game.players[0];
 
-      let isDraw = winner === false ? true : false;
+      let isDraw = winner === "Draw" ? true : false;
       await saveMatch(
         p1,
         p2,
@@ -297,5 +300,6 @@ exports.isGameOver = ({ player }) => {
     getAllMovesCountByPlayer({ board: game.board, color: "Black" }) === 0
   )
     return "Red";
+  else if (game.withoutAttack > 40) return "Draw";
   else return false;
 };

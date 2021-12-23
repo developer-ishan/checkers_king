@@ -56,10 +56,12 @@ module.exports =
         token,
       });
 
+      const roomSocketCnt = io.sockets.adapter.rooms.get(game.id).size;
+      io.to(game.id).emit("head-count", roomSocketCnt);
       io.to(game.id).emit("players-info", getGamePlayersWithGameId(game));
       socket.emit("color", color);
       socket.to(gameId).emit("opponent-status", "ready");
     } else socket.emit("players-info", getGamePlayersWithGameId(game));
-    // sendAllGames(io);
+
     sendGameStatus(io, gameId);
   };

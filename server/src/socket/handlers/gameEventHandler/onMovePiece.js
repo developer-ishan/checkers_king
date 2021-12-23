@@ -13,7 +13,7 @@ const { emitGameError } = require("../../helpers/errorHelper");
 // check if the game has ended & a winner is declared
 const isWinnerDeclared = async (io, socket) => {
   const winner = isGameOver({ player: socket });
-  console.log("Winner of the game ", winner);
+  // checking if the game has ended
   if (winner !== false) {
     let finishedGame = await endGame({ player: socket, winner });
     io.to(finishedGame.id).emit("winner", winner);
@@ -26,7 +26,6 @@ const isWinnerDeclared = async (io, socket) => {
 module.exports =
   ({ io, socket }) =>
   async ({ selectedPiece, destination }) => {
-    console.log("inside move piece handler...");
     let game = await onMovePiece({
       io,
       player: socket,

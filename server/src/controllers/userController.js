@@ -66,9 +66,11 @@ exports.getUserById = async (req, res, next) => {
       google: user.google,
       facebook: user.facebook,
       desc: user.desc,
-      photo: photo,
+      photo: user.photo,
+      rating: user.rating
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };

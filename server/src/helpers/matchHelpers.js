@@ -32,9 +32,9 @@ const saveMatch = async (
     endTime,
   });
 
-  // handles draw condition between players
   if (isBot) {
     // handles games with bots
+    if (p1.id.startsWith("guest")) return;
     console.log("saving game against bot...");
     game.players.push({ userId: p1.id, delta: 0, color: p1.color });
   } else if (isPlayerAGuest(p1.id, p2.id)) {
@@ -42,6 +42,7 @@ const saveMatch = async (
     console.log("game with a guest... not saving and returning...");
     return;
   } else if (isDraw || !isRated) {
+    // saving unrated or draw games
     console.log("saving unrated game");
     game.players.push({ userId: p1.id, delta: 0, color: p1.color });
     game.players.push({ userId: p2.id, delta: 0, color: p2.color });
@@ -62,6 +63,7 @@ const saveMatch = async (
     });
   }
   const savedGame = await game.save();
+  // saving chats of a rated of unrated game of the users
   if (!isBot)
     await saveChat([p1.id, p2.id], savedGame._id.toString(), messages);
 };

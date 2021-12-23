@@ -36,6 +36,7 @@ exports.SocketServer = (io) => {
   // on a new user socket connection
   io.on("connection", async (socket) => {
     console.log("a user connected! ID :- " + socket.id);
+    socket.on("disconnect", onDisconnect({ io, socket }));
 
     /* ---------------------------------- Check For Multiple Devices ----------------------------------*/
     const addedUser = await addUserToList(socket, socket.handshake.query.token);
@@ -101,7 +102,6 @@ exports.SocketServer = (io) => {
     });
     /*  -- game draw handler calls END */
 
-    socket.on("disconnect", onDisconnect({ io, socket }));
     socket.on("move-piece", onMovePiece({ io, socket }));
     socket.on("quit-game", onQuitGame({ io, socket }));
     /* game event handler calls END */
@@ -109,6 +109,11 @@ exports.SocketServer = (io) => {
     /* miscellaneous event handlers */
     socket.on("leave-room", ({ roomId }) => {
       socket.leave(roomId);
+      // sending the person count in the room
+      io.to(roomId).emit(
+        "head-count",
+        io.sockets.adapter.rooms.get(roomId).size
+      );
     });
     socket.on("exit-game-lobby", onLobbyExit({ io, socket }));
   });
