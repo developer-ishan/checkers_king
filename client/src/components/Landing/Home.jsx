@@ -81,7 +81,7 @@ const Home = ({ games, setGames }) => {
         />
       )}
       <Navbar />
-      <div className="grid grid-cols-12 mx-auto max-w-screen-2xl">
+      <div className="grid grid-cols-12 pt-4 mx-auto max-w-screen-2xl">
         {/* left side */}
         <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
           <RandomPlay socket={socket} d />

@@ -4,6 +4,7 @@ import { API } from "../../config/backend";
 import Board from "./components/Board";
 import Lobby from "../lobby/Lobby";
 import { getChatsByMatchId } from "../../helper/userHelper";
+import Navbar from "../Landing/components/others/Navbar";
 const Replay = () => {
   const { matchId } = useParams();
   const [data, setData] = useState(null);
@@ -36,7 +37,10 @@ const Replay = () => {
   return (
     <div className="">
       {chats && data ? (
-        <Board moves={data.moves} playersInfo={data.players} chats={chats} />
+        <>
+          <Navbar />
+          <Board moves={data.moves} playersInfo={data.players} chats={chats} />
+        </>
       ) : (
         <Lobby heading="Loading replay" />
       )}

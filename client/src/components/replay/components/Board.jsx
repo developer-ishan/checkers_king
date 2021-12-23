@@ -84,14 +84,14 @@ const Board = ({ moves, playersInfo, chats }) => {
   };
   return (
     <div
-      className="h-full min-h-screen"
+      className="h-full min-h-screen pt-4 "
       style={{
         backgroundImage:
           "url('https://images.unsplash.com/photo-1525034687081-c702010cb70d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')",
         backgroundSize: "cover",
       }}
     >
-      <div className="grid grid-cols-12 px-2 mt-4">
+      <div className="grid grid-cols-12 px-2 auto-rows-min">
         {/* left side :containing board */}
         <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
           <BoardComponent
@@ -125,7 +125,7 @@ const Board = ({ moves, playersInfo, chats }) => {
           {/* chats replay */}
           {/* there is no chat for playing against bot */}
           {playersInfo.length > 1 && (
-            <div className="flex-grow mt-4">
+            <div className="flex-grow my-2">
               <ChatWindow
                 chats={chats.messages}
                 playersInfo={playersInfo}

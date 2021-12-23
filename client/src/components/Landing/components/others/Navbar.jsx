@@ -163,7 +163,7 @@ const Navbar = () => {
 
   return (
     <div className="bg-white shadow-md dark:bg-gray-700">
-      <header className="flex flex-col items-center w-full pb-2 mx-auto mb-4 text-gray-700 max-w-screen-2xl sm:flex-row dark:text-white body-font">
+      <header className="flex flex-col items-center w-full mx-auto text-gray-700 max-w-screen-2xl sm:flex-row dark:text-white body-font">
         {/* logo and toggle btn */}
         <div className="flex items-center justify-between w-full max-w-sm px-6 py-3 md:flex-row">
           <span
