@@ -197,9 +197,12 @@ const Game = () => {
 
   //socket is emitting the message sent by the opponent
   //catching it here
-  socket.on("receive-msg", (msg) => {
+  socket.on("receive-msg", (newMessage) => {
     //push the received message into the chats
-    setChats([...chats, { player: "opponent", msg: `${msg}` }]);
+    //this user is opponents id
+    const { user, msg } = newMessage;
+    console.log("received msg:", newMessage, user, msg);
+    setChats([...chats, { user, msg }]);
   });
 
   const offerDraw = () => {
@@ -211,7 +214,9 @@ const Game = () => {
     //sending this message to the server
     socket.emit("send-msg", { gameId: game.id, msg });
     //pushing the current msg into the chat
-    setChats([...chats, { player: "you", msg: `${msg}` }]);
+    let selfId = getMyId();
+    console.log("saving to self", selfId);
+    setChats([...chats, { user: selfId, msg: `${msg}` }]);
   };
 
   const leaveGame = () => {
@@ -321,6 +326,13 @@ const Game = () => {
         {player.username}
       </Link>
     );
+  };
+  const getMyId = () => {
+    let id;
+    playersInfo.forEach((player) => {
+      if (player.color === color) id = player.id;
+    });
+    return id;
   };
   return (
     <>

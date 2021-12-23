@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from "react";
+import ChatWindow from "./ChatWindow";
 const Chat = ({ sendChatMsg, chats, color, playersInfo }) => {
   const [msg, setMsg] = useState("");
-  //refrence to the daummy element present at the end of chats
-  const messagesEndRef = React.createRef();
-  //this function will bring that div in focuse
-  //resulting in scroll
-  const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-  };
-  //so the ides is whenever there is change in chat
-  //run the scroll to bottom
-  useEffect(() => {
-    console.log("scrolling chat", chats);
-    if (chats.length) scrollToBottom();
-  }, [chats]);
 
   const handleMsg = () => {
     const userMsg = msg;
@@ -31,7 +19,7 @@ const Chat = ({ sendChatMsg, chats, color, playersInfo }) => {
   return (
     <div className="flex flex-col flex-grow w-full h-full max-w-md text-black dark:text-white">
       {/* message window showing chats */}
-      <div
+      {/* <div
         id="chatwindow"
         className="relative flex-grow w-full p-1 my-2 space-y-2 overflow-y-auto bg-white border-2 dark:bg-gray-700 rounded-xl"
       >
@@ -53,7 +41,13 @@ const Chat = ({ sendChatMsg, chats, color, playersInfo }) => {
           </p>
         )}
         <div ref={messagesEndRef} />
-      </div>
+      </div> */}
+      <ChatWindow
+        chats={chats}
+        playersInfo={playersInfo}
+        noChatMessage="typeout something.."
+        bottomColor={color}
+      />
       {/* message input and send controls */}
       {color && (
         <div className="flex p-1 bg-white border-2 shadow dark:bg-gray-700 rounded-3xl">

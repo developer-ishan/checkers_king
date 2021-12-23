@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { API } from "../../../config/backend";
 
-const BoardComponent = ({ boardMatrix, color }) => {
+const BoardComponent = ({ boardMatrix, playersInfo }) => {
   // for styling the boxes of the board
   const whiteBoxStyle =
     "grid relative place-items-center text-black bg-pink-300 ";
@@ -54,8 +56,75 @@ const BoardComponent = ({ boardMatrix, color }) => {
         break;
     }
   };
-  //this ensure that the players color remains on the lower side
-  const rot = color === "Black" ? 0 : 180;
+  const botProfile = () => {
+    return (
+      <Link
+        className="flex items-center "
+        title={`this is a bot,not a real player`}
+      >
+        <img
+          src={`/images/default.png`}
+          alt="bot's profile pic"
+          className="w-8 h-8 mx-1 rounded-full"
+        />
+
+        {`BOT`}
+      </Link>
+    );
+  };
+  const redPlayerInfo = () => {
+    let player = null;
+    //match is against a real player
+    playersInfo.forEach((p) => {
+      if (p.color === "Red") {
+        player = p;
+      }
+    });
+    if (!player) return botProfile();
+    console.log("red player", player);
+
+    return (
+      <Link
+        to={`/user/${player.id}`}
+        className="flex items-center "
+        title={`click to see ${player.username}'s full profile`}
+      >
+        <img
+          src={`${player.photo}`}
+          alt="player's profile pic"
+          className="w-8 h-8 mx-1 rounded-full"
+        />
+
+        {player.userName}
+      </Link>
+    );
+  };
+  const blackPlayerInfo = () => {
+    let player = null;
+    //match is against a real player
+    playersInfo.forEach((p) => {
+      if (p.color === "Black") {
+        player = p;
+      }
+    });
+    if (!player) return botProfile();
+    console.log("black player", player);
+    return (
+      <Link
+        to={`/user/${player.id}`}
+        className="flex items-center "
+        title={`click to see ${player.username}'s full profile`}
+      >
+        <img
+          src={`${player.photo}`}
+          alt="player's profile pic"
+          className="w-8 h-8 mx-1 rounded-full"
+        />
+
+        {player.userName}
+      </Link>
+    );
+  };
 
   return (
     <div
@@ -69,7 +138,7 @@ const BoardComponent = ({ boardMatrix, color }) => {
         className="flex items-center justify-start p-1 bg-indigo-500"
         style={{ width: "90vmin" }}
       >
-        Lovedeep singh
+        {redPlayerInfo()}
       </div>
 
       {/* board start*/}
@@ -77,7 +146,6 @@ const BoardComponent = ({ boardMatrix, color }) => {
         style={{
           height: "90vmin",
           width: "90vmin",
-          transform: `rotateX(${rot}deg) rotateY(${rot}deg)`,
           border: "0.8rem double #fff",
         }}
         className="grid grid-cols-1 mx-auto grid-rows-8"
@@ -104,7 +172,7 @@ const BoardComponent = ({ boardMatrix, color }) => {
         className="flex items-center justify-start p-1 bg-indigo-500"
         style={{ width: "90vmin" }}
       >
-        Lovedeep singh
+        {blackPlayerInfo()}
       </div>
     </div>
   );

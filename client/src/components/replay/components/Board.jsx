@@ -78,7 +78,7 @@ const Board = ({ moves, playersInfo, chats }) => {
         return newMoveNum;
       } else {
         alert("Match finished");
-        return moveNum + 1;
+        return moveNum;
       }
     });
   };
@@ -94,38 +94,46 @@ const Board = ({ moves, playersInfo, chats }) => {
       <div className="grid grid-cols-12 px-2 mt-4">
         {/* left side :containing board */}
         <div className="col-span-12 col-start-1 text-center text-white md:col-span-8">
-          <BoardComponent boardMatrix={boardStates[boardStates.length - 1]} />
+          <BoardComponent
+            boardMatrix={boardStates[boardStates.length - 1]}
+            playersInfo={playersInfo}
+          />
         </div>
         {/* right side: containing controls and chats */}
-        <div className="col-span-12 lg:col-span-3 lg:col-start-9 ">
+        <div className="flex flex-col col-span-12 lg:col-span-3 lg:col-start-9">
           {/* button controls */}
           <div>
             <div className="">
               <p className="text-center ">
-                {/* move:{boardStates.length}/{moves.length} */}
+                move:{moveNum + 1}/{moves.length}
               </p>
             </div>
-            {moves && boardStates.length > 1 && (
-              <button
-                onClick={prevMove}
-                className="w-full px-4 py-2 my-2 font-bold text-gray-800 bg-gray-100 rounded-l hover:bg-gray-200"
-              >
-                Prev
-              </button>
-            )}
-            {moves && moveNum < moves.length && (
-              <button
-                onClick={nextMove}
-                className="w-full px-4 py-2 font-bold text-white bg-gray-800 rounded-r hover:bg-gray-700"
-              >
-                Next
-              </button>
-            )}
+            <button
+              onClick={() => prevMove()}
+              className="w-full px-4 py-2 my-2 font-bold text-gray-800 bg-gray-100 rounded-l hover:bg-gray-200"
+            >
+              Prev
+            </button>
+            {/* {moves && moveNum < moves.length && ( */}
+            <button
+              onClick={() => nextMove()}
+              className="w-full px-4 py-2 font-bold text-white bg-gray-800 rounded-r hover:bg-gray-700"
+            >
+              Next
+            </button>
           </div>
           {/* chats replay */}
-          <div>
-            <ChatWindow chats={chats.messages} playersInfo={playersInfo} />
-          </div>
+          {/* there is no chat for playing against bot */}
+          {playersInfo.length > 1 && (
+            <div className="flex-grow mt-4">
+              <ChatWindow
+                chats={chats.messages}
+                playersInfo={playersInfo}
+                noChatMessage="there were no chats in the match"
+                bottomColor="Black"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

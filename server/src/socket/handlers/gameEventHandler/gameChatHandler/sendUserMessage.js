@@ -23,5 +23,7 @@ module.exports = ({ gameId, msg, io, socket }) => {
   saveChatToGame(gameId, { user: fromUser.id.toString(), msg: msg });
   // game.chat = [...game.chat, { user: fromUser.id.toString(), msg: msg }];
 
-  socket.to(toUser.socket.id).emit("receive-msg", msg);
+  socket
+    .to(toUser.socket.id)
+    .emit("receive-msg", { user: fromUser.id.toString(), msg });
 };
