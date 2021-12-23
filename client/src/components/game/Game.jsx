@@ -51,7 +51,6 @@ const Game = () => {
 
   useEffect(() => {
     console.log("use-effect called...");
-
     socket.on("color", (color) => {
       console.log("Setting color to ", color);
       setColor(color);
@@ -73,6 +72,10 @@ const Game = () => {
       console.log("game-status : ", game);
       console.log("piece-color : ", color);
       setGame(game);
+    });
+    socket.on("old-chats-on-rejoin", (chats) => {
+      console.log("received old chats", chats);
+      setChats(chats);
     });
 
     // TODO: add a modal to display the error

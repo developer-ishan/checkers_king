@@ -87,7 +87,7 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       <Link
         to={`/user/${player.id}`}
         className="flex items-center "
-        title={`click to see ${player.username}'s full profile`}
+        title={`click to see ${player.userName}'s full profile`}
       >
         <img
           src={`${player.photo}`}
@@ -113,7 +113,7 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       <Link
         to={`/user/${player.id}`}
         className="flex items-center "
-        title={`click to see ${player.username}'s full profile`}
+        title={`click to see ${player.userName}'s full profile`}
       >
         <img
           src={`${player.photo}`}

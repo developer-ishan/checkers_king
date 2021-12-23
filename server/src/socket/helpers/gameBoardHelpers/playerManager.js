@@ -50,6 +50,7 @@ const rejoinGameWithGameId = async (socket, gameId, token) => {
   });
   socket.emit("color", socketPlayer.color);
   socket.emit("players-info", getGamePlayersWithGameId(game));
+  socket.emit("old-chats-on-rejoin", game.chat);
   socket.emit("game-status", {
     id: game.id,
     board: game.board,
