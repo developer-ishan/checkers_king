@@ -2,11 +2,8 @@ import introJs from "intro.js";
 import React, { useEffect, useState, useContext } from "react";
 import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
+import { GameSoundContext } from "../../../../context/GameSoundContext";
 import { UserContext } from "../../../../context/UserContext";
-import {
-  playClickSound,
-  playSelectSound,
-} from "../../../../helper/audioHelper";
 import {
   authenticate,
   isAuthenticated,
@@ -23,6 +20,7 @@ Modal.setAppElement("#root");
 require("dotenv").config();
 const Navbar = () => {
   const [userState, setUserState] = useContext(UserContext);
+  const { clickSound, selectSound, isMuted } = useContext(GameSoundContext);
   const history = useHistory();
   const [darkMode, setDarkMode] = useState(false);
   const [email, setEmail] = useState("");
@@ -149,7 +147,7 @@ const Navbar = () => {
 
   const handleToggle = () => {
     const html = document.querySelector("html");
-    playSelectSound();
+    if (!isMuted) selectSound.play();
     if (darkMode) {
       html.classList.remove("dark");
       localStorage.setItem("DarkMode", "false");
@@ -220,7 +218,7 @@ const Navbar = () => {
               className="block w-full px-4 py-2 mx-2 ml-auto text-xs font-bold text-white uppercase transition-all duration-150 bg-purple-500 rounded shadow outline-none sm:w-auto active:bg-purple-600 hover:shadow-md hover:bg-purple-600 focus:outline-none ease"
               onClick={() => {
                 setIsLoginModalOpen(true);
-                playClickSound();
+                if (!isMuted) clickSound.play();
               }}
             >
               login

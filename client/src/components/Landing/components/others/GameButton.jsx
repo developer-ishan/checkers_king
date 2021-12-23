@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-import {
-  playClickSound,
-  playSelectSound,
-} from "../../../../helper/audioHelper";
+import React, { useContext } from "react";
+import { GameSoundContext } from "../../../../context/GameSoundContext";
 
 const GameButton = ({
   onClickFn,
@@ -12,14 +9,14 @@ const GameButton = ({
 }) => {
   let classes = "transform -skew-x-15 ";
   classes = classes + " " + className;
+  const { clickSound, isMuted } = useContext(GameSoundContext);
 
   return (
     <button
       className={classes}
       onClick={() => {
         onClickFn();
-        // playSelectSound();
-        playClickSound();
+        if (!isMuted) clickSound.play();
       }}
       style={{ boxShadow: `6px 6px 0 ${shadowColor}` }}
     >

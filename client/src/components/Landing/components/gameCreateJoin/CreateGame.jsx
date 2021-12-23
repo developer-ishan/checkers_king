@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useHistory } from "react-router";
 import { getUserIdentification } from "../../../../helper/authHelper";
 import GameButton from "../others/GameButton";
 import PlayWithFriendsOptionsModal from "../../../modal/PlayWithFriendsOptionsModal";
-import { playClickSound } from "../../../../helper/audioHelper";
+import { GameSoundContext } from "../../../../context/GameSoundContext";
 const CreateGame = ({ socket }) => {
   let history = useHistory();
+  const { clickSound, isMuted } = useContext(GameSoundContext);
   const [isGameOptionModalOpen, setIsGameOptionModalOpen] = useState(false);
   const [gameOptions, setGameOptions] = useState({
     checker: "Red",
@@ -14,7 +15,7 @@ const CreateGame = ({ socket }) => {
   });
 
   const handleCreateGame = () => {
-    playClickSound();
+    if (!isMuted) clickSound.play();
     const token = getUserIdentification();
     const { checker, forceJump, isRated } = gameOptions;
     // ARGS :- ("create-game" ,isBot, botLevel, color, mandatoryMoves, isRated, token)

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import Modal from "react-modal";
-import { playSelectSound } from "../../helper/audioHelper";
+import { GameSoundContext } from "../../context/GameSoundContext";
 
 const RandomGameOptionsModal = ({
   modalState,
@@ -9,12 +9,13 @@ const RandomGameOptionsModal = ({
   setGameOptions,
   handleStartGame,
 }) => {
+  const { selectSound, isMuted } = useContext(GameSoundContext);
   const closeModal = () => {
-    playSelectSound();
+    if (!isMuted) selectSound.play();
     setModalState(false);
   };
   const playOptionSelectSound = () => {
-    playSelectSound();
+    if (!isMuted) selectSound.play();
   };
   return (
     <Modal
@@ -24,7 +25,7 @@ const RandomGameOptionsModal = ({
       preventScroll={true}
     >
       <div className="flex justify-center mx-auto">
-        <div className="flex flex-col items-start justify-between w-full sm:w-4/5 h-auto my-20 overflow-hidden bg-white dark:bg-gray-700 rounded-lg shadow-xl">
+        <div className="flex flex-col items-start justify-between w-full h-auto my-20 overflow-hidden bg-white rounded-lg shadow-xl sm:w-4/5 dark:bg-gray-700">
           <div className="flex flex-row items-baseline justify-around w-full p-4 pb-0 mb-3">
             <h2 className="mr-auto text-lg font-semibold tracking-wide uppercase">
               options
@@ -32,14 +33,14 @@ const RandomGameOptionsModal = ({
             <div className="flex flex-row">
               <a
                 href="#"
-                className="text-xs text-blue-700 text-xl hover:text-red-500 dark:text-pink-400 "
+                className="text-xs text-xl text-blue-700 hover:text-red-500 dark:text-pink-400 "
                 onClick={() => closeModal()}
               >
                 &#10006;
               </a>
             </div>
           </div>
-          <div className="w-full p-4 pt-0 text-gray-800 bg-gray-100 dark:bg-gray-700 dark:text-white divide-y divide-gray-400">
+          <div className="w-full p-4 pt-0 text-gray-800 bg-gray-100 divide-y divide-gray-400 dark:bg-gray-700 dark:text-white">
             {/* play with bot */}
             <div className="flex flex-col py-4">
               <div className="flex flex-row items-center justify-between my-1">
@@ -112,7 +113,7 @@ const RandomGameOptionsModal = ({
                     </label>
                   </div>
                   {/* select checker */}
-                  <div className=" py-4">
+                  <div className="py-4 ">
                     <h2 className="my-2 font-bold capitalize">
                       choose color :{" "}
                     </h2>

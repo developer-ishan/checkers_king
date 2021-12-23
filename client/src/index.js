@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import { SocketProvider } from "./context/SocketContext";
 import { GameProvider } from "./context/GameContext";
+import { GameSoundProvider } from "./context/GameSoundContext";
 import reportWebVitals from "./reportWebVitals";
 import { UserProvider } from "./context/UserContext";
 
@@ -12,7 +13,9 @@ ReactDOM.render(
     <SocketProvider>
       <GameProvider>
         <UserProvider>
-          <App />
+          <GameSoundProvider>
+            <App />
+          </GameSoundProvider>
         </UserProvider>
       </GameProvider>
     </SocketProvider>

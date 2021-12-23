@@ -11,13 +11,14 @@ import InviteCodeModal from "../modal/InviteCodeModal";
 import GameCall from "./components/communication/GameCall";
 import ErrorModal from "../modal/ErrorModal";
 import Lobby from "../lobby/Lobby";
-import { playLoseSound, playWinSound } from "../../helper/audioHelper";
 import { getUserIdentification, signout } from "../../helper/authHelper";
 import { API } from "../../config/backend";
+import { GameSoundContext } from "../../context/GameSoundContext";
 Modal.setAppElement("#root");
 
 const Game = () => {
   const [socket, setSocket] = useContext(SocketContext);
+  const { loseSound, winSound, isMuted } = useContext(GameSoundContext);
   const [chats, setChats] = useState([]); //store the chats of current game
   const [game, setGame] = useState(null);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
@@ -127,9 +128,9 @@ const Game = () => {
         msgToUser = `${winner} player won the game`;
       } else if (winner === color) {
         msgToUser = "Congratulations!! You won the game 🥳🥳";
-        playWinSound();
+        if (!isMuted) winSound.play();
       } else {
-        playLoseSound();
+        if (!isMuted) loseSound.play();
         msgToUser = "You lost the game!! 😢😢";
       }
 
@@ -155,15 +156,15 @@ const Game = () => {
       } else if (winner === color) {
         msgToUser = "Congratulations!! You won the game 🥳🥳";
         title = "opponent quit";
-        playWinSound();
+        if (!isMuted) winSound.play();
       } else {
-        playLoseSound();
+        if (!isMuted) loseSound.play();
         msgToUser = "You lost the game!! 😢😢";
         title = "you Quited";
       }
 
       setMatchResult({
-        title: "opponent quit",
+        title: `${title}`,
         msg: `${msgToUser}`,
         buttonText: "okay",
         redirectTo: "/",

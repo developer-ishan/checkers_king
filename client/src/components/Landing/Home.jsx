@@ -7,14 +7,15 @@ import PlayWithFriends from "./components/gameCreateJoin/PlayWithFriends";
 import Modal from "react-modal";
 import introJs from "intro.js";
 import "intro.js/introjs.css";
-import { playWelcomeSound } from "../../helper/audioHelper";
 import SnackBar from "./components/others/SnackBar";
 import { getUserIdentification, signout } from "../../helper/authHelper";
 import { useHistory } from "react-router-dom";
 import ErrorModal from "../modal/ErrorModal";
+import { GameSoundContext } from "../../context/GameSoundContext";
 Modal.setAppElement("#root");
 const Home = ({ games, setGames }) => {
   const [socket, setSocket] = useContext(SocketContext);
+  const { welcomeSound, isMuted } = useContext(GameSoundContext);
   const [snackBarContent, setSnackBarContent] = useState("");
   const [onGoingGameDetails, setOnGoingGameDetails] = useState(null);
   const [
@@ -41,7 +42,7 @@ const Home = ({ games, setGames }) => {
         disableInteraction: true,
       })
       .addHints();
-    playWelcomeSound();
+    if (!isMuted) welcomeSound.play();
     console.log("mounded");
   }, []);
   const rejoinPlayerToGame = () => {
