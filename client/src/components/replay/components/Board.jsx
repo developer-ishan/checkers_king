@@ -51,8 +51,14 @@ const Board = ({ moves, playersInfo, chats }) => {
       if (middlePiece !== piece) {
         updatedBoard[oneCellForwardI][oneCellForwardJ] = 0;
       }
+
       updatedBoard[di][dj] = updatedBoard[i][j];
       updatedBoard[i][j] = 0;
+
+      if (piece === RED_PAWN && di === BOTTOM_ROW)
+        updatedBoard[di][dj] = RED_QUEEN;
+      if (piece === BLACK_PAWN && di === TOP_ROW)
+        updatedBoard[di][dj] = BLACK_QUEEN;
       return [...boardStates, updatedBoard];
     });
   };

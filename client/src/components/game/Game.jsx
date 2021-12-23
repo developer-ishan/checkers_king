@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import BoardComponent from "./components/board/BoardComponent";
 import Chat from "./components/communication/Chat";
 
@@ -18,7 +18,6 @@ Modal.setAppElement("#root");
 
 const Game = () => {
   const [socket, setSocket] = useContext(SocketContext);
-  const [chats, setChats] = useState([]); //store the chats of current game
   const [game, setGame] = useState(null);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
@@ -53,25 +52,10 @@ const Game = () => {
     console.log("use-effect called...");
 
     socket.on("color", (color) => {
-      console.log("Setting color to ", color);
       setColor(color);
     });
 
-    socket.on("opponent-status", (status) => {
-      /*opponent status state can have two values
-          1.null --> means everything is fine, no need to show modal
-          2.object--> this object contains the msg and action required by errorModal
-            this object is used for 2 situation
-            2.1 --> when waiting for opponent to join the game for first time
-            2.2 --> when waiting for opponent to rejoin the game after disconnetion
-        */
-      if (status === "ready") setOpponentStatus(null);
-      else setOpponentStatus(status);
-    });
-
     socket.on("game-status", (game) => {
-      console.log("game-status : ", game);
-      console.log("piece-color : ", color);
       setGame(game);
     });
 
@@ -110,7 +94,6 @@ const Game = () => {
     });
 
     socket.on("winner", (winner) => {
-      console.log("inside winner event", winner);
       let msgToUser;
       console.log("Color in winner socket : ", color);
       console.log("Winner : ", winner);
@@ -193,30 +176,30 @@ const Game = () => {
       console.log("user-error detected...");
       setMultipleDeviceDetectedModalOpen(error);
     });
-  }, [color]);
+
+    return () => {
+      console.log("removing listeners...");
+      socket.off("game-status");
+      socket.off("ongoing-game");
+      socket.off("color");
+      socket.off("winner");
+      socket.off("end-game");
+
+      socket.off("draw-offered");
+      socket.off("draw-accepted");
+      socket.off("draw-rejected");
+
+      socket.off("opponent-status");
+      socket.off("players-info");
+      socket.off("game-error");
+    };
+  }, []);
 
   //socket is emitting the message sent by the opponent
   //catching it here
-  socket.on("receive-msg", (newMessage) => {
-    //push the received message into the chats
-    //this user is opponents id
-    const { user, msg } = newMessage;
-    console.log("received msg:", newMessage, user, msg);
-    setChats([...chats, { user, msg }]);
-  });
 
   const offerDraw = () => {
     socket.emit("draw-offered", { gameId: game.id });
-  };
-
-  const sendChatMsg = (msg) => {
-    if (msg === "") return;
-    //sending this message to the server
-    socket.emit("send-msg", { gameId: game.id, msg });
-    //pushing the current msg into the chat
-    let selfId = getMyId();
-    console.log("saving to self", selfId);
-    setChats([...chats, { user: selfId, msg: `${msg}` }]);
   };
 
   const leaveGame = () => {
@@ -249,6 +232,7 @@ const Game = () => {
       });
     }
   };
+
   const blackPlayerInfo = () => {
     //it means match is against the bot
     if (botLevel !== -1) {
@@ -288,6 +272,7 @@ const Game = () => {
       </Link>
     );
   };
+
   const redPlayerInfo = () => {
     //it means match is against the bot
     if (botLevel !== -1) {
@@ -328,12 +313,14 @@ const Game = () => {
     );
   };
   const getMyId = () => {
+    if (!playersInfo) return null;
     let id;
     playersInfo.forEach((player) => {
       if (player.color === color) id = player.id;
     });
     return id;
   };
+
   return (
     <>
       {isMultipleDeviceDetectedModalOpen && (
@@ -375,7 +362,7 @@ const Game = () => {
             {/* actual board where game is played */}
             <div className={boardClass()}>
               <div className="flex flex-col items-center">
-                {playersInfo && (
+                {playersInfo !== null && playersInfo !== undefined && (
                   <div
                     className="flex items-center justify-between p-1 bg-indigo-500"
                     style={{ width: "90vmin" }}
@@ -387,12 +374,13 @@ const Game = () => {
                   </div>
                 )}
                 <BoardComponent
+                  lastMove={game.lastMove}
                   board={game.board}
                   color={color}
                   movePiece={movePiece}
                   turn={game.turn}
                 />
-                {playersInfo && (
+                {playersInfo !== null && playersInfo !== undefined && (
                   <div
                     className="flex items-center justify-between p-1 bg-indigo-500"
                     style={{ width: "90vmin" }}
@@ -417,8 +405,8 @@ const Game = () => {
                     {color && <GameCall socket={socket} gameId={game.id} />}
                     {/* chat component */}
                     <Chat
-                      sendChatMsg={sendChatMsg}
-                      chats={chats}
+                      gameId={game.id}
+                      playerId={getMyId()}
                       color={color}
                       playersInfo={playersInfo}
                     />

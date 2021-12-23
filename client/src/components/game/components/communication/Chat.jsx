@@ -1,7 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { SocketContext } from "../../../../context/SocketContext";
 import ChatWindow from "./ChatWindow";
-const Chat = ({ sendChatMsg, chats, color, playersInfo }) => {
+
+const Chat = ({ gameId, playerId, color, playersInfo }) => {
+  const [socket, setSocket] = useContext(SocketContext);
   const [msg, setMsg] = useState("");
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    socket.on("receive-msg", (newMessage) => {
+      const { user, msg } = newMessage;
+      console.log(newMessage);
+      console.log("chats state : ", chats);
+      setChats([...chats, { user, msg }]);
+    });
+
+    return () => {
+      socket.off("receive-msg");
+    };
+  }, [chats]);
+
+  const sendChatMsg = (msg) => {
+    if (msg === "") return;
+    socket.emit("send-msg", { gameId, msg });
+    setChats([...chats, { user: playerId, msg: `${msg}` }]);
+  };
 
   const handleMsg = () => {
     const userMsg = msg;
@@ -68,6 +91,7 @@ const Chat = ({ sendChatMsg, chats, color, playersInfo }) => {
             <img
               src="https://img.icons8.com/external-outline-juicy-fish/60/000000/external-send-arrows-outline-outline-juicy-fish.png"
               className="w-5 h-5 transform hover:scale-110"
+              alt="SendArrow"
             />
           </button>
         </div>

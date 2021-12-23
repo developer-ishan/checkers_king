@@ -31,6 +31,7 @@ const pieceMoves = {
   ],
 };
 
+// checking validity of the coordinates according to the board
 const isValid = (x, y) => {
   return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
 };
@@ -72,6 +73,7 @@ const getPiecesCount = ({ board, type }) => {
   return cnt;
 };
 
+// get the vertical positins of the pieces of type on board
 const getPiecePositions = ({ board, type }) => {
   let piece = [];
 
@@ -105,10 +107,25 @@ const getAllMovesCountByPlayer = ({ board, color }) => {
   return movesCount;
 };
 
+const parsePieceMove = (moveString) => {
+  if (!moveString) return;
+  return {
+    selectedPiece: {
+      i: parseInt(moveString.substring(1, 2)),
+      j: parseInt(moveString.substring(2, 3)),
+    },
+    destination: {
+      i: parseInt(moveString.substring(3, 4)),
+      j: parseInt(moveString.substring(4, 5)),
+    },
+  };
+};
+
 module.exports = {
   getPossibleMoves,
   getPiecesCount,
   getPiecePositions,
   getAllPieces,
   getAllMovesCountByPlayer,
+  parsePieceMove,
 };

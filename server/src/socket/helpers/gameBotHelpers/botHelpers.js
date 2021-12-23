@@ -1,10 +1,11 @@
+/* ---- Piece Decalrations ---- */
 const RED_PAWN = 1;
 const BLACK_PAWN = 2;
 const RED_QUEEN = 3;
 const BLACK_QUEEN = 4;
-const TOP_ROW = 0;
-const BOTTOM_ROW = 7;
+/* ---- Piece Decalrations ---- */
 
+const INF = 999999;
 const {
   getPossibleMoves,
   getPiecesCount,
@@ -16,17 +17,7 @@ const {
   performMandatoryMove,
 } = require("../gameBoardHelpers/movePieceHelpers/mandatoryMoves");
 
-const INF = 99999;
-
 let RED_SCORE, BLACK_SCORE, REDQ_SCORE, BLACKQ_SCORE, MAX_LIM, MIN_LIM;
-
-const pieceColor = {
-  0: "Empty",
-  1: "Red", // pawn
-  2: "Black", // pawn
-  3: "Red", // queen
-  4: "Black", // queen
-};
 
 // creates a copy of the board by value
 const giveDeepCopy = (board) => {
@@ -37,6 +28,7 @@ const giveDeepCopy = (board) => {
   return copy;
 };
 
+// sets the score of individual piece at each move
 const setPieceScoreValues = () => {
   RED_SCORE = Math.random() * 3;
   REDQ_SCORE = Math.random() * 5;
@@ -51,9 +43,7 @@ const evaluatePosition = (board) => {
   const redQPieceCnt = getPiecesCount({ board, type: RED_QUEEN });
   const blackQPieceCnt = getPiecesCount({ board, type: BLACK_QUEEN });
 
-  const redQPieces = getPiecePositions({ board, type: RED_QUEEN });
-  const blackQPieces = getPiecePositions({ board, type: BLACK_QUEEN });
-
+  // evaluation score determines the next move of the bot
   var evalScore =
     redPieceCnt * RED_SCORE -
     blackPieceCnt * BLACK_SCORE +
@@ -63,9 +53,12 @@ const evaluatePosition = (board) => {
   return evalScore;
 };
 
+// main function
 const performBotHeuristics = (board, depth, maxPlayer, mandatoryMoves) => {
   setPieceScoreValues();
   let value = evaluatePosition(board);
+
+  // setting the alpha-beta pruning dynamic values
   MAX_LIM = Math.abs(value);
   MIN_LIM = -1 * Math.abs(value);
   return ai_algorithm(board, depth, maxPlayer, mandatoryMoves);
@@ -77,12 +70,14 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
   if (depth <= 0) return { value: evaluatePosition(board) };
 
   if (maxPlayer) {
+    // for MAXIMIZING the evaluation score
     let maxEval = -INF,
       bestMove = null,
       pieces = getAllPieces({ board, color: "Red" });
 
     for (let i = 0; i < pieces.length; ++i) {
       if (evaluatePosition(board) >= MIN_LIM) {
+        // pruning statement with a lower bound
         let moves = getPossibleMoves({ board, piece: pieces[i] });
         for (let j = 0; j < moves.length; ++j) {
           let tmpBoard = giveDeepCopy(board);
@@ -92,6 +87,7 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
             selectedPiece: pieces[i],
             destination: moves[j],
           });
+          // performing mandatory moves on the prediction board
           if (mandatoryMoves)
             performMandatoryMove(tmpBoard, pieces[i], moves[j]);
 
@@ -111,13 +107,14 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
     }
     return { value: maxEval, bestMove };
   } else {
-    // console.log("analysis function for black player");
+    // for MINIMIZING the evaluation score
     let minEval = INF,
       bestMove = null,
       pieces = getAllPieces({ board, color: "Black" });
 
     for (let i = 0; i < pieces.length; ++i) {
       if (evaluatePosition(board) <= MAX_LIM) {
+        // pruning statement with an upper bound
         let moves = getPossibleMoves({ board, piece: pieces[i] });
         for (let j = 0; j < moves.length; ++j) {
           let tmpBoard = giveDeepCopy(board);
@@ -127,11 +124,10 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
             selectedPiece: pieces[i],
             destination: moves[j],
           });
-
+          // performing mandatory moves on the prediction board
           if (mandatoryMoves)
             performMandatoryMove(tmpBoard, pieces[i], moves[j]);
 
-          // if (evaluatePosition(tmpBoard) <= 10) {
           let evaluation = ai_algorithm(
             tmpBoard,
             depth - 1,
@@ -139,7 +135,6 @@ const ai_algorithm = (board, depth, maxPlayer, mandatoryMoves) => {
             mandatoryMoves
           );
 
-          // console.log(evaluation);
           minEval = Math.min(minEval, evaluation.value);
           if (minEval === evaluation.value)
             bestMove = { selectedPiece: pieces[i], destination: moves[j] };

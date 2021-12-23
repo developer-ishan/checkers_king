@@ -42,7 +42,14 @@ const Home = ({ games, setGames }) => {
       })
       .addHints();
     playWelcomeSound();
-    console.log("mounded");
+    console.log("home mounted...");
+
+    return () => {
+      console.log("home unmounted...");
+      socket.off("games");
+      socket.off("ongoing-game");
+      socket.on("user-error");
+    };
   }, []);
   const rejoinPlayerToGame = () => {
     const token = getUserIdentification();

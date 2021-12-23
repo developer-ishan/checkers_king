@@ -10,13 +10,13 @@ module.exports =
   async () => {
     console.log("'quit-game' event called...");
     const winner = getColorOfPlayer({ player: socket });
-    console.log("winner of the game is ", winner);
+
     const endedGame = await endGame({ player: socket, winner });
     if (endedGame === null) return;
-
     const roomId = endedGame.id;
+
+    // emitting events to respective rooms
     io.to(roomId).emit("end-game", winner);
-    console.log("ending the game... ", roomId);
     // removing all the users of this room
     io.socketsLeave(roomId);
     sendAllGames(io);

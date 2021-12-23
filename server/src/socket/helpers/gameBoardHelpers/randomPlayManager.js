@@ -2,6 +2,7 @@ const { createNewGame, addPlayerToGame } = require("./gamePlayManager");
 var jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../../config/keys");
 const User = require("../../../models/User");
+const { getUserDetailsWithToken } = require("../userManager");
 
 var waitingGuests = [];
 var waitingPlayers = [];
@@ -60,10 +61,12 @@ const randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
   return null;
 };
 
+// finding a guest player in the queue with guestId
 const findGuestWithGuestId = (guestId) => {
   return waitingGuests.find((guest) => guest.guestId === guestId);
 };
 
+// removing the guest on exit from the lobby
 const exitGuestLobby = (guestId) => {
   const lobbyPlayer = findGuestWithGuestId(guestId);
   if (lobbyPlayer) waitingGuests.splice(waitingGuests.indexOf(lobbyPlayer));
@@ -72,17 +75,8 @@ const exitGuestLobby = (guestId) => {
 
 /* ------------------------------------------------ User Player Functions ------------------------------------------------ */
 const randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
-  let user = null;
-  // recognising the user as registered
-  if (token) {
-    try {
-      var decoded = jwt.verify(token, JWT_SECRET).sub;
-      user = await User.findById(decoded);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  if (user === null) return;
+  let user = await getUserDetailsWithToken(token);
+  if (!user) return;
   const playerLeague = get_league(user.rating)[0];
 
   // searching for appropriate player to start the game with
@@ -131,10 +125,12 @@ const randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
   return null;
 };
 
+// finding a user in the waiting queue
 const findUserWithToken = (token) => {
   return waitingPlayers.find((player) => player.token === token);
 };
 
+// exiting the user lobby on lobby exit
 const exitUserLobby = (token) => {
   const lobbyPlayer = findUserWithToken(token);
   if (lobbyPlayer) waitingPlayers.splice(waitingPlayers.indexOf(lobbyPlayer));
