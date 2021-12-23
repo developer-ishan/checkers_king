@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Create a schema
 const friendSchema = new Schema({
-  user: { type: mongoose.Types.ObjectId, ref: "User" },
+  user: { type: mongoose.Types.ObjectId, ref: "user", unique: true },
   status: {
     type: String,
     enum: ["NEW", "SEEN", "REJECTED", "ACCEPTED"],

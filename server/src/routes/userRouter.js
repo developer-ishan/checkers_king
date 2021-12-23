@@ -11,15 +11,11 @@ const isVerified = require("../middleware/isVerified");
 const userAuth = require("../middleware/userAuth");
 const userRouter = require("express").Router();
 const { check } = require("express-validator");
+const {filterPhoto} = require("../helpers/photoHelper");
 userRouter
   .route("/")
   .get(userAuth, isVerified, async (req, res, next) => {
-    if (req.user.photo) {
-    } else if (req.user.facebook) {
-      req.user.photo = req.user.facebook.photo;
-    } else if (req.user.google) {
-      req.user.photo = req.user.google.photo;
-    }
+    req.user.photo = filterPhoto(req.user);
     return res.json(req.user);
   })
   .put(

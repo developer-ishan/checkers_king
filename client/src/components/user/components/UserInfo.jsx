@@ -92,7 +92,7 @@ const UserInfo = ({ userId, matchesCount }) => {
       <div className="flex flex-col justify-center col-span-12 sm:col-span-4 lg:col-span-12">
         <div className="relative group">
           <img
-            src={`${BASE}/public/dp/${user.photo}`}
+            src={user.photo}
             alt="User_DP"
             className="w-32 h-32 mx-auto rounded-full lg:w-40 lg:h-40"
             // className="object-cover h-full mx-auto rounded-xl"

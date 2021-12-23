@@ -12,6 +12,7 @@ import SnackBar from "./components/others/SnackBar";
 import { getUserIdentification, signout } from "../../helper/authHelper";
 import { useHistory } from "react-router-dom";
 import ErrorModal from "../modal/ErrorModal";
+import OnlineFriends from "../friend/components/OnlineFriends"
 Modal.setAppElement("#root");
 const Home = ({ games, setGames }) => {
   const [socket, setSocket] = useContext(SocketContext);
@@ -91,6 +92,9 @@ const Home = ({ games, setGames }) => {
         {/* rightside */}
         <div className="col-span-12 lg:col-span-auto lg:col-start-9">
           <Leaderboard />
+        </div>
+        <div className="col-span-12 lg:col-span-auto lg:col-start-9">
+          <OnlineFriends />
         </div>
       </div>
     </div>

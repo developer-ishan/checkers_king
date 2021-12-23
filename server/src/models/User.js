@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 var generateName = require("sillyname");
-const { friendSchema } = require("./Friend");
+const { friendSchema, Friend } = require("./Friend");
 
 // Create a schema
 const userSchema = new Schema({

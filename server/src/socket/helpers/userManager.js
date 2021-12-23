@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 const { JWT_SECRET } = require("../../config/keys");
+const { filterPhoto } = require("../../helpers/photoHelper");
 
 var users = [];
 
@@ -20,7 +21,7 @@ const getUserDetailsWithToken = async (token) => {
       return {
         userId: userProfile.id,
         username: userProfile.username,
-        photo: userProfile.photo,
+        photo: filterPhoto(userProfile),
         isGuest: false,
       };
     } catch (err) {
@@ -47,18 +48,21 @@ const isUserAlreadyOnline = (userId) => {
 const addUserToList = async (socket, token) => {
   const userDetails = await getUserDetailsWithToken(token);
   if (userDetails && isUserAlreadyOnline(userDetails.userId)) return false;
-  const { userId, username, isGuest } = userDetails;
-  users.push({ userId, username, isGuest, id: socket.id });
-  return true;
+  const { userId, username, isGuest, photo } = userDetails;
+  users.push({ userId, username, photo, isGuest, id: socket.id });
+  return { userId, username, photo, isGuest, id: socket.id };
 };
 
 const removeUserFromList = (socketId) => {
   const user = findOnlineUserBySocketId(socketId);
   if (user) users.splice(users.indexOf(user), 1);
 };
-
+const getOnlineFriends = async (userId) => {
+  
+};
 module.exports = {
   getUserDetailsWithToken,
   addUserToList,
   removeUserFromList,
+  findOnlineUserById
 };
