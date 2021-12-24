@@ -16,7 +16,6 @@ const Chat = ({ gameId, playerId, color, playersInfo }) => {
       setChats([...chats, { user, msg }]);
     });
     socket.on("old-chats-on-rejoin", (chats) => {
-      console.log("received old chats", chats);
       setChats(chats);
     });
 

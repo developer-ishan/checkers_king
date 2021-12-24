@@ -51,8 +51,8 @@ exports.SocketServer = (io) => {
         ""
       );
       socket.disconnect();
-    } else{
-      emitMyInfoToFriends(io, socket, addedUser);
+    } else {
+      if (!addedUser.isGuest) emitMyInfoToFriends(io, socket, addedUser);
     }
     /* ---------------------------------- Check For Multiple Devices ----------------------------------*/
 
