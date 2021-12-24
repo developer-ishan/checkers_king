@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 const { JWT_SECRET } = require("../../config/keys");
+const { filterPhoto } = require("../../helpers/photoHelper");
+const Friend = require("../../models/Friend");
 
 var users = [];
 
@@ -19,10 +21,11 @@ const getUserDetailsWithToken = async (token) => {
     try {
       var decodedId = jwt.verify(token, JWT_SECRET).sub;
       const userProfile = await User.findById(decodedId);
+      if (!userProfile) return null;
       return {
         userId: userProfile.id,
         username: userProfile.username,
-        photo: userProfile.photo,
+        photo: filterPhoto(userProfile),
         isGuest: false,
       };
     } catch (err) {
@@ -53,9 +56,9 @@ const isUserAlreadyOnline = (userId) => {
 const addUserToList = async (socket, token) => {
   const userDetails = await getUserDetailsWithToken(token);
   if (userDetails && isUserAlreadyOnline(userDetails.userId)) return false;
-  const { userId, username, isGuest } = userDetails;
-  users.push({ userId, username, isGuest, id: socket.id });
-  return true;
+  const { userId, username, isGuest, photo } = userDetails;
+  users.push({ userId, username, photo, isGuest, id: socket.id });
+  return { userId, username, photo, isGuest, id: socket.id };
 };
 
 // removing user to the list of online people on disconnect
@@ -63,9 +66,23 @@ const removeUserFromList = (socketId) => {
   const user = findOnlineUserBySocketId(socketId);
   if (user) users.splice(users.indexOf(user), 1);
 };
-
+const getOnlineFriends = async (userId) => {
+  const onlineUserIds = users.map((u) => u.userId);
+  const friends_doc = await Friend.find(
+    { requester: userId, status: "FRIENDS", recipient: { $in: onlineUserIds } },
+    "recipient"
+  );
+  const friends = [];
+  friends_doc.forEach(f => {
+    user = findOnlineUserById(f.recipient.toString());
+    friends.push(user);
+  })
+  return friends;
+};
 module.exports = {
   getUserDetailsWithToken,
   addUserToList,
   removeUserFromList,
+  findOnlineUserById,
+  getOnlineFriends,
 };

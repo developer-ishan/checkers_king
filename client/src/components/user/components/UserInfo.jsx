@@ -98,7 +98,7 @@ const UserInfo = ({ userId, matchesCount }) => {
           data-intro="hover on the image to see edit or view options"
         >
           <img
-            src={`${BASE}/public/dp/${user.photo}`}
+            src={user.photo}
             alt="User_DP"
             className="w-32 h-32 mx-auto rounded-full lg:w-40 lg:h-40"
             // className="object-cover h-full mx-auto rounded-xl"
