@@ -61,9 +61,20 @@ const GameCall = ({ socket, gameId }) => {
     <div className="self-center">
       <div className="relative max-w-md mx-auto bg-gray-300">
         {/* opponent */}
-        {true && <video ref={remoteVideoRef} className="" />}
+        {true && (
+          <video
+            ref={remoteVideoRef}
+            className=""
+            data-title="OPPONENTS VIDEO"
+            data-intro="opponent's video will appear here"
+          />
+        )}
         {!opponentsVideoStream && (
-          <div className="absolute inset-0 grid place-content-center">
+          <div
+            className="absolute inset-0 grid place-content-center"
+            data-title="OPPONENTS VIDEO"
+            data-intro="opponent's video will appear here"
+          >
             <p className="text-xs text-white ">waiting for oppponent's video</p>
           </div>
         )}
@@ -73,15 +84,25 @@ const GameCall = ({ socket, gameId }) => {
           <video
             ref={currentUserVideoRef}
             className="absolute border-2 border-black shadow-sm h-1/4 bottom-1 right-1"
+            data-title="YOUR VIDEO"
+            data-intro="YOUR video will appear here"
           />
         )}
         {!currentUserVideoStream && (
-          <div className="absolute grid w-1/4 bg-gray-500 h-1/4 bottom-1 right-1 place-content-center">
+          <div
+            className="absolute grid w-1/4 bg-gray-500 h-1/4 bottom-1 right-1 place-content-center"
+            data-title="YOUR VIDEO"
+            data-intro="YOUR video will appear here"
+          >
             <p className="text-xs text-white ">you</p>
           </div>
         )}
       </div>
-      <div className="flex justify-around w-full p-2 text-center text-white bg-gray-300 ">
+      <div
+        className="flex justify-around w-full p-2 text-center text-white bg-gray-300 "
+        data-title="AUDIO VIDEO CONTROLS"
+        data-intro="use these buttons to control the camera and mic"
+      >
         <img
           src="https://img.icons8.com/ios/50/000000/no-camera--v1.png"
           title="shut camera"

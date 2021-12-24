@@ -1,12 +1,9 @@
 import introJs from "intro.js";
 import React, { useEffect, useState, useContext } from "react";
 import Modal from "react-modal";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { GameSoundContext } from "../../../../context/GameSoundContext";
 import { UserContext } from "../../../../context/UserContext";
-import {
-  playClickSound,
-  playSelectSound,
-} from "../../../../helper/audioHelper";
 import {
   authenticate,
   isAuthenticated,
@@ -23,6 +20,7 @@ Modal.setAppElement("#root");
 require("dotenv").config();
 const Navbar = () => {
   const [userState, setUserState] = useContext(UserContext);
+  const { clickSound, selectSound, isMuted } = useContext(GameSoundContext);
   const history = useHistory();
   const [darkMode, setDarkMode] = useState(false);
   const [email, setEmail] = useState("");
@@ -149,7 +147,7 @@ const Navbar = () => {
 
   const handleToggle = () => {
     const html = document.querySelector("html");
-    playSelectSound();
+    if (!isMuted) selectSound.play();
     if (darkMode) {
       html.classList.remove("dark");
       localStorage.setItem("DarkMode", "false");
@@ -163,7 +161,7 @@ const Navbar = () => {
 
   return (
     <div className="bg-white shadow-md dark:bg-gray-700">
-      <header className="flex flex-col items-center w-full pb-2 mx-auto mb-4 text-gray-700 max-w-screen-2xl sm:flex-row dark:text-white body-font">
+      <header className="flex flex-col items-center w-full mx-auto text-gray-700 max-w-screen-2xl sm:flex-row dark:text-white body-font">
         {/* logo and toggle btn */}
         <div className="flex items-center justify-between w-full max-w-sm px-6 py-3 md:flex-row">
           <span
@@ -171,8 +169,8 @@ const Navbar = () => {
             data-intro="i am a website tour , i will navigate you throught the website you can also use keyboard arrow keys to navigate"
           ></span>
           {/* logo */}
-          <a
-            href="/"
+          <Link
+            to="/"
             className="flex items-center font-medium text-gray-900 title-font md:mb-0"
             data-title="Welcome!"
             data-intro="we hope you will enjoy the game. see u on the leaderboard 🤠"
@@ -181,7 +179,7 @@ const Navbar = () => {
             <p className="m-2 text-xs leading-4 tracking-wider uppercase dark:text-white">
               checkers <br /> king
             </p>
-          </a>
+          </Link>
           {/* dark mode toggle */}
           <div
             className="relative flex items-center justify-end mx-auto space-x-2"
@@ -220,7 +218,7 @@ const Navbar = () => {
               className="block w-full px-4 py-2 mx-2 ml-auto text-xs font-bold text-white uppercase transition-all duration-150 bg-purple-500 rounded shadow outline-none sm:w-auto active:bg-purple-600 hover:shadow-md hover:bg-purple-600 focus:outline-none ease"
               onClick={() => {
                 setIsLoginModalOpen(true);
-                playClickSound();
+                if (!isMuted) clickSound.play();
               }}
             >
               login
@@ -241,9 +239,9 @@ const Navbar = () => {
                 <div>
                   {user?.username && (
                     <h1>
-                      <a href={`/user/${user._id}`} className="inline-block">
+                      <Link to={`/user/${user._id}`} className="inline-block">
                         {user.username}
-                      </a>
+                      </Link>
                     </h1>
                   )}
                 </div>
@@ -273,7 +271,10 @@ const Navbar = () => {
             className="block w-full px-4 py-2 mx-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-gray-500 rounded shadow outline-none sm:w-auto active:bg-yellow-500 hover:shadow-md hover:bg-gray-600 focus:outline-none ease"
             data-hint="click on this button to take tour of website"
             data-hintposition="top-left"
-            onClick={() => introJs().start()}
+            onClick={() => {
+              introJs().start();
+              if (!isMuted) clickSound.play();
+            }}
           >
             take tour!
           </button>

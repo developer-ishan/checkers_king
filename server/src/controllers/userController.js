@@ -3,6 +3,8 @@ const { userDpStore } = require("../config/multrStore");
 const User = require("../models/User");
 const multer = require("multer");
 const keys = require("../config/keys");
+const { filterPhoto } = require("../helpers/photoHelper");
+const Friend = require("../models/Friend");
 exports.deleteUser = async (req, res, next) => {
   try {
     req.user.active = false;
@@ -54,12 +56,7 @@ exports.getUserById = async (req, res, next) => {
     const user = await User.findById(userId);
     if (!user || !user.active)
       return res.status(404).json({ msg: "No such user found" });
-    if (user.photo) {
-    } else if (user.facebook) {
-      user.photo = user.facebook.photo;
-    } else if (user.google) {
-      user.photo = user.google.photo;
-    }
+    user.photo = filterPhoto(user);
     res.json({
       _id: user._id,
       username: user.username,
@@ -67,7 +64,7 @@ exports.getUserById = async (req, res, next) => {
       facebook: user.facebook,
       desc: user.desc,
       photo: user.photo,
-      rating: user.rating
+      rating: user.rating,
     });
   } catch (err) {
     console.log(err);
@@ -93,33 +90,45 @@ exports.uploadProfilePic = (req, res, next) => {
 
 exports.getUserByUsername = async (req, res, next) => {
   const q = req.query.q;
-  if(!q)
-    return res.json([]);
+  if (!q) return res.json([]);
   const foundUsers = await User.find(
     { username: { $regex: ".*" + q + ".*", $options: "i" } },
     "username photo methods rating desc google facebook"
   );
-  if (!foundUsers)
-    return res.status(404).json({
-      success: false,
-      msg: "No such user found",
-    });
+  if (!foundUsers) return res.json([]);
   const filteredFoundUsers = foundUsers.map((user) => {
     const ret = {};
+    ret._id = user._id;
     ret.username = user.username;
-    ret.photo = user.photo;
+    ret.photo = filterPhoto(user);
     ret.rating = user.rating;
     ret.desc = user.desc;
-
-    if (user.photo) {
-      ret.photo = keys.SERVER_BASE + "/public/dp/" + user.photo;
-    } else if (user.facebook) {
-      ret.photo = user.facebook.photo;
-    } else if (user.google) {
-      ret.photo = user.google.photo;
-    }
-    if (!ret.photo) ret.photo = keys.SERVER_BASE + "/public/dp/default.png";
     return ret;
   });
   res.json(filteredFoundUsers);
+};
+
+exports.getNotFriendsByUserName = async (req, res, next) => {
+  const q = req.query.q;
+  if (!q) return res.json([]);
+  const friends_doc = await Friend.find({$or : [{requester: req.user._id}, {recipient: req.user._id}]}, "_id");
+  const friends = friends_doc.map(f => f._id);
+  const foundUsers = await User.find(
+    {
+      username: { $regex: ".*" + q + ".*", $options: "i" },
+      friends: { $nin: friends },
+    },
+    "username photo methods rating desc google facebook friends"
+  );
+  if (!foundUsers) return res.json([]);
+  const filteredFoundUsers = foundUsers.map((user) => {
+    const ret = {};
+    ret._id = user._id;
+    ret.username = user.username;
+    ret.photo = filterPhoto(user);
+    ret.rating = user.rating;
+    ret.desc = user.desc;
+    return ret;
+  });
+  res.json(foundUsers);
 };

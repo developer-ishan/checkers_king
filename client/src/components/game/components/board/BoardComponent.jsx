@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { GameSoundContext } from "../../../../context/GameSoundContext";
 
 const player = {
   0: "Empty",
@@ -36,6 +37,8 @@ const playerMoves = {
 const BoardComponent = ({ board, color, turn, movePiece, lastMove }) => {
   const [selectedPiece, setSelectedPiece] = useState({ i: -1, j: -1 });
   const [possibleMoves, setPossibleMoves] = useState([]);
+  const { clickSound, jumpSound, selectSound, crownSound, slideSound, isMute } =
+    useContext(GameSoundContext);
 
   const isValid = (x, y) => {
     return x >= 0 && x < 8 && y >= 0 && y < 8;
@@ -78,6 +81,7 @@ const BoardComponent = ({ board, color, turn, movePiece, lastMove }) => {
   // select a piece on clicking it
   const selectPiece = (i, j) => {
     if (board[i][j] === 0 || player[board[i][j]] === color) {
+      if (!isMute) selectSound.play();
       setPossibleMoves([]);
       setSelectedPiece({ i: i, j: j });
     }
@@ -97,6 +101,31 @@ const BoardComponent = ({ board, color, turn, movePiece, lastMove }) => {
         const destinationCell = isHighlighted({ i, j });
         if (destinationCell === undefined) deselectPiece(i, j);
         else {
+          /* for every valid move
+          1.we play slide sound for norma move
+          2.or play jump sound in case of cutting opponent's piece
+          */
+          if (!isMute) {
+            let dy = Math.abs(destinationCell.i - selectedPiece.i);
+            let dx = Math.abs(destinationCell.j - selectedPiece.j);
+            if (
+              (dy === 2 && dx === 2) ||
+              (dy === 0 && dx === 2) ||
+              (dy === 2 && dx === 0)
+            )
+              jumpSound.play();
+            else slideSound.play();
+          }
+          //check if the new position is crown
+          // board[i][j]<=2 this condition ensure that sound play
+          //for a normal goti only not for already king goti
+          if (
+            ((i === 0 && color === "Black") || (i === 7 && color === "Red")) &&
+            board[i][j] <= 2
+          ) {
+            console.log("crown goti", board[i][j]);
+            if (!isMute) crownSound.play();
+          }
           movePiece({ selectedPiece, destination: { i, j } });
           deselectPiece();
         }
@@ -205,7 +234,11 @@ const BoardComponent = ({ board, color, turn, movePiece, lastMove }) => {
   const rot = color === "Black" ? 0 : 180;
 
   return (
-    <div className="">
+    <div
+      className=""
+      data-title="GAME BOARD"
+      data-intro="here the game will be played!"
+    >
       {/* board start*/}
       <div
         style={{

@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { getUserById, updateUser } from "../../../helper/userHelper";
 import EdiText from "react-editext";
 import Cookies from "js-cookie";
 import DpEdit from "./DpEdit";
 import BASE from "../../../config";
+import { GameSoundContext } from "../../../context/GameSoundContext";
 
 const UserInfo = ({ userId, matchesCount }) => {
   const [user, setUser] = useState({ username: "", active: true, photo: "" });
@@ -13,6 +14,7 @@ const UserInfo = ({ userId, matchesCount }) => {
   const [desc, setDesc] = useState("");
   const [newDp, setNewDp] = useState({ selectedFile: null, loaded: 0 });
   const fileSelector = useRef(null);
+  const { clickSound, isMuted } = useContext(GameSoundContext);
 
   useEffect(() => {
     console.log("MOUNTED");
@@ -90,9 +92,13 @@ const UserInfo = ({ userId, matchesCount }) => {
       data-intro="here you can see the basic details of the user"
     >
       <div className="flex flex-col justify-center col-span-12 sm:col-span-4 lg:col-span-12">
-        <div className="relative group">
+        <div
+          className="relative group"
+          data-title="PROFILE PIC"
+          data-intro="hover on the image to see edit or view options"
+        >
           <img
-            src={`${BASE}/public/dp/${user.photo}`}
+            src={user.photo}
             alt="User_DP"
             className="w-32 h-32 mx-auto rounded-full lg:w-40 lg:h-40"
             // className="object-cover h-full mx-auto rounded-xl"
@@ -101,7 +107,10 @@ const UserInfo = ({ userId, matchesCount }) => {
             {canEdit() && (
               <button
                 className="text-white capitalize"
-                onClick={() => fileSelector.current.click()}
+                onClick={() => {
+                  if (!isMuted) clickSound.play();
+                  fileSelector.current.click();
+                }}
               >
                 edit
               </button>
@@ -109,8 +118,12 @@ const UserInfo = ({ userId, matchesCount }) => {
             {!canEdit() && (
               <a
                 className="text-white capitalize"
+                rel="noreferrer"
                 target="_blank"
                 href={`${BASE}/public/dp/${user.photo}`}
+                onClick={() => {
+                  if (!isMuted) clickSound.play();
+                }}
               >
                 view
               </a>

@@ -7,14 +7,16 @@ import PlayWithFriends from "./components/gameCreateJoin/PlayWithFriends";
 import Modal from "react-modal";
 import introJs from "intro.js";
 import "intro.js/introjs.css";
-import { playWelcomeSound } from "../../helper/audioHelper";
 import SnackBar from "./components/others/SnackBar";
 import { getUserIdentification, signout } from "../../helper/authHelper";
 import { useHistory } from "react-router-dom";
 import ErrorModal from "../modal/ErrorModal";
+import { GameSoundContext } from "../../context/GameSoundContext";
+import OnlineFriends from "../friend/components/OnlineFriends"
 Modal.setAppElement("#root");
 const Home = ({ games, setGames }) => {
   const [socket, setSocket] = useContext(SocketContext);
+  const { welcomeSound, isMuted } = useContext(GameSoundContext);
   const [snackBarContent, setSnackBarContent] = useState("");
   const [onGoingGameDetails, setOnGoingGameDetails] = useState(null);
   const [
@@ -41,9 +43,8 @@ const Home = ({ games, setGames }) => {
         disableInteraction: true,
       })
       .addHints();
-    playWelcomeSound();
-    console.log("home mounted...");
-
+    if (!isMuted) welcomeSound.play();
+    console.log("mounded");
     return () => {
       console.log("home unmounted...");
       socket.off("games");
@@ -88,7 +89,7 @@ const Home = ({ games, setGames }) => {
         />
       )}
       <Navbar />
-      <div className="grid grid-cols-12 mx-auto max-w-screen-2xl">
+      <div className="grid grid-cols-12 pt-4 mx-auto max-w-screen-2xl">
         {/* left side */}
         <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
           <RandomPlay socket={socket} d />
@@ -98,6 +99,9 @@ const Home = ({ games, setGames }) => {
         {/* rightside */}
         <div className="col-span-12 lg:col-span-auto lg:col-start-9">
           <Leaderboard />
+        </div>
+        <div className="col-span-12 lg:col-span-auto lg:col-start-9">
+          <OnlineFriends />
         </div>
       </div>
     </div>

@@ -11,13 +11,14 @@ import InviteCodeModal from "../modal/InviteCodeModal";
 import GameCall from "./components/communication/GameCall";
 import ErrorModal from "../modal/ErrorModal";
 import Lobby from "../lobby/Lobby";
-import { playLoseSound, playWinSound } from "../../helper/audioHelper";
 import { getUserIdentification, signout } from "../../helper/authHelper";
 import { API } from "../../config/backend";
+import { GameSoundContext } from "../../context/GameSoundContext";
 Modal.setAppElement("#root");
 
 const Game = () => {
   const [socket, setSocket] = useContext(SocketContext);
+  const { loseSound, winSound, isMuted } = useContext(GameSoundContext);
   const [game, setGame] = useState(null);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
@@ -50,7 +51,6 @@ const Game = () => {
 
   useEffect(() => {
     console.log("use-effect called...");
-
     socket.on("color", (color) => {
       setColor(color);
     });
@@ -107,9 +107,9 @@ const Game = () => {
         msgToUser = `${winner} player won the game`;
       } else if (winner === color) {
         msgToUser = "Congratulations!! You won the game 🥳🥳";
-        playWinSound();
+        if (!isMuted) winSound.play();
       } else {
-        playLoseSound();
+        if (!isMuted) loseSound.play();
         msgToUser = "You lost the game!! 😢😢";
       }
 
@@ -135,15 +135,15 @@ const Game = () => {
       } else if (winner === color) {
         msgToUser = "Congratulations!! You won the game 🥳🥳";
         title = "opponent quit";
-        playWinSound();
+        if (!isMuted) winSound.play();
       } else {
-        playLoseSound();
+        if (!isMuted) loseSound.play();
         msgToUser = "You lost the game!! 😢😢";
         title = "you Quited";
       }
 
       setMatchResult({
-        title: "opponent quit",
+        title: `${title}`,
         msg: `${msgToUser}`,
         buttonText: "okay",
         redirectTo: "/",
@@ -344,8 +344,7 @@ const Game = () => {
         <div
           className=""
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1525034687081-c702010cb70d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')",
+            backgroundImage: "var(--game-bg)",
             backgroundSize: "cover",
           }}
         >
@@ -366,11 +365,18 @@ const Game = () => {
                   <div
                     className="flex items-center justify-between p-1 bg-indigo-500"
                     style={{ width: "90vmin" }}
+                    data-title="PLAYERS INFO"
+                    data-intro="you can see player's profile and their timer"
                   >
                     {color === undefined || color === "Black"
                       ? redPlayerInfo()
                       : blackPlayerInfo()}
-                    <p>00:57 s</p>
+                    <p
+                      data-title="Timer"
+                      data-intro="if player didn't play a move before the timer end,will lose the game"
+                    >
+                      00:57 s
+                    </p>
                   </div>
                 )}
                 <BoardComponent
@@ -400,6 +406,8 @@ const Game = () => {
                   <div
                     className="flex flex-col items-center justify-around h-full md:flex-row lg:flex-col"
                     style={{ height: "90vmin", minHeight: "80vh" }}
+                    data-title="INTERACT WITH OPPONENT"
+                    data-intro="you can use chat and video to interact with opponent"
                   >
                     {/* video call component */}
                     {color && <GameCall socket={socket} gameId={game.id} />}

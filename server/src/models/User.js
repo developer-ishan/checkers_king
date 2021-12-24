@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 var generateName = require("sillyname");
-const { friendSchema } = require("./Friend");
+const Friend = require("./Friend");
 
 // Create a schema
 const userSchema = new Schema({
@@ -49,7 +49,12 @@ const userSchema = new Schema({
     type: Number,
     default: 800,
   },
-  friends: [friendSchema],
+  friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "friend",
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {

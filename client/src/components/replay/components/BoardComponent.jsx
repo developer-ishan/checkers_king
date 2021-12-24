@@ -87,7 +87,7 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       <Link
         to={`/user/${player.id}`}
         className="flex items-center "
-        title={`click to see ${player.username}'s full profile`}
+        title={`click to see ${player.userName}'s full profile`}
       >
         <img
           src={`${player.photo}`}
@@ -113,7 +113,7 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       <Link
         to={`/user/${player.id}`}
         className="flex items-center "
-        title={`click to see ${player.username}'s full profile`}
+        title={`click to see ${player.userName}'s full profile`}
       >
         <img
           src={`${player.photo}`}
@@ -137,6 +137,8 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       <div
         className="flex items-center justify-start p-1 bg-indigo-500"
         style={{ width: "90vmin" }}
+        data-title="RED PLAYER"
+        data-intro="you can click on players name to see more details"
       >
         {redPlayerInfo()}
       </div>
@@ -149,6 +151,8 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
           border: "0.8rem double #fff",
         }}
         className="grid grid-cols-1 mx-auto grid-rows-8"
+        data-title="REPLAY BOARD"
+        data-intro="here you will see the match replay"
       >
         {/* small boxes of the board */}
         {boardMatrix.map((row, i) => (
@@ -171,6 +175,8 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       <div
         className="flex items-center justify-start p-1 bg-indigo-500"
         style={{ width: "90vmin" }}
+        data-title="BLACK PLAYER"
+        data-intro="you can click on players name to see more details"
       >
         {blackPlayerInfo()}
       </div>

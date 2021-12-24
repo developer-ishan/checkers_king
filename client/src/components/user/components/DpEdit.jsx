@@ -4,9 +4,11 @@ import axios from "axios";
 import { Line } from "rc-progress";
 import BASE from "../../../config";
 import { isAuthenticated } from "../../../helper/authHelper";
+import { GameSoundContext } from "../../../context/GameSoundContext";
 
 const DpEdit = ({ state, setState }) => {
   const [userState, setUserState] = useContext(UserContext);
+  const { clickSound, isMuted } = useContext(GameSoundContext);
 
   const checkFileSize = (file) => {
     let size = 2000000;
@@ -22,6 +24,7 @@ const DpEdit = ({ state, setState }) => {
   };
 
   const onClickHandler = () => {
+    if (!isMuted) clickSound.play();
     //just for safety
     if (state.selectedFile.length === 0) return;
 

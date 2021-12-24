@@ -9,6 +9,7 @@ import ErrorModal from "../modal/ErrorModal";
 import PreviousMatches from "./components/PreviousMatches";
 import UserInfo from "./components/UserInfo";
 import RatingChart from "./components/RatingChart";
+import Friend from "../friend/Friend";
 
 const Profile = () => {
   const { userId } = useParams();
@@ -94,6 +95,10 @@ const Profile = () => {
               userId={userId}
               previousMatches={previousMatches}
             />
+          </div>
+
+          <div className="col-span-12 lg:col-span-9">
+            <Friend userId={userId} />
           </div>
         </div>
       </div>
