@@ -9,7 +9,6 @@ exports.sendRequest = async (UserA, UserB, text) => {
     { $set: { status: "REQUESTED", text: text } },
     { upsert: true, new: true }
   );
-  console.log(docA);
   const docB = await Friend.findOneAndUpdate(
     { recipient: UserA, requester: UserB },
     { $set: { status: "PENDING", text: text } },
@@ -27,11 +26,11 @@ exports.sendRequest = async (UserA, UserB, text) => {
 };
 //userb accepts
 exports.acceptRequest = async (UserA, UserB) => {
-  Friend.findOneAndUpdate(
+  await Friend.findOneAndUpdate(
     { requester: UserA, recipient: UserB },
     { $set: { status: "FRIENDS" } }
   );
-  Friend.findOneAndUpdate(
+  await Friend.findOneAndUpdate(
     { recipient: UserA, requester: UserB },
     { $set: { status: "FRIENDS" } }
   );

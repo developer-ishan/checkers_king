@@ -17,7 +17,9 @@ const SendRequest = ({ user }) => {
             token: token,
             receiverId: user._id,
             text: "Hi there accept my request! (default)"
-          })
+          }, (resp => {
+            alert(resp.msg);
+          }))
         }}>
           Send
         </button>

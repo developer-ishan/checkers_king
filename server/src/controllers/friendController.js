@@ -6,7 +6,6 @@ exports.getMyFriends = async (req, res, next) => {
       path: "friends",
       match: { status: "FRIENDS" },
       populate: [
-        { path: "requester", select: "username photo rating google facebook" },
         { path: "recipient", select: "username photo rating google facebook" },
       ],
     })
@@ -33,7 +32,6 @@ exports.getMyFriendRequests = (req, res, next) => {
       path: "friends",
       match: { status: "PENDING" },
       populate: [
-        { path: "requester", select: "username photo rating google facebook" },
         { path: "recipient", select: "username photo rating google facebook" },
       ],
     })
@@ -60,7 +58,6 @@ exports.getMySentRequests = async (req, res, next) => {
       path: "friends",
       match: { status: "REQUESTED" },
       populate: [
-        { path: "requester", select: "username photo rating google facebook" },
         { path: "recipient", select: "username photo rating google facebook" },
       ],
     })

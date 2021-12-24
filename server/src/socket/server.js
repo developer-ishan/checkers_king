@@ -29,6 +29,7 @@ const {
 } = require("./helpers/gameBoardHelpers/playerManager");
 const sendFriendRequest = require("./handlers/friendEventHandler/sendFriendRequest");
 const respondFriendRequest = require("./handlers/friendEventHandler/respondFriendRequest");
+const emitMyInfoToFriends = require("./helpers/friendEventHelpers/emitMyInfoToFriends");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
@@ -51,7 +52,7 @@ exports.SocketServer = (io) => {
       );
       socket.disconnect();
     } else{
-      // emitMyInfoToFriends(io, socket, addedUser);
+      emitMyInfoToFriends(io, socket, addedUser);
     }
     /* ---------------------------------- Check For Multiple Devices ----------------------------------*/
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const AutoCompleteInput = ({ url, selected, setSelected }) => {
+const AutoCompleteInput = ({ url, headers, selected, setSelected }) => {
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
   const [guesses, setGuesses] = useState([]);
@@ -17,6 +17,7 @@ const AutoCompleteInput = ({ url, selected, setSelected }) => {
           fetch(url + e.target.value, {
             method: "get",
             headers: {
+              ...headers,
               "Content-Type": "application/json",
             },
           })
