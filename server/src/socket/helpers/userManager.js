@@ -18,6 +18,8 @@ const getUserDetailsWithToken = async (token) => {
     try {
       var decodedId = jwt.verify(token, JWT_SECRET).sub;
       const userProfile = await User.findById(decodedId);
+      if(!userProfile)
+        return null;
       return {
         userId: userProfile.id,
         username: userProfile.username,
@@ -58,11 +60,31 @@ const removeUserFromList = (socketId) => {
   if (user) users.splice(users.indexOf(user), 1);
 };
 const getOnlineFriends = async (userId) => {
-  
+  User.findOne({_id: userId, "friends": { "$in": users }})
+    .populate({
+      path: "friends.user",
+      select: "username photo rating google facebook",
+    })
+    .exec((err, populated) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json(err);
+      }
+      const friends = populated.friends.map((friend) => {
+        const ret = {};
+        ret.userId = friend.user._id;
+        ret.username = friend.user.username;
+        ret.photo = filterPhoto(friend.user);
+        ret.status = friend.status
+        return ret;
+      });
+      res.json(friends.filter((friend) => friend.status == "ACCEPTED"));
+    });
 };
 module.exports = {
   getUserDetailsWithToken,
   addUserToList,
   removeUserFromList,
-  findOnlineUserById
+  findOnlineUserById,
+  getOnlineFriends,
 };

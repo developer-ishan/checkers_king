@@ -1,23 +1,57 @@
 const { text } = require("express");
 const User = require("../models/User");
-const { Friend } = require("../models/Friend");
-
-exports.sendRequest = async (senderId, receiverId, text) => {
-  const receiver = await User.findOne({ _id: receiverId });
-  if (
-    receiver.friends.some((friend) => {
-      return friend.user.toString() == senderId;
-    })
-  ) {
-    console.log("Already a friend or request is in the queue");
-    return false;
-  }
-  receiver.friends.push(
-    new Friend({
-      user: senderId,
-      text: text,
-    })
+const Friend = require("../models/Friend");
+//usera request userb
+exports.sendRequest = async (UserA, UserB, text) => {
+  console.log(UserA, UserB);
+  const docA = await Friend.findOneAndUpdate(
+    { requester: UserA, recipient: UserB },
+    { $set: { status: "REQUESTED", text: text } },
+    { upsert: true, new: true }
   );
-  const savedReceiver = await receiver.save();
-  return savedReceiver;
+  console.log(docA);
+  const docB = await Friend.findOneAndUpdate(
+    { recipient: UserA, requester: UserB },
+    { $set: { status: "PENDING", text: text } },
+    { upsert: true, new: true }
+  );
+  const updateUserA = await User.findOneAndUpdate(
+    { _id: UserA },
+    { $addToSet: { friends: docA._id } }
+  );
+  const updateUserB = await User.findOneAndUpdate(
+    { _id: UserB },
+    { $addToSet: { friends: docB._id } }
+  );
+  return updateUserA;
+};
+//userb accepts
+exports.acceptRequest = async (UserA, UserB) => {
+  Friend.findOneAndUpdate(
+    { requester: UserA, recipient: UserB },
+    { $set: { status: "FRIENDS" } }
+  );
+  Friend.findOneAndUpdate(
+    { recipient: UserA, requester: UserB },
+    { $set: { status: "FRIENDS" } }
+  );
+};
+//userb rejects
+exports.rejectRequest = async (UserA, UserB) => {
+  const docA = await Friend.findOneAndRemove({
+    requester: UserA,
+    recipient: UserB,
+  });
+  const docB = await Friend.findOneAndRemove({
+    recipient: UserA,
+    requester: UserB,
+  });
+  const updateUserA = await User.findOneAndUpdate(
+    { _id: UserA },
+    { $pull: { friends: docA._id } }
+  );
+  const updateUserB = await User.findOneAndUpdate(
+    { _id: UserB },
+    { $pull: { friends: docB._id } }
+  );
 };
