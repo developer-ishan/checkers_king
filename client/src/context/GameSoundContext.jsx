@@ -11,11 +11,14 @@ export const GameSoundProvider = (props) => {
     selectSound: new Audio(`${BASE}/select.mp3`),
     winSound: new Audio(`${BASE}/win.mp3`),
     loseSound: new Audio(`${BASE}/lose.mp3`),
+    crownSound: new Audio(`${BASE}/crown.mp3`),
+    slideSound: new Audio(`${BASE}/slide.mp3`),
   });
   const [isMuted, setIsMuted] = useState(false);
 
   const toggleMute = () => {
-    setIsMuted(!isMuted);
+    if (isMuted) setIsMuted(false);
+    else setIsMuted(true);
   };
 
   return (

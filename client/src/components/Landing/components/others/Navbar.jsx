@@ -1,7 +1,7 @@
 import introJs from "intro.js";
 import React, { useEffect, useState, useContext } from "react";
 import Modal from "react-modal";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { GameSoundContext } from "../../../../context/GameSoundContext";
 import { UserContext } from "../../../../context/UserContext";
 import {
@@ -169,8 +169,8 @@ const Navbar = () => {
             data-intro="i am a website tour , i will navigate you throught the website you can also use keyboard arrow keys to navigate"
           ></span>
           {/* logo */}
-          <a
-            href="/"
+          <Link
+            to="/"
             className="flex items-center font-medium text-gray-900 title-font md:mb-0"
             data-title="Welcome!"
             data-intro="we hope you will enjoy the game. see u on the leaderboard 🤠"
@@ -179,7 +179,7 @@ const Navbar = () => {
             <p className="m-2 text-xs leading-4 tracking-wider uppercase dark:text-white">
               checkers <br /> king
             </p>
-          </a>
+          </Link>
           {/* dark mode toggle */}
           <div
             className="relative flex items-center justify-end mx-auto space-x-2"
@@ -239,9 +239,9 @@ const Navbar = () => {
                 <div>
                   {user?.username && (
                     <h1>
-                      <a href={`/user/${user._id}`} className="inline-block">
+                      <Link to={`/user/${user._id}`} className="inline-block">
                         {user.username}
-                      </a>
+                      </Link>
                     </h1>
                   )}
                 </div>
