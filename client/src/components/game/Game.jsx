@@ -19,7 +19,6 @@ Modal.setAppElement("#root");
 const Game = () => {
   const [socket, setSocket] = useContext(SocketContext);
   const { loseSound, winSound, isMuted } = useContext(GameSoundContext);
-  const [chats, setChats] = useState([]); //store the chats of current game
   const [game, setGame] = useState(null);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
@@ -58,10 +57,6 @@ const Game = () => {
 
     socket.on("game-status", (game) => {
       setGame(game);
-    });
-    socket.on("old-chats-on-rejoin", (chats) => {
-      console.log("received old chats", chats);
-      setChats(chats);
     });
 
     // TODO: add a modal to display the error
