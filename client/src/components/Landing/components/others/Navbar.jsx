@@ -271,7 +271,10 @@ const Navbar = () => {
             className="block w-full px-4 py-2 mx-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-gray-500 rounded shadow outline-none sm:w-auto active:bg-yellow-500 hover:shadow-md hover:bg-gray-600 focus:outline-none ease"
             data-hint="click on this button to take tour of website"
             data-hintposition="top-left"
-            onClick={() => introJs().start()}
+            onClick={() => {
+              introJs().start();
+              if (!isMuted) clickSound.play();
+            }}
           >
             take tour!
           </button>

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { GameSoundContext } from "../../../context/GameSoundContext";
 import ChatWindow from "../../game/components/communication/ChatWindow";
 import BoardComponent from "./BoardComponent";
 
@@ -22,6 +23,7 @@ const Board = ({ moves, playersInfo, chats }) => {
   ];
   const [boardStates, setBoardStates] = useState([initialBoard]);
   const [moveNum, setMoveNum] = useState(-1);
+  const { clickSound, isMuted } = useContext(GameSoundContext);
   useEffect(() => {}, []);
   const parseMove = (move) => {
     return {
@@ -58,6 +60,7 @@ const Board = ({ moves, playersInfo, chats }) => {
   };
   const prevMove = () => {
     if (boardStates.length > 1) {
+      if (!isMuted) clickSound.play();
       setBoardStates((boardStates) => {
         return boardStates.slice(0, boardStates.length - 1);
       });
@@ -73,6 +76,7 @@ const Board = ({ moves, playersInfo, chats }) => {
   const nextMove = () => {
     setMoveNum((moveNum) => {
       if (moveNum < moves.length - 1) {
+        if (!isMuted) clickSound.play();
         const newMoveNum = moveNum + 1;
         executeNextMove(moves[newMoveNum]);
         return newMoveNum;
@@ -86,8 +90,7 @@ const Board = ({ moves, playersInfo, chats }) => {
     <div
       className="h-full min-h-screen pt-4 "
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1525034687081-c702010cb70d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')",
+        backgroundImage: "var(--game-bg)",
         backgroundSize: "cover",
       }}
     >
@@ -102,13 +105,22 @@ const Board = ({ moves, playersInfo, chats }) => {
         {/* right side: containing controls and chats */}
         <div className="flex flex-col col-span-12 lg:col-span-3 lg:col-start-9">
           {/* button controls */}
-          <div>
+          <div
+            data-title="REPLAY CONTROLS"
+            data-intro="you can go backward and forward several times using these buttons"
+          >
             <div className="">
-              <p className="text-center ">
+              <p
+                className="text-center "
+                data-title="MOVES"
+                data-intro="this will show the current move and the total moves"
+              >
                 move:{moveNum + 1}/{moves.length}
               </p>
             </div>
             <button
+              data-title="PREVIOUS MOVE"
+              data-intro="click this button to see previous state of board"
               onClick={() => prevMove()}
               className="w-full px-4 py-2 my-2 font-bold text-gray-800 bg-gray-100 rounded-l hover:bg-gray-200"
             >
@@ -116,6 +128,8 @@ const Board = ({ moves, playersInfo, chats }) => {
             </button>
             {/* {moves && moveNum < moves.length && ( */}
             <button
+              data-title="NEXT MOVE"
+              data-intro="click this button to see next next of board"
               onClick={() => nextMove()}
               className="w-full px-4 py-2 font-bold text-white bg-gray-800 rounded-r hover:bg-gray-700"
             >
@@ -124,16 +138,20 @@ const Board = ({ moves, playersInfo, chats }) => {
           </div>
           {/* chats replay */}
           {/* there is no chat for playing against bot */}
-          {playersInfo.length > 1 && (
-            <div className="flex-grow my-2">
-              <ChatWindow
-                chats={chats.messages}
-                playersInfo={playersInfo}
-                noChatMessage="there were no chats in the match"
-                bottomColor="Black"
-              />
-            </div>
-          )}
+          {/* {playersInfo.length > 1 && ( */}
+          <div
+            className="flex-grow my-2"
+            data-title="MATCH CHATS"
+            data-intro="left side chats are from red piece player and right side are from black piece player"
+          >
+            <ChatWindow
+              chats={chats.messages}
+              playersInfo={playersInfo}
+              noChatMessage="there were no chats in the match"
+              bottomColor="Black"
+            />
+          </div>
+          {/* )} */}
         </div>
       </div>
     </div>

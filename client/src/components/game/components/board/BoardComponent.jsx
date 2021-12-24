@@ -224,7 +224,11 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
   const rot = color === "Black" ? 0 : 180;
 
   return (
-    <div className="">
+    <div
+      className=""
+      data-title="GAME BOARD"
+      data-intro="here the game will be played!"
+    >
       {/* board start*/}
       <div
         style={{

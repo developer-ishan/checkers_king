@@ -67,6 +67,8 @@ const App = () => {
         </Switch>
       </BrowserRouter>
       <button
+        data-title="SOUND CONTROL"
+        data-intro="you can toggle the sound by clicking this button"
         className="fixed p-2 text-black bg-white rounded-full shadow-lg dark:bg-gray-800 bottom-6 right-6"
         onClick={() => {
           toggleMute();

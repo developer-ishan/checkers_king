@@ -361,8 +361,7 @@ const Game = () => {
         <div
           className=""
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1525034687081-c702010cb70d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')",
+            backgroundImage: "var(--game-bg)",
             backgroundSize: "cover",
           }}
         >
@@ -383,11 +382,18 @@ const Game = () => {
                   <div
                     className="flex items-center justify-between p-1 bg-indigo-500"
                     style={{ width: "90vmin" }}
+                    data-title="PLAYERS INFO"
+                    data-intro="you can see player's profile and their timer"
                   >
                     {color === undefined || color === "Black"
                       ? redPlayerInfo()
                       : blackPlayerInfo()}
-                    <p>00:57 s</p>
+                    <p
+                      data-title="Timer"
+                      data-intro="if player didn't play a move before the timer end,will lose the game"
+                    >
+                      00:57 s
+                    </p>
                   </div>
                 )}
                 <BoardComponent
@@ -416,6 +422,8 @@ const Game = () => {
                   <div
                     className="flex flex-col items-center justify-around h-full md:flex-row lg:flex-col"
                     style={{ height: "90vmin", minHeight: "80vh" }}
+                    data-title="INTERACT WITH OPPONENT"
+                    data-intro="you can use chat and video to interact with opponent"
                   >
                     {/* video call component */}
                     {color && <GameCall socket={socket} gameId={game.id} />}

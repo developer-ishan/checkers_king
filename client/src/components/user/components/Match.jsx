@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { GameSoundContext } from "../../../context/GameSoundContext";
 
 const Match = ({ matchId, players, userId }) => {
   const [self, setSelf] = useState(null);
   const [opponent, setOpponent] = useState(null);
+  const { clickSound, isMuted } = useContext(GameSoundContext);
 
   useEffect(() => {
     const selfId = userId;
@@ -62,6 +64,9 @@ const Match = ({ matchId, players, userId }) => {
           <Link
             to={`/replay/${matchId}`}
             className="hidden p-2 font-medium text-center text-white bg-indigo-500 rounded shadow md:block hover:bg-purple-700"
+            onClick={() => {
+              if (!isMuted) clickSound.play();
+            }}
           >
             watch replay
           </Link>

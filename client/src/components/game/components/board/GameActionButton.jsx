@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import introJs from "intro.js";
+import React, { useContext, useState } from "react";
+import { GameSoundContext } from "../../../../context/GameSoundContext";
 
 const GameActionButton = ({
   offerDraw,
@@ -8,6 +10,7 @@ const GameActionButton = ({
   color,
 }) => {
   const [isCopied, setCopied] = useState(false);
+  const { clickSound, isMuted, selectSound } = useContext(GameSoundContext);
   const handleCopy = () => {
     navigator.clipboard.writeText(gameId);
     setCopied(true);
@@ -22,7 +25,13 @@ const GameActionButton = ({
     >
       <p className="relative flex items-center justify-center w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-center text-white bg-gray-400 rounded">
         {gameId}
-        <span className="mx-1 cursor-pointer" onClick={() => handleCopy()}>
+        <span
+          className="mx-1 cursor-pointer"
+          onClick={() => {
+            handleCopy();
+            if (!isMuted) selectSound.play();
+          }}
+        >
           <img
             src="https://img.icons8.com/material-outlined/24/000000/copy.png"
             className=""
@@ -38,7 +47,10 @@ const GameActionButton = ({
       {botLevel === -1 && color && (
         <button
           className="w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-white uppercase transition-all duration-150 bg-yellow-500 rounded shadow outline-none sm:w-auto active:bg-red-600 hover:shadow-md hover:bg-yellow-600 focus:outline-none ease"
-          onClick={() => offerDraw()}
+          onClick={() => {
+            offerDraw();
+            if (!isMuted) clickSound.play();
+          }}
         >
           draw
         </button>
@@ -49,9 +61,23 @@ const GameActionButton = ({
       */}
       <button
         className="w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-white uppercase transition-all duration-150 bg-red-500 rounded shadow outline-none sm:w-auto active:bg-red-600 hover:shadow-md hover:bg-red-600 focus:outline-none ease"
-        onClick={() => leaveGame()}
+        onClick={() => {
+          leaveGame();
+          if (!isMuted) clickSound.play();
+        }}
       >
         {color ? "quit" : "leave"}
+      </button>
+      <button
+        className="w-full max-w-xs px-4 py-2 m-1 text-xs font-bold text-white uppercase transition-all duration-150 bg-gray-500 rounded shadow outline-none sm:w-auto active:bg-red-600 hover:shadow-md hover:bg-gray-600 focus:outline-none ease"
+        data-hint="click on this button to take tour of website"
+        data-hintposition="top-left"
+        onClick={() => {
+          introJs().start();
+          clickSound.play();
+        }}
+      >
+        take tour!
       </button>
     </div>
   );

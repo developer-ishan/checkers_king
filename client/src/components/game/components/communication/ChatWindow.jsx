@@ -1,6 +1,11 @@
 import React, { useEffect } from "react";
 
-const ChatWindow = ({ chats, playersInfo, noChatMessage, bottomColor }) => {
+const ChatWindow = ({
+  chats = [],
+  playersInfo,
+  noChatMessage,
+  bottomColor,
+}) => {
   //refrence to the daummy element present at the end of chats
   const messagesEndRef = React.createRef();
   //this function will bring that div in focuse
