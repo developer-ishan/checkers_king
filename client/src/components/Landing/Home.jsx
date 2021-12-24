@@ -44,6 +44,12 @@ const Home = ({ games, setGames }) => {
       .addHints();
     if (!isMuted) welcomeSound.play();
     console.log("mounded");
+    return () => {
+      console.log("home unmounted...");
+      socket.off("games");
+      socket.off("ongoing-game");
+      socket.on("user-error");
+    };
   }, []);
   const rejoinPlayerToGame = () => {
     const token = getUserIdentification();

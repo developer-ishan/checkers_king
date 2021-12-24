@@ -49,7 +49,7 @@ module.exports =
 
     /* --------------------------------- User game with game bot --------------------------------- */
     if (game.isBot) {
-      // level should only be kept in range [1, 5]
+      // leve of the bot [2 : Easy | 4 : Medium | 6 : Hard]
       console.log("determining next move of bot...");
       const nextMove = aiBotMove({
         board: game.board,
@@ -68,8 +68,7 @@ module.exports =
         });
         sendGameStatus(io, botGame.id);
       }
-      const gameResults = await isWinnerDeclared(io, socket);
-      if (gameResults !== false) return;
+      await isWinnerDeclared(io, socket);
     }
     /* ------------------------- User game with game bot ------------------------- */
   };

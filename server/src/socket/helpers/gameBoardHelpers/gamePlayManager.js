@@ -3,7 +3,11 @@ var jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { JWT_SECRET } = require("../../../config/keys");
 const User = require("../../../models/User");
-const { getPiecesCount, getAllMovesCountByPlayer } = require("../gameHelper");
+const {
+  getPiecesCount,
+  getAllMovesCountByPlayer,
+  parsePieceMove,
+} = require("../gameHelper");
 const { saveMatch } = require("../../../helpers/matchHelpers");
 const { giveMandatoryMove } = require("./movePieceHelpers/mandatoryMoves");
 const { getUserDetailsWithToken } = require("../userManager");
@@ -71,7 +75,6 @@ exports.createNewGame = async ({
   isRated,
   token,
 }) => {
-  console.log("inside createNewGame helper function...");
   let user = await getUserDetailsWithToken(token),
     matchId = crypto.randomBytes(4).toString("hex");
   const { userId, username, photo } = user;
@@ -181,6 +184,7 @@ exports.onMovePiece = async ({ io, player, selectedPiece, destination }) => {
       board: game.board,
       destination,
       selectedPiece,
+      lastMove: parsePieceMove(game.pieceMoves[game.pieceMoves.length - 1]),
     });
 
     if (moveResults !== null) {

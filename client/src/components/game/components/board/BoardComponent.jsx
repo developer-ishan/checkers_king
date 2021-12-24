@@ -34,7 +34,7 @@ const playerMoves = {
   ],
 };
 
-const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
+const BoardComponent = ({ board, color, turn, movePiece, lastMove }) => {
   const [selectedPiece, setSelectedPiece] = useState({ i: -1, j: -1 });
   const [possibleMoves, setPossibleMoves] = useState([]);
   const { clickSound, jumpSound, selectSound, crownSound, slideSound, isMute } =
@@ -74,6 +74,7 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
         }
       }
       setPossibleMoves(newMoves);
+      console.log(lastMove);
     }
   }, [selectedPiece]);
 
@@ -152,6 +153,15 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
     if (selectedPiece.i === currentI && selectedPiece.j === currentJ)
       return true;
     return false;
+  };
+
+  const getLastMovePosition = (i, j) => {
+    const { selectedPiece, destination } = lastMove;
+    if (selectedPiece.i === i && selectedPiece.j === j)
+      return <div className="bg-white-200"></div>;
+    else if (destination.i === i && destination.j)
+      return <div className="bg-white-200"></div>;
+    return <div></div>;
   };
 
   //this function return piece(goti)
@@ -249,6 +259,7 @@ const BoardComponent = ({ board, color, turn, movePiece, quitGame }) => {
                 className={getStyle(i, j)}
                 onClick={() => clickCell(i, j)}
               >
+                {lastMove && getLastMovePosition(i, j)}
                 {/* if current box is highligted then putting a overlay on the box*/}
                 {isHighlighted({ i, j }) !== undefined && (
                   <div className="absolute inset-0 bg-green-500 border-4 border-green-800"></div>

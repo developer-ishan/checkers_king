@@ -1,6 +1,8 @@
 const { getGamesList, getGameByID } = require("./gamePlayManager");
 const { getUserDetailsWithToken } = require("../userManager");
+const { parsePieceMove } = require("../gameHelper");
 
+// find a game with a player with a particular id
 const findPlayersWithID = (playerId) => {
   const games = getGamesList();
   return games.find((game) => {
@@ -8,9 +10,11 @@ const findPlayersWithID = (playerId) => {
   });
 };
 
+// returns the fileterd player array of a game with given id
 const getGamePlayersWithGameId = (game) => {
   let players = [];
   game.players.map((player) =>
+    // filtered data to send to client
     players.push({
       id: player.id,
       color: player.color,
@@ -21,12 +25,15 @@ const getGamePlayersWithGameId = (game) => {
   return players;
 };
 
+// finding the game with a game ID
 const getGameWithGameId = (gameId) => {
   const game = getGameByID(gameId);
+  if (!game) return game;
   let players = getGamePlayersWithGameId(game);
   return { id: game.id, turn: game.turn, players };
 };
 
+// checking if a user is already present in an ongoing game
 const isUserAlreadyInGame = async (token) => {
   const userDetails = await getUserDetailsWithToken(token);
   const userGame = findPlayersWithID(userDetails.userId);
@@ -34,6 +41,7 @@ const isUserAlreadyInGame = async (token) => {
   return userGame;
 };
 
+// rejoining a player into an existing game
 const rejoinGameWithGameId = async (socket, gameId, token) => {
   const existingGame = await isUserAlreadyInGame(token);
   const userDetails = await getUserDetailsWithToken(token);
@@ -43,11 +51,14 @@ const rejoinGameWithGameId = async (socket, gameId, token) => {
   const game = getGameByID(gameId);
   game.players.map((player) => {
     if (player.id === userDetails.userId) {
+      // exchangin the existing socket of the game with the new socket
       player.socket = socket;
       socketPlayer = player;
       socket.join(gameId);
     }
   });
+
+  // emitting event to the client
   socket.emit("color", socketPlayer.color);
   socket.emit("players-info", getGamePlayersWithGameId(game));
   socket.emit("old-chats-on-rejoin", game.chat);
@@ -55,6 +66,7 @@ const rejoinGameWithGameId = async (socket, gameId, token) => {
     id: game.id,
     board: game.board,
     turn: game.turn,
+    lastMove: parsePieceMove(game.pieceMoves[game.pieceMoves.length - 1]),
   });
 };
 
