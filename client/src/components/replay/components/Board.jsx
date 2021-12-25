@@ -10,7 +10,7 @@ const BLACK_QUEEN = 4;
 const TOP_ROW = 0;
 const BOTTOM_ROW = 7;
 
-const Board = ({ moves, playersInfo, chats }) => {
+const Board = ({ moves, playersInfo, chats, winner, botLevel }) => {
   const initialBoard = [
     [1, 0, 1, 0, 1, 0, 1, 0],
     [0, 1, 0, 1, 0, 1, 0, 1],
@@ -87,7 +87,7 @@ const Board = ({ moves, playersInfo, chats }) => {
         executeNextMove(moves[newMoveNum]);
         return newMoveNum;
       } else {
-        alert("Match finished");
+        alert(`${winner} Won!!`);
         return moveNum;
       }
     });
@@ -106,6 +106,7 @@ const Board = ({ moves, playersInfo, chats }) => {
           <BoardComponent
             boardMatrix={boardStates[boardStates.length - 1]}
             playersInfo={playersInfo}
+            botLevel={botLevel}
           />
         </div>
         {/* right side: containing controls and chats */}

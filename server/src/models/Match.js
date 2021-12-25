@@ -17,6 +17,7 @@ const matchSchema = new Schema({
     default: -1,
   },
   isRated: Boolean,
+  mandatoryMoves: Boolean,
   winner: String,
   startTime: Date,
   endTime: Date,

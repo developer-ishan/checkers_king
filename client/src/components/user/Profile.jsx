@@ -51,7 +51,10 @@ const Profile = () => {
     yValues.push(currRating);
 
     for (let itr = previousMatches.length - 1; itr >= 0; --itr) {
-      if (previousMatches[itr].players.length <= 2) {
+      if (
+        previousMatches[itr].players.length === 2 &&
+        previousMatches[itr].isRated
+      ) {
         matchNumber++;
         xValues.push(matchNumber.toString());
         if (previousMatches[itr].players[0].id === userId) {

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { API } from "../../../config/backend";
 
-const BoardComponent = ({ boardMatrix, playersInfo }) => {
+const BoardComponent = ({ boardMatrix, playersInfo, botLevel }) => {
   // for styling the boxes of the board
   const whiteBoxStyle =
     "grid relative place-items-center text-black bg-pink-300 ";
@@ -63,12 +63,12 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
         title={`this is a bot,not a real player`}
       >
         <img
-          src={`/images/default.png`}
+          src={`/images/bot.png`}
           alt="bot's profile pic"
           className="w-8 h-8 mx-1 rounded-full"
         />
 
-        {`BOT`}
+        {`Bot_Lvl${botLevel}`}
       </Link>
     );
   };
@@ -81,7 +81,6 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       }
     });
     if (!player) return botProfile();
-    console.log("red player", player);
 
     return (
       <Link
@@ -108,7 +107,7 @@ const BoardComponent = ({ boardMatrix, playersInfo }) => {
       }
     });
     if (!player) return botProfile();
-    console.log("black player", player);
+
     return (
       <Link
         to={`/user/${player.id}`}

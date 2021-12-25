@@ -234,83 +234,85 @@ const Game = () => {
   };
 
   const blackPlayerInfo = () => {
-    //it means match is against the bot
-    if (botLevel !== -1) {
-      return (
-        <Link
-          className="flex items-center "
-          title={`this is a bot,not a real player`}
-        >
-          <img
-            src={`/images/default.png`}
-            alt="bot's profile pic"
-            className="w-8 h-8 mx-1 rounded-full"
-          />
-
-          {`BOT_LVL${botLevel}`}
-        </Link>
-      );
-    }
-    //match is against a real player
-    let player;
+    let player = null;
     playersInfo.forEach((p) => {
       if (p.color === "Black") player = p;
     });
-    return (
-      <Link
-        to={`/user/${player.id}`}
-        className="flex items-center "
-        title={`click to see ${player.username}'s full profile`}
-      >
-        <img
-          src={`${API}/public/dp/${player.photo}`}
-          alt="player's profile pic"
-          className="w-8 h-8 mx-1 rounded-full"
-        />
 
-        {player.username}
-      </Link>
-    );
-  };
-
-  const redPlayerInfo = () => {
-    //it means match is against the bot
-    if (botLevel !== -1) {
+    if (player) {
       return (
         <Link
+          to={`/user/${player.id}`}
           className="flex items-center "
-          title={`this is a bot,not a real player`}
+          title={`click to see ${player.username}'s full profile`}
         >
           <img
-            src={`/images/default.png`}
-            alt="bot's profile pic"
+            src={player.photo}
+            alt="player's profile pic"
             className="w-8 h-8 mx-1 rounded-full"
           />
 
-          {`BOT_LVL${botLevel}`}
+          {player.username}
         </Link>
       );
     }
-    //match is against a real player
-    let player;
-    playersInfo.forEach((p) => {
-      if (p.color === "Red") player = p;
-    });
+
     return (
       <Link
-        to={`/user/${player.id}`}
         className="flex items-center "
-        title={`click to see ${player.username}'s full profile`}
+        title={`this is a bot,not a real player`}
       >
         <img
-          src={`${API}/public/dp/${player.photo}`}
-          alt="player's profile pic"
+          src={`/images/bot.png`}
+          alt="bot's profile pic"
           className="w-8 h-8 mx-1 rounded-full"
         />
 
-        {player.username}
+        {`Bot_Lvl${botLevel}`}
       </Link>
     );
+    //match is against a real player
+  };
+
+  const redPlayerInfo = () => {
+    let player = null;
+    playersInfo.forEach((p) => {
+      if (p.color === "Red") player = p;
+    });
+
+    if (player) {
+      return (
+        <Link
+          to={`/user/${player.id}`}
+          className="flex items-center "
+          title={`click to see ${player.username}'s full profile`}
+        >
+          <img
+            src={player.photo}
+            alt="player's profile pic"
+            className="w-8 h-8 mx-1 rounded-full"
+          />
+
+          {player.username}
+        </Link>
+      );
+    }
+
+    return (
+      <Link
+        className="flex items-center "
+        title={`this is a bot,not a real player`}
+      >
+        <img
+          src={`/images/bot.png`}
+          alt="bot's profile pic"
+          className="w-8 h-8 mx-1 rounded-full"
+        />
+
+        {`Bot_Lvl${botLevel}`}
+      </Link>
+    );
+    //match is against a real player
   };
   const getMyId = () => {
     if (!playersInfo) return null;

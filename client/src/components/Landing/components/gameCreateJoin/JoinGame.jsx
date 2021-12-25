@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import {
-  getUserIdentification,
-  isAuthenticated,
-} from "../../../../helper/authHelper";
+import { getUserIdentification } from "../../../../helper/authHelper";
 import GameButton from "../others/GameButton";
 
 const JoinGame = ({ socket }) => {

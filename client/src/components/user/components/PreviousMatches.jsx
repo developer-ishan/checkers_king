@@ -19,7 +19,11 @@ const PreviousMatches = ({ userId, previousMatches }) => {
                 matchId={match.matchId}
                 players={match.players}
                 userId={userId}
+                isRated={match.isRated}
+                mandatoryMoves={match.mandatoryMoves}
+                winner={match.winner}
                 key={match.matchId}
+                botLevel={match.botLevel}
               />
             );
           })}

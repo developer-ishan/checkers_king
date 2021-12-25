@@ -25,6 +25,7 @@ exports.getMyMatches = async (req, res, next) => {
           players: 1,
           winner: 1,
           isRated: 1,
+          mandatoryMoves: 1,
           pids: {
             $map: {
               input: "$players",
@@ -80,7 +81,7 @@ exports.getMyMatches = async (req, res, next) => {
         playersInfo.push(player);
       });
 
-      const { _id, botLevel, isRated, winner } = match;
+      const { _id, botLevel, isRated, winner, mandatoryMoves } = match;
       //this _id is actullay the id of the db object
       //not the id which was shared between friends
       filteredData.push({
@@ -89,6 +90,7 @@ exports.getMyMatches = async (req, res, next) => {
         botLevel,
         isRated,
         winner,
+        mandatoryMoves,
       });
     });
     return res.json(filteredData);
@@ -114,6 +116,10 @@ exports.getMatchById = async (req, res, next) => {
           endTime: 1,
           players: 1,
           moves: 1,
+          botLevel: 1,
+          isRated: 1,
+          mandatoryMoves: 1,
+          winner: 1,
           pids: {
             $map: {
               input: "$players",
@@ -161,7 +167,7 @@ exports.getMatchById = async (req, res, next) => {
         playersInfo.push(player);
       });
 
-      const { _id } = match;
+      const { _id, botLevel, isRated, winner, mandatoryMoves } = match;
       //this _id is actullay the id of the db object
       //not the id which was shared between friends
       filteredData.push({
@@ -170,6 +176,10 @@ exports.getMatchById = async (req, res, next) => {
         moves: match.moves,
         startTime: match.startTime,
         endTime: match.endTime,
+        botLevel,
+        isRated,
+        winner,
+        mandatoryMoves,
       });
     });
     return res.json(filteredData[0]);

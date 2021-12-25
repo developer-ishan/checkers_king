@@ -269,6 +269,7 @@ exports.endGame = async ({ player, winner }) => {
         winner,
         game.isBot,
         game.isRated,
+        game.mandatoryMoves,
         game.botLevel
       );
     } else {
@@ -284,6 +285,7 @@ exports.endGame = async ({ player, winner }) => {
         winner, // considering that you cannot propose draw with bot
         true,
         false,
+        game.mandatoryMoves,
         game.botLevel
       );
     }
