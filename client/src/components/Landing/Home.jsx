@@ -12,7 +12,9 @@ import { getUserIdentification, signout } from "../../helper/authHelper";
 import { useHistory } from "react-router-dom";
 import ErrorModal from "../modal/ErrorModal";
 import { GameSoundContext } from "../../context/GameSoundContext";
-import OnlineFriends from "../friend/components/OnlineFriends"
+import OnlineFriends from "../friend/components/OnlineFriends";
+import FindUser from "./components/others/FindUser";
+import Carousel from "./components/others/Carousel";
 Modal.setAppElement("#root");
 const Home = ({ games, setGames }) => {
   const [socket, setSocket] = useContext(SocketContext);
@@ -57,6 +59,11 @@ const Home = ({ games, setGames }) => {
     socket.emit("join-game", onGoingGameDetails.id, token);
     history.push("/game");
   };
+  const quitAlreadyRunningGame = () => {
+    console.log("quit from snackbar");
+    socket.emit("quit-game");
+    setSnackBarContent("");
+  };
   const onClosingMultipleDeviceDetectedModal = () => {
     const id = getUserIdentification();
     //if user is guest we cannot do anything
@@ -78,6 +85,8 @@ const Home = ({ games, setGames }) => {
           btnText="rejoin"
           btnAction={rejoinPlayerToGame}
           stayOnScreen={true}
+          onClose={quitAlreadyRunningGame}
+          onCloseHint="opponent will be declared as winner"
         />
       )}
       {isMultipleDeviceDetectedModalOpen && (
@@ -89,20 +98,39 @@ const Home = ({ games, setGames }) => {
         />
       )}
       <Navbar />
-      <div className="grid grid-cols-12 pt-4 mx-auto max-w-screen-2xl">
-        {/* left side */}
-        <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
-          <RandomPlay socket={socket} d />
-          <PlayWithFriends socket={socket} />
-        </div>
+      <div className="py-4">
+        {/* ###################### grid 1 start ################################# */}
+        <div className="grid grid-cols-12 mx-auto max-w-screen-2xl">
+          {/* left side */}
+          <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
+            <RandomPlay socket={socket} d />
+            <PlayWithFriends socket={socket} />
+          </div>
 
-        {/* rightside */}
-        <div className="col-span-12 lg:col-span-auto lg:col-start-9">
-          <Leaderboard />
+          {/* rightside */}
+          <div className="flex flex-col items-stretch col-span-12 px-5 mt-4 space-x-2 lg:items-center sm:flex-row lg:flex-col lg:mt-0 lg:space-x-0 lg:space-y-4 lg:col-span-auto lg:col-start-9">
+            <Leaderboard />
+            <FindUser />
+          </div>
         </div>
-        <div className="col-span-12 lg:col-span-auto lg:col-start-9">
-          <OnlineFriends />
+        {/* ###################### grid 1 end ################################# */}
+        {/* ###################### grid 2 start ################################# */}
+
+        <div className="grid grid-cols-12 pt-4 mx-auto max-w-screen-2xl">
+          {/* left side */}
+          <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
+            <Carousel />
+          </div>
+
+          {/* rightside */}
+          <div className="flex flex-row col-span-12 px-5 space-y-4 lg:flex-col lg:col-span-auto lg:col-start-9">
+            <OnlineFriends />
+          </div>
         </div>
+        {/* <div
+        className="relative mx-4 my-4 bg-white shadow-xl mt-14 max-w-screen-2xl h-44"
+        id="shapedDiv"
+      ></div> */}
       </div>
     </div>
   );
