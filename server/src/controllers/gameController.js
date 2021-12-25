@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const {filterPhoto} = require("../helpers/photoHelper");
 exports.getLeaderBoard = async (req, res, next) => {
   var pageNo = parseInt(req.query.pageNo);
   var size = parseInt(req.query.size);
@@ -26,7 +27,12 @@ exports.getLeaderBoard = async (req, res, next) => {
         response = { success: false, msg: "Error fetching data" };
       } else {
         var totalPages = Math.ceil(totalCount / size);
-        response = { success: true, data: data, pages: totalPages };
+        response = { success: true, data: data.map(d => {return {
+          username: d.username,
+          _id: d._id,
+          photo: filterPhoto(d),
+          rating: d.rating
+        }}), pages: totalPages };
       }
       res.json(response);
     });
