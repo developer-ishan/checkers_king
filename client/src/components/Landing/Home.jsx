@@ -14,7 +14,7 @@ import ErrorModal from "../modal/ErrorModal";
 import { GameSoundContext } from "../../context/GameSoundContext";
 import OnlineFriends from "../friend/components/OnlineFriends";
 import FindUser from "./components/others/FindUser";
-import Carousel from "./components/others/Carousel";
+import GamePosters from "./components/others/GamePosters";
 Modal.setAppElement("#root");
 const Home = ({ games, setGames }) => {
   const [socket, setSocket] = useContext(SocketContext);
@@ -108,7 +108,7 @@ const Home = ({ games, setGames }) => {
           </div>
 
           {/* rightside */}
-          <div className="flex flex-col items-stretch col-span-12 px-5 mt-4 space-x-2 lg:items-center sm:flex-row lg:flex-col lg:mt-0 lg:space-x-0 lg:space-y-4 lg:col-span-auto lg:col-start-9">
+          <div className="flex flex-col items-stretch col-span-12 px-5 mt-4 space-y-4 sm:space-y-0 md:space-x-2 lg:items-center sm:flex-row lg:flex-col lg:mt-0 lg:space-x-0 lg:space-y-4 lg:col-span-auto lg:col-start-9">
             <Leaderboard />
             <FindUser />
           </div>
@@ -116,14 +116,14 @@ const Home = ({ games, setGames }) => {
         {/* ###################### grid 1 end ################################# */}
         {/* ###################### grid 2 start ################################# */}
 
-        <div className="grid grid-cols-12 pt-4 mx-auto max-w-screen-2xl">
+        <div className="grid grid-cols-12 pt-4 mx-auto space-y-4 max-w-screen-2xl lg:space-y-0">
           {/* left side */}
           <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
-            <Carousel />
+            <GamePosters />
           </div>
 
           {/* rightside */}
-          <div className="flex flex-row col-span-12 px-5 space-y-4 lg:flex-col lg:col-span-auto lg:col-start-9">
+          <div className="col-span-12 px-5 lg:col-span-auto lg:col-start-9">
             <OnlineFriends />
           </div>
         </div>

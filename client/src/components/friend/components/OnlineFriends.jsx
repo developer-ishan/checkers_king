@@ -69,7 +69,7 @@ const RequestList = ({ heading }) => {
             <img
               src="/images/alone-cat.png"
               alt=""
-              className="w-full max-w-sm mx-auto"
+              className="w-full max-w-xs mx-auto"
             />
             <p className="p-2 text-sm font-bold dark:text-white">
               looks like everyone is busy today
