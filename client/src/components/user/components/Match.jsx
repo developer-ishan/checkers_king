@@ -35,32 +35,48 @@ const Match = ({ matchId, players, userId }) => {
     <div className="p-2 space-y-2 bg-yellow-300 rounded shadow-xl dark:bg-gray-600">
       <div className="flex flex-col items-center justify-around space-y-5 ">
         <div className="relative flex items-center justify-between w-full p-2 bg-yellow-100 rounded-lg shadow-xl dark:bg-gray-500">
-          {self &&
-            (self.ratingChange > 0 ? (
-              <>
-                <h1 className="text-xl font-bold tracking-tight text-green-500 ">
-                  +{self.ratingChange}
-                </h1>
-                <h1
-                  className="absolute text-xl font-bold tracking-tight text-green-500 uppercase transform md:text-3xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
-                  style={textStyle}
-                >
-                  won
-                </h1>
-              </>
-            ) : (
-              <>
-                <h1 className="text-xl font-bold tracking-tight text-red-500">
-                  {self.ratingChange}
-                </h1>
-                <h1
-                  className="absolute text-xl font-bold tracking-tight text-red-500 uppercase transform md:text-3xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
-                  style={textStyle}
-                >
-                  loose
-                </h1>
-              </>
-            ))}
+          {self && self.ratingChange > 0 && (
+            <>
+              <h1 className="text-xl font-bold tracking-tight text-green-500 ">
+                +{self.ratingChange}
+              </h1>
+              <h1
+                className="absolute text-xl font-bold tracking-tight text-green-500 uppercase transform md:text-3xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+                style={textStyle}
+              >
+                won
+              </h1>
+            </>
+          )}
+
+          {self && self.ratingChange < 0 && (
+            <>
+              <h1 className="text-xl font-bold tracking-tight text-red-500 ">
+                {self.ratingChange}
+              </h1>
+              <h1
+                className="absolute text-xl font-bold tracking-tight text-red-500 uppercase transform md:text-3xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+                style={textStyle}
+              >
+                lose
+              </h1>
+            </>
+          )}
+
+          {self && self.ratingChange === 0 && (
+            <>
+              <h1 className="text-xl font-bold tracking-tight text-yellow-500 ">
+                {self.ratingChange}
+              </h1>
+              <h1
+                className="absolute text-xl font-bold tracking-tight text-yellow-500 uppercase transform md:text-3xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+                style={textStyle}
+              >
+                draw
+              </h1>
+            </>
+          )}
+
           <Link
             to={`/replay/${matchId}`}
             className="hidden p-2 font-medium text-center text-white bg-indigo-500 rounded shadow md:block hover:bg-purple-700"

@@ -19,40 +19,54 @@ const Profile = () => {
   ] = useState(null);
   const [previousMatches, setPreviousMatches] = useState([]);
   const [socket, setSocket] = useContext(SocketContext);
-
-  var xLabels = [];
-  var yLabels = [];
+  const [xLabels, setXLabels] = useState([]);
+  const [yLabels, setYLabels] = useState([]);
 
   useEffect(() => {
     socket.on("user-error", (error) => {
       setMultipleDeviceDetectedModalOpen(error);
     });
 
-    getPreviousMatches(userId).then((res) => {
-      console.log("previous matches : ", res);
-      setPreviousMatches(res);
-      console.log("profile MOUNTED", userId);
-    });
+    getPreviousMatches(userId)
+      .then((res) => {
+        console.log(res);
+        setPreviousMatches(res);
+      })
+      .catch((err) => {
+        console.log("Error : ", err);
+      });
+
+    return () => {
+      socket.off("user-error");
+    };
   }, [userId, socket]);
 
   useEffect(() => {
     let currRating = 800,
       matchNumber = 0;
-    xLabels.push(matchNumber.toString());
-    yLabels.push(currRating);
+    let xValues = [];
+    let yValues = [];
+    xValues.push(matchNumber.toString());
+    yValues.push(currRating);
 
     for (let itr = previousMatches.length - 1; itr >= 0; --itr) {
-      matchNumber++;
-      xLabels.push(matchNumber.toString());
-      if (previousMatches[itr].players[0].id === userId) {
-        currRating += previousMatches[itr].players[0].ratingChange;
-        yLabels.push(currRating);
-      } else {
-        currRating += previousMatches[itr].players[1].ratingChange;
-        yLabels.push(currRating);
+      if (previousMatches[itr].players.length <= 2) {
+        matchNumber++;
+        xValues.push(matchNumber.toString());
+        if (previousMatches[itr].players[0].id === userId) {
+          currRating += previousMatches[itr].players[0].ratingChange;
+          yValues.push(currRating);
+        } else {
+          currRating += previousMatches[itr].players[1].ratingChange;
+          yValues.push(currRating);
+        }
       }
     }
-  }, [previousMatches, userId]);
+    if (xValues.length > 1) {
+      setXLabels(xValues);
+      setYLabels(yValues);
+    }
+  }, [previousMatches]);
 
   const history = useHistory();
 
@@ -68,6 +82,7 @@ const Profile = () => {
       });
     }
   };
+
   return (
     <div className="mx-auto space-y-3 bg-gray-100 dark:bg-gray-900 max-w-screen-2xl">
       {/*TODO:either set the navbar global or do something of it  */}
@@ -85,9 +100,7 @@ const Profile = () => {
             data-title="player graph"
             data-intro="this show players performance in the past"
           >
-            {previousMatches.length && (
-              <RatingChart xLabels={xLabels} yLabels={yLabels} />
-            )}
+            <RatingChart xLabels={xLabels} yLabels={yLabels} />
           </div>
 
           <div className="col-span-12 lg:col-span-9">

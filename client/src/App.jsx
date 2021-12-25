@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  BrowserRouter,
-  Redirect,
-  Route,
-  Switch,
-  useHistory,
-} from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
 import { SocketContext } from "./context/SocketContext";
+import { UserContext } from "./context/UserContext";
 import Game from "./components/game/Game";
 import Home from "./components/Landing/Home";
 import { API } from "./config/backend";
@@ -22,12 +17,14 @@ import Modal from "react-modal";
 Modal.setAppElement("#root");
 const App = () => {
   const [socket, setSocket] = useContext(SocketContext);
+  const [userState, setUserState] = useContext(UserContext);
   const [games, setGames] = useState([]);
   const [gameInvites, setGameInvites] = useState([{}]);
   const { isMuted, toggleMute, clickSound } = useContext(GameSoundContext);
 
   // connecting socket-client to the socket server for communication
   useEffect(() => {
+    if (socket) socket.disconnect();
     const userIdToken = getUserIdentification();
     const clientSocket = io(API, {
       transports: ["websocket"],
@@ -43,7 +40,7 @@ const App = () => {
     return () => {
       socket && socket.off("game-invite");
     };
-  }, []);
+  }, [userState.socketReinitialize]);
   const acceptGameInvite = () => {
     alert("accepting game invited not implemented");
   };

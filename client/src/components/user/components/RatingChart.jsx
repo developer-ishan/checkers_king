@@ -33,7 +33,7 @@ const RatingChart = ({ xLabels, yLabels }) => {
     datasets: [
       {
         data: yLabels,
-        label: "User Ratings",
+        label: "Rating",
         fill: true,
         backgroundColor: "rgba(16, 185, 129, 0.4)",
         borderColor: "rgba(16, 185, 129, 1)",
@@ -46,7 +46,6 @@ const RatingChart = ({ xLabels, yLabels }) => {
 
   const options = {
     responsive: true,
-    maintainAspectRation: false,
     radius: 4,
     hoverRadius: 6,
     animations: {
@@ -57,24 +56,6 @@ const RatingChart = ({ xLabels, yLabels }) => {
         to: 0.3,
         loop: false,
       },
-    },
-    scales: {
-      yAxes: [
-        {
-          scaleLabel: {
-            display: true,
-            labelString: "Ratings",
-          },
-        },
-      ],
-      xAxes: [
-        {
-          scaleLabel: {
-            display: true,
-            labelString: "Match Number",
-          },
-        },
-      ],
     },
   };
 
