@@ -141,6 +141,12 @@ const UserInfo = ({ userId, matchesCount }) => {
           fileSelector.current.files.length !== 0 && (
             <DpEdit state={newDp} setState={setNewDp} />
           )}
+        <button
+          type="button"
+          className="w-full px-4 py-2 mt-2 font-bold text-white capitalize bg-indigo-700 rounded  hover:bg-indigo-800"
+        >
+          add friend
+        </button>
       </div>
       <div className="flex-wrap items-center justify-around col-span-12 space-y-2 text-white sm:text-center lg:text-left sm:flex lg:block sm:col-span-8 lg:col-span-12">
         <div className="">

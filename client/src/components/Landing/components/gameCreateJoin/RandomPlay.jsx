@@ -53,6 +53,7 @@ const RandomPlay = ({ socket }) => {
         <span
           data-title="play now!"
           data-intro="in this section you can play with bot or with an online player"
+          className="inline-block"
         >
           <GameButton
             className="p-2 font-bold text-indigo-500 bg-white"

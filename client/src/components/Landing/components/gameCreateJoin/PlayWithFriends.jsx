@@ -5,7 +5,7 @@ import JoinGame from "./JoinGame";
 const PlayWithFriends = ({ socket }) => {
   return (
     <div
-      className="my-4"
+      className="mt-4"
       data-title="its more fun with friends!"
       data-intro="you can also play the game with your friend online"
     >
