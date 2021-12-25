@@ -72,7 +72,7 @@ const Navbar = () => {
           console.log(err);
         });
     }
-  }, []);
+  }, [auth]);
 
   const handleLogIn = (e) => {
     e.preventDefault();
@@ -90,6 +90,10 @@ const Navbar = () => {
             setIsLoginModalOpen(false);
             console.log("reloading due to nav");
             history.push("/");
+            setUserState({
+              ...userState,
+              socketReinitialize: !userState.socketReinitialize,
+            });
           });
         } else {
           setError({
@@ -257,6 +261,10 @@ const Navbar = () => {
                       _id: undefined,
                       f_photo: undefined,
                       g_photo: undefined,
+                    });
+                    setUserState({
+                      ...userState,
+                      socketReinitialize: !userState.socketReinitialize,
                     });
                     history.push("/");
                   });

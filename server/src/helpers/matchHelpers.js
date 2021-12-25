@@ -18,16 +18,20 @@ const saveMatch = async (
   startTime,
   endTime,
   messages,
-  isDraw,
+  winner,
   isBot,
-  isRated
+  isRated,
+  botLevel
 ) => {
   let ratingsUpdate = null;
-  if (!isBot && !isDraw && isRated && !isPlayerAGuest(p1.id, p2.id))
+  if (!isBot && winner != "Draw" && isRated && !isPlayerAGuest(p1.id, p2.id))
     ratingsUpdate = await updateRating(p1.id, p2.id);
   let game = new Match({
     players: [],
     moves,
+    botLevel,
+    isRated,
+    winner,
     startTime,
     endTime,
   });
@@ -41,9 +45,9 @@ const saveMatch = async (
     // not saving the game in case one of the player is guest
     console.log("game with a guest... not saving and returning...");
     return;
-  } else if (isDraw || !isRated) {
+  } else if (winner === "Draw" || !isRated) {
     // saving unrated or draw games
-    console.log("saving unrated game");
+    console.log("saving unrated/draw game");
     game.players.push({ userId: p1.id, delta: 0, color: p1.color });
     game.players.push({ userId: p2.id, delta: 0, color: p2.color });
   } else {

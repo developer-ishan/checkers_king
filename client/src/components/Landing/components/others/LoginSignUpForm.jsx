@@ -21,7 +21,7 @@ const LoginSignUpForm = ({
           id="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="enter email"
+          placeholder="Enter Email"
           className="w-full max-w-md p-2 text-xs rounded dark:text-black dark:bg-gray-100"
         />
         <input
@@ -31,7 +31,7 @@ const LoginSignUpForm = ({
           value={password}
           minLength="8"
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="enter password"
+          placeholder="Enter Password"
           className="w-full max-w-md p-2 text-xs rounded dark:text-black dark:bg-gray-100"
           title="password must be minimum 8 character long"
         />

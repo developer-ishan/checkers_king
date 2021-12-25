@@ -12,6 +12,12 @@ const matchSchema = new Schema({
     },
   ],
   moves: [{ type: String }],
+  botLevel: {
+    type: Number,
+    default: -1,
+  },
+  isRated: Boolean,
+  winner: String,
   startTime: Date,
   endTime: Date,
 });

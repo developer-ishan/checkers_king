@@ -21,7 +21,10 @@ exports.getMyMatches = async (req, res, next) => {
           matchId: 1,
           startTime: 1,
           endTime: 1,
+          botLevel: 1,
           players: 1,
+          winner: 1,
+          isRated: 1,
           pids: {
             $map: {
               input: "$players",
@@ -72,15 +75,21 @@ exports.getMyMatches = async (req, res, next) => {
           rating: rating,
           ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
           photo: filterPhoto(detail),
-          color: color[_id]
+          color: color[_id],
         };
         playersInfo.push(player);
       });
 
-      const { _id } = match;
+      const { _id, botLevel, isRated, winner } = match;
       //this _id is actullay the id of the db object
       //not the id which was shared between friends
-      filteredData.push({ matchId: _id, players: playersInfo });
+      filteredData.push({
+        matchId: _id,
+        players: playersInfo,
+        botLevel,
+        isRated,
+        winner,
+      });
     });
     return res.json(filteredData);
   } catch (err) {
@@ -131,7 +140,7 @@ exports.getMatchById = async (req, res, next) => {
     matches.forEach((match) => {
       //creating an object of userId:ratingChange to refrence it later
       let ratingChange = {};
-      let color = {}
+      let color = {};
       match.players.forEach((player) => {
         ratingChange[player.userId] = player.delta;
         color[player.userId] = player.color;
@@ -147,7 +156,7 @@ exports.getMatchById = async (req, res, next) => {
           rating: rating,
           ratingChange: ratingChange[_id], //here we are using the above created ratingChange object
           photo: filterPhoto(detail),
-          color: color[_id]
+          color: color[_id],
         };
         playersInfo.push(player);
       });

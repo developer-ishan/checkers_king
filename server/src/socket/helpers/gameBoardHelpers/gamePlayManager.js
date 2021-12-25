@@ -95,14 +95,22 @@ exports.createNewGame = async ({
     createTime: new Date(),
     pieceMoves: [],
     board: [
-      [1, 0, 1, 0, 1, 0, 1, 0],
-      [0, 1, 0, 1, 0, 1, 0, 1],
-      [1, 0, 1, 0, 1, 0, 1, 0],
+      // [1, 0, 1, 0, 1, 0, 1, 0],
+      // [0, 1, 0, 1, 0, 1, 0, 1],
+      // [1, 0, 1, 0, 1, 0, 1, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 2, 0, 2, 0, 2, 0, 2],
+      // [2, 0, 2, 0, 2, 0, 2, 0],
+      // [0, 2, 0, 2, 0, 2, 0, 2],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 2, 0, 2, 0, 2, 0, 2],
-      [2, 0, 2, 0, 2, 0, 2, 0],
-      [0, 2, 0, 2, 0, 2, 0, 2],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
     ],
     isBot,
     botLevel,
@@ -258,9 +266,10 @@ exports.endGame = async ({ player, winner }) => {
         game.createTime,
         new Date(),
         game.chat,
-        isDraw,
+        winner,
         game.isBot,
-        game.isRated
+        game.isRated,
+        game.botLevel
       );
     } else {
       // handles condition for game with bots
@@ -272,9 +281,10 @@ exports.endGame = async ({ player, winner }) => {
         game.createTime,
         new Date(),
         game.chat,
-        false, // considering that you cannot propose draw with bot
+        winner, // considering that you cannot propose draw with bot
         true,
-        false
+        false,
+        game.botLevel
       );
     }
     games.splice(games.indexOf(game), 1);

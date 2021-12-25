@@ -20,7 +20,6 @@ const UserInfo = ({ userId, matchesCount }) => {
     console.log("MOUNTED");
     getUserById(userId)
       .then((data) => {
-        console.log("USER INFO", data);
         const { username, desc, photo, rating } = data;
         setUserName(username);
         setDesc(desc);
