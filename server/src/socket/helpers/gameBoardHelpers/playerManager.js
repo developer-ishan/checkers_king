@@ -59,15 +59,16 @@ const rejoinGameWithGameId = async (socket, gameId, token) => {
   });
 
   // emitting event to the client
-  socket.emit("color", socketPlayer.color);
-  socket.emit("players-info", getGamePlayersWithGameId(game));
-  socket.emit("old-chats-on-rejoin", game.chat);
   socket.emit("game-status", {
     id: game.id,
     board: game.board,
     turn: game.turn,
     lastMove: parsePieceMove(game.pieceMoves[game.pieceMoves.length - 1]),
   });
+  socket.emit("color", socketPlayer.color);
+  socket.emit("players-info", getGamePlayersWithGameId(game));
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  socket.emit("old-chats-on-rejoin", game.chat);
 };
 
 module.exports = {

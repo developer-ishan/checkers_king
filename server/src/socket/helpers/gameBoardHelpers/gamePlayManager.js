@@ -157,7 +157,7 @@ const initiateMandatoryMove = async (io, game, destination) => {
 
   // while the next mandatory move cannot be performed
   while (destPiece !== null) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     emitGameStatus(io, game);
 
     const moveResults = movePiece({
@@ -202,7 +202,7 @@ exports.onMovePiece = async ({ io, player, selectedPiece, destination }) => {
       switchGameTurn({ game });
     }
   }
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 200));
   return game;
 };
 

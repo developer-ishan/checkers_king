@@ -6,6 +6,20 @@ const Friend = require("../../models/Friend");
 
 var users = [];
 
+// getting the userId from token
+const getUserIdWithToken = (token) => {
+  let userId = null;
+  if (!token) userId;
+  if (token.startsWith("guest")) return token;
+  try {
+    userId = jwt.verify(token, JWT_SECRET).sub;
+    return userId;
+  } catch (err) {
+    console.log(err);
+  }
+  return userId;
+};
+
 // getting the user details with token
 const getUserDetailsWithToken = async (token) => {
   if (token.startsWith("guest")) {
@@ -54,8 +68,8 @@ const isUserAlreadyOnline = (userId) => {
 
 // adding user to the list of online people on connect
 const addUserToList = async (socket, token) => {
+  if (isUserAlreadyOnline(getUserIdWithToken(token))) return false;
   const userDetails = await getUserDetailsWithToken(token);
-  if (userDetails && isUserAlreadyOnline(userDetails.userId)) return false;
   const { userId, username, isGuest, photo } = userDetails;
   users.push({ userId, username, photo, isGuest, id: socket.id });
   return { userId, username, photo, isGuest, id: socket.id };
@@ -74,10 +88,10 @@ const getOnlineFriends = async (userId) => {
     "recipient"
   );
   const friends = [];
-  friends_doc.forEach(f => {
+  friends_doc.forEach((f) => {
     user = findOnlineUserById(f.recipient.toString());
     friends.push(user);
-  })
+  });
   return friends;
 };
 module.exports = {

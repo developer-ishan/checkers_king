@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
 import { SocketContext } from "../../../../context/SocketContext";
+import { Picker } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
 import ChatWindow from "./ChatWindow";
 
 const Chat = ({ gameId, playerId, color, playersInfo }) => {
   const [socket, setSocket] = useContext(SocketContext);
   const [msg, setMsg] = useState("");
   const [chats, setChats] = useState([]);
+  const [showEmojiPalette, setShowEmojiPalette] = useState(false);
 
   useEffect(() => {
     socket.on("receive-msg", (newMessage) => {
       const { user, msg } = newMessage;
-      console.log(newMessage);
-      console.log("chats state : ", chats);
       setChats([...chats, { user, msg }]);
     });
     socket.on("old-chats-on-rejoin", (chats) => {
-      console.log("received old chats", chats);
       setChats(chats);
     });
 
@@ -34,6 +34,7 @@ const Chat = ({ gameId, playerId, color, playersInfo }) => {
   const handleMsg = () => {
     const userMsg = msg;
     setMsg("");
+    setShowEmojiPalette(false);
     sendChatMsg(userMsg);
   };
 
@@ -42,6 +43,11 @@ const Chat = ({ gameId, playerId, color, playersInfo }) => {
       event.preventDefault();
       handleMsg();
     }
+  };
+
+  const handleEmojiInMsg = (event) => {
+    let emoji = event.native;
+    setMsg(msg + emoji);
   };
 
   return (
@@ -78,7 +84,18 @@ const Chat = ({ gameId, playerId, color, playersInfo }) => {
       />
       {/* message input and send controls */}
       {color && (
-        <div className="flex p-1 bg-white border-2 shadow dark:bg-gray-700 rounded-3xl">
+        <div className="relative flex p-1 bg-white border-2 shadow dark:bg-gray-700 rounded-3xl">
+          {showEmojiPalette && (
+            <span className="absolute bottom-full">
+              <Picker onSelect={handleEmojiInMsg} emojiTooltip={true} />
+            </span>
+          )}
+          <p
+            className="mx-1 mt-2 border-none cursor-pointer"
+            onClick={() => setShowEmojiPalette(!showEmojiPalette)}
+          >
+            {String.fromCodePoint(0x1f60a)}
+          </p>
           <input
             className="w-full px-3 py-2 text-xs leading-tight text-gray-700 border border-none appearance-none rounded-3xl dark:bg-gray-800 dark:text-white "
             id="msg"
