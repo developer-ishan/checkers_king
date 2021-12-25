@@ -15,7 +15,11 @@ const RequestList = ({ heading }) => {
     socket.on("friend-offline", (friend) => {
       setFriends((old) => {
         const i = friends.indexOf(friend);
-        return [...old.slice(0, i), old.slice(i + 1)];
+        console.log("new array before:", old);
+        // const newArr = [...old.slice(0, i), ...old.slice(i + 1)];
+        const newArr = old.splice(i, 1);
+        console.log("new array:", newArr);
+        return newArr;
       });
     });
     return () => {
@@ -42,19 +46,16 @@ const RequestList = ({ heading }) => {
             data-intro="you can click on the name to see more info"
           >
             <img
-              src="/images/default.png"
+              src={f.photo}
               alt="user-1"
               className="w-12 h-12 rounded-full"
             />
             <div className="text-sm">
               <span className="block font-semibold">{f.username}</span>
-              <span className="block text-xs font-light text-gray-700 dark:text-white">
-                Internation grand master
-              </span>
             </div>
             <a
               href="#"
-              className="self-start block px-2 py-px mt-1 text-xs font-semibold tracking-wide uppercase border border-gray-400 rounded-full hover:bg-indigo-400 hover:text-white hover:border-transparent"
+              className="block px-2 py-px mt-1 text-xs font-semibold tracking-wide uppercase border border-gray-400 rounded-full hover:bg-indigo-400 hover:text-white hover:border-transparent"
             >
               invite
             </a>
