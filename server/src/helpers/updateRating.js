@@ -1,4 +1,4 @@
-const {User} = require("../models/User");
+const User = require("../models/User");
 const { pow, round } = Math;
 const K = 30;
 const Probability = (rating1, rating2) => {

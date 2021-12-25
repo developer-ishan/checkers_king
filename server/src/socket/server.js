@@ -41,7 +41,7 @@ exports.SocketServer = (io) => {
 
     /* ---------------------------------- Check For Multiple Devices ----------------------------------*/
     const addedUser = await addUserToList(socket, socket.handshake.query.token);
-    if (!addedUser) {
+    if (addedUser === false) {
       console.log("User already online... disconnecting!!");
       emitUserError(
         socket,
@@ -51,6 +51,14 @@ exports.SocketServer = (io) => {
         ""
       );
       socket.disconnect();
+    } else if (!addedUser) {
+      emitUserError(
+        socket,
+        "Invalid Credentials!!",
+        "You existance is invalid!!",
+        "Close",
+        "/"
+      );
     } else {
       if (!addedUser.isGuest) emitMyInfoToFriends(io, socket, addedUser);
     }

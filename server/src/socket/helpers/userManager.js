@@ -69,10 +69,15 @@ const isUserAlreadyOnline = (userId) => {
 // adding user to the list of online people on connect
 const addUserToList = async (socket, token) => {
   if (isUserAlreadyOnline(getUserIdWithToken(token))) return false;
-  const userDetails = await getUserDetailsWithToken(token);
-  const { userId, username, isGuest, photo } = userDetails;
-  users.push({ userId, username, photo, isGuest, id: socket.id });
-  return { userId, username, photo, isGuest, id: socket.id };
+  try {
+    const userDetails = await getUserDetailsWithToken(token);
+    if (!userDetails) return userDetails;
+    const { userId, username, isGuest, photo } = userDetails;
+    users.push({ userId, username, photo, isGuest, id: socket.id });
+    return { userId, username, photo, isGuest, id: socket.id };
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // removing user to the list of online people on disconnect
