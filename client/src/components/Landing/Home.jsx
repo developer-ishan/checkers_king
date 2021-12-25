@@ -59,6 +59,11 @@ const Home = ({ games, setGames }) => {
     socket.emit("join-game", onGoingGameDetails.id, token);
     history.push("/game");
   };
+  const quitAlreadyRunningGame = () => {
+    console.log("quit from snackbar");
+    socket.emit("quit-game");
+    setSnackBarContent("");
+  };
   const onClosingMultipleDeviceDetectedModal = () => {
     const id = getUserIdentification();
     //if user is guest we cannot do anything
@@ -80,6 +85,8 @@ const Home = ({ games, setGames }) => {
           btnText="rejoin"
           btnAction={rejoinPlayerToGame}
           stayOnScreen={true}
+          onClose={quitAlreadyRunningGame}
+          onCloseHint="opponent will be declared as winner"
         />
       )}
       {isMultipleDeviceDetectedModalOpen && (
