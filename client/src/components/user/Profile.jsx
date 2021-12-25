@@ -19,8 +19,8 @@ const Profile = () => {
   ] = useState(null);
   const [previousMatches, setPreviousMatches] = useState([]);
   const [socket, setSocket] = useContext(SocketContext);
-  const [xLabels, setXLabels] = useState([]);
-  const [yLabels, setYLabels] = useState([]);
+  const [xLabels, setXLabels] = useState(["0"]);
+  const [yLabels, setYLabels] = useState([800]);
 
   useEffect(() => {
     socket.on("user-error", (error) => {
@@ -42,6 +42,7 @@ const Profile = () => {
   }, [userId, socket]);
 
   useEffect(() => {
+    console.log("running graph making...");
     let currRating = 800,
       matchNumber = 0;
     let xValues = [];
@@ -62,10 +63,9 @@ const Profile = () => {
         }
       }
     }
-    if (xValues.length > 1) {
-      setXLabels(xValues);
-      setYLabels(yValues);
-    }
+
+    setXLabels(xValues);
+    setYLabels(yValues);
   }, [previousMatches]);
 
   const history = useHistory();
@@ -81,10 +81,6 @@ const Profile = () => {
         history.push("/");
       });
     }
-  };
-
-  const renderRatingChart = () => {
-    return <RatingChart xLabels={xLabels} yLabels={yLabels} />;
   };
 
   return (
@@ -104,9 +100,7 @@ const Profile = () => {
             data-title="player graph"
             data-intro="this show players performance in the past"
           >
-            {previousMatches &&
-              previousMatches.length > 0 &&
-              renderRatingChart()}
+            <RatingChart xLabels={xLabels} yLabels={yLabels} />
           </div>
 
           <div className="col-span-12 lg:col-span-9">
