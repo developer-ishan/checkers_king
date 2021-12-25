@@ -12,11 +12,14 @@ import Test from "./Test";
 import Lobby from "./components/lobby/Lobby";
 import { getUserIdentification } from "./helper/authHelper";
 import { GameSoundContext } from "./context/GameSoundContext";
-
+import ConfirmModal from "./components/modal/ConfirmModal";
+import Modal from "react-modal";
+Modal.setAppElement("#root");
 const App = () => {
   const [socket, setSocket] = useContext(SocketContext);
   const [userState, setUserState] = useContext(UserContext);
   const [games, setGames] = useState([]);
+  const [gameInvites, setGameInvites] = useState([{}]);
   const { isMuted, toggleMute, clickSound } = useContext(GameSoundContext);
 
   // connecting socket-client to the socket server for communication
@@ -30,7 +33,23 @@ const App = () => {
       },
     });
     setSocket(clientSocket);
+    socket &&
+      socket.on("game-invite", (invitersInfo) => {
+        gameInvites.push(invitersInfo);
+      });
+    return () => {
+      socket && socket.off("game-invite");
+    };
   }, [userState.socketReinitialize]);
+  const acceptGameInvite = () => {
+    alert("accepting game invited not implemented");
+  };
+  const rejectGameInvite = () => {
+    console.log("reject invite");
+    setGameInvites((old) => {
+      return [...old.splice(0, 1)];
+    });
+  };
 
   return (
     <>
@@ -63,6 +82,19 @@ const App = () => {
           </Route>
         </Switch>
       </BrowserRouter>
+      {gameInvites.length > 0 && (
+        <ConfirmModal
+          title="game invite"
+          modalState={gameInvites}
+          setModalState={setGameInvites}
+          cbOnAccept={acceptGameInvite}
+          cbOnReject={rejectGameInvite}
+        >
+          <p className="text-center capitalize">
+            someone has invited you to play game
+          </p>
+        </ConfirmModal>
+      )}
       <button
         data-title="SOUND CONTROL"
         data-intro="you can toggle the sound by clicking this button"

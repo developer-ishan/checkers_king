@@ -83,10 +83,6 @@ const Profile = () => {
     }
   };
 
-  const renderRatingChart = () => {
-    return <RatingChart xLabels={xLabels} yLabels={yLabels} />;
-  };
-
   return (
     <div className="mx-auto space-y-3 bg-gray-100 dark:bg-gray-900 max-w-screen-2xl">
       {/*TODO:either set the navbar global or do something of it  */}
@@ -104,9 +100,7 @@ const Profile = () => {
             data-title="player graph"
             data-intro="this show players performance in the past"
           >
-            {previousMatches &&
-              previousMatches.length > 0 &&
-              renderRatingChart()}
+            <RatingChart xLabels={xLabels} yLabels={yLabels} />
           </div>
 
           <div className="col-span-12 lg:col-span-9">

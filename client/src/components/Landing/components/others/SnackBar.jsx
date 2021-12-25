@@ -8,6 +8,8 @@ const SnackBar = ({
   btnAction = undefined,
   showBtn = true,
   stayOnScreen = false,
+  onClose = null,
+  onCloseHint = "close",
 }) => {
   !stayOnScreen &&
     setTimeout(() => {
@@ -17,8 +19,12 @@ const SnackBar = ({
     if (btnAction === undefined) return;
     btnAction();
   };
+  const handleClose = () => {
+    if (onClose) onClose();
+    else setSnackBarContent("");
+  };
   return (
-    <div className="fixed z-50 w-full max-w-xs p-4 text-sm text-black capitalize bg-white border-2 border-indigo-500 rounded shadow-lg top-8 right-10">
+    <div className="fixed z-50 w-full max-w-xs p-4 text-sm text-black capitalize bg-white border-2 border-indigo-500 rounded shadow-lg dark:bg-gray-300 top-8 right-10">
       <div className="flex items-center justify-around">
         {message}
         {showBtn && (
@@ -29,6 +35,13 @@ const SnackBar = ({
             {btnText}
           </button>
         )}
+        <button
+          className="px-2 py-1 text-xs text-white bg-red-500 rounded-full hover:bg-red-600"
+          onClick={handleClose}
+          title={onCloseHint}
+        >
+          x
+        </button>
       </div>
     </div>
   );
