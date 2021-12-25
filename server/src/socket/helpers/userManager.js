@@ -65,6 +65,7 @@ const addUserToList = async (socket, token) => {
 const removeUserFromList = (socketId) => {
   const user = findOnlineUserBySocketId(socketId);
   if (user) users.splice(users.indexOf(user), 1);
+  return user;
 };
 const getOnlineFriends = async (userId) => {
   const onlineUserIds = users.map((u) => u.userId);

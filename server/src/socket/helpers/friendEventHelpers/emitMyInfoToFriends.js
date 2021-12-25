@@ -1,7 +1,6 @@
 const { getOnlineFriends } = require("../userManager");
 const emitMyInfoToFriends = async (io, socket, addedUser) => {
   const onlineFriends = await getOnlineFriends(addedUser.userId);
-  console.log(onlineFriends);
   onlineFriends.forEach((onlineFriend) => {
     io.to(onlineFriend.id).emit("friend-online", [
       {

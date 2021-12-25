@@ -12,9 +12,16 @@ const RequestList = ({ heading }) => {
         return [...old, ...friends];
       });
     });
+    socket.on("friend-offline", (friend) => {
+      setFriends((old) => {
+        const i = friends.indexOf(friend);
+        return [...old.slice(0, i), old.slice(i + 1)];
+      });
+    });
     return () => {
       socket.off("friend-online");
-    }
+      socket.off("friend-offline");
+    };
   }, []);
   return (
     <div>
