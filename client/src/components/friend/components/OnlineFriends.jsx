@@ -16,8 +16,7 @@ const RequestList = ({ heading }) => {
       setFriends((old) => {
         const i = friends.indexOf(friend);
         console.log("new array before:", old);
-        // const newArr = [...old.slice(0, i), ...old.slice(i + 1)];
-        const newArr = [...old.splice(i, 1)];
+        const newArr = [...old.slice(0, i), ...old.slice(i + 1)];
         console.log("new array:", newArr);
         return newArr;
       });

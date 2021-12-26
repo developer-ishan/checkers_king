@@ -66,7 +66,9 @@ const Navbar = () => {
       setAuth(token);
       getMySummary(token)
         .then((data) => {
+          console.log("direct login data", data);
           setUser(data);
+          setUserState({ ...userState, userId: data._id });
         })
         .catch((err) => {
           console.log(err);
@@ -88,10 +90,11 @@ const Navbar = () => {
             setPassword("");
             setLoginLoading(false);
             setIsLoginModalOpen(false);
-            console.log("reloading due to nav");
+            console.log("reloading due to nav", result.userId);
             history.push("/");
             setUserState({
               ...userState,
+              userId: result.userId,
               socketReinitialize: !userState.socketReinitialize,
             });
           });

@@ -37,17 +37,20 @@ const App = () => {
       socket.on("game-invite", (invitersInfo) => {
         gameInvites.push(invitersInfo);
       });
+
     return () => {
       socket && socket.off("game-invite");
     };
   }, [userState.socketReinitialize]);
+
   const acceptGameInvite = () => {
     alert("accepting game invited not implemented");
   };
+
   const rejectGameInvite = () => {
     console.log("reject invite");
     setGameInvites((old) => {
-      return [...old.splice(0, 1)];
+      return [...old.slice(1)];
     });
   };
 

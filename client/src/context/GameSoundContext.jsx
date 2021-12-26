@@ -13,6 +13,7 @@ export const GameSoundProvider = (props) => {
     loseSound: new Audio(`${BASE}/lose.mp3`),
     crownSound: new Audio(`${BASE}/crown.mp3`),
     slideSound: new Audio(`${BASE}/slide.mp3`),
+    notificationSound: new Audio(`${BASE}/notification.mp3`),
   });
   const [isMuted, setIsMuted] = useState(false);
 

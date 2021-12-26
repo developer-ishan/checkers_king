@@ -41,6 +41,7 @@ const FriendshipButton = ({ userId, userName }) => {
             msg={friendship.text}
             userId={userId}
             userName={userName}
+            setStatus={setFriendship}
           />
         );
       case "FRIENDS":

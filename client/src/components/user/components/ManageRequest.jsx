@@ -3,7 +3,7 @@ import { SocketContext } from "../../../context/SocketContext";
 import { isAuthenticated } from "../../../helper/authHelper";
 import ConfirmModal from "../../modal/ConfirmModal";
 
-const ManageRequest = ({ msg, userId, userName }) => {
+const ManageRequest = ({ msg, userId, userName, setStatus }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [socket, setSocket] = useContext(SocketContext);
   const acceptRequest = () => {
@@ -15,9 +15,15 @@ const ManageRequest = ({ msg, userId, userName }) => {
         response: true,
       },
       (resp) => {
-        alert(resp.msg);
+        console.log("accepted request", resp);
+        if (!resp.status) {
+          alert("failed to accept request, try after a refresh");
+          return;
+        }
       }
     );
+    setIsModalOpen(false);
+    setStatus({ status: "FRIENDS" });
   };
   const rejectRequest = () => {
     socket.emit(
@@ -28,9 +34,15 @@ const ManageRequest = ({ msg, userId, userName }) => {
         response: false,
       },
       (resp) => {
-        alert(resp.msg);
+        console.log("accepted request", resp);
+        if (!resp.status) {
+          alert("failed to accept request, try after a refresh");
+          return;
+        }
       }
     );
+    setIsModalOpen(false);
+    setStatus({ status: "ADD FRIEND" });
   };
   return (
     <div>

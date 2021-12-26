@@ -8,23 +8,34 @@ import Modal from "react-modal";
 import introJs from "intro.js";
 import "intro.js/introjs.css";
 import SnackBar from "./components/others/SnackBar";
-import { getUserIdentification, signout } from "../../helper/authHelper";
-import { useHistory } from "react-router-dom";
+import {
+  getUserIdentification,
+  isAuthenticated,
+  signout,
+} from "../../helper/authHelper";
+import { Link, useHistory } from "react-router-dom";
 import ErrorModal from "../modal/ErrorModal";
 import { GameSoundContext } from "../../context/GameSoundContext";
 import OnlineFriends from "../friend/components/OnlineFriends";
 import FindUser from "./components/others/FindUser";
 import GamePosters from "./components/others/GamePosters";
+import { UserContext } from "../../context/UserContext";
+import ConfirmModal from "../modal/ConfirmModal";
+import SmallScreenInfoModal from "../modal/SmallScreenInfoModal";
 Modal.setAppElement("#root");
 const Home = ({ games, setGames }) => {
   const [socket, setSocket] = useContext(SocketContext);
-  const { welcomeSound, isMuted } = useContext(GameSoundContext);
+  const [userState, setUserState] = useContext(UserContext);
+  const { welcomeSound, isMuted, notificationSound } =
+    useContext(GameSoundContext);
   const [snackBarContent, setSnackBarContent] = useState("");
   const [onGoingGameDetails, setOnGoingGameDetails] = useState(null);
   const [
     isMultipleDeviceDetectedModalOpen,
     setMultipleDeviceDetectedModalOpen,
   ] = useState(null);
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [ackFriendRequest, setAckFriendRequest] = useState([]);
   const history = useHistory();
   useEffect(() => {
     // receiving the ongoing games information
@@ -40,6 +51,20 @@ const Home = ({ games, setGames }) => {
       setMultipleDeviceDetectedModalOpen(error);
     });
 
+    socket.on("got-friend-request", ({ userId, username, photo, msg }) => {
+      console.log(`${username} sent friend request`);
+      if (!isMuted) notificationSound.play();
+      setFriendRequests((old) => [...old, { userId, username, photo, msg }]);
+    });
+
+    socket.on("ack-friend-request", ({ userId, username, photo, response }) => {
+      if (!isMuted) notificationSound.play();
+      setAckFriendRequest((old) => [
+        ...old,
+        { userId, username, photo, response },
+      ]);
+    });
+
     introJs()
       .setOptions({
         disableInteraction: true,
@@ -52,6 +77,8 @@ const Home = ({ games, setGames }) => {
       socket.off("games");
       socket.off("ongoing-game");
       socket.on("user-error");
+      socket.off("got-friend-request");
+      socket.off("ack-friend-request");
     };
   }, []);
   const rejoinPlayerToGame = () => {
@@ -64,6 +91,35 @@ const Home = ({ games, setGames }) => {
     socket.emit("quit-game");
     setSnackBarContent("");
   };
+  const responseToFriendRequest = (decision, id) => {
+    console.log("response to friend request", decision);
+    //removing the first request from the request array
+    //as the user took the action, no more need to show it
+
+    socket.emit(
+      "respond-friend-request",
+      {
+        token: isAuthenticated(),
+        senderId: id,
+        response: decision,
+      },
+      (resp) => {
+        alert(resp.msg);
+      }
+    );
+    setFriendRequests((old) => {
+      return [...old.slice(1)];
+    });
+  };
+  const ignoreFriendRequest = () => {
+    console.log("friend request ignored by user");
+    //removing the first request from the request array
+    //as the user ignored it
+    setFriendRequests((old) => {
+      return [...old.slice(1)];
+    });
+  };
+
   const onClosingMultipleDeviceDetectedModal = () => {
     const id = getUserIdentification();
     //if user is guest we cannot do anything
@@ -107,6 +163,57 @@ const Home = ({ games, setGames }) => {
           </p>
         </SmallScreenInfoModal>
         */
+      )}
+
+      {/* modal showing received friend request */}
+      {friendRequests.length > 0 && (
+        <ConfirmModal
+          title="friend Request"
+          modalState={friendRequests}
+          setModalState={setFriendRequests}
+          cbOnAccept={() =>
+            responseToFriendRequest(true, friendRequests[0].userId)
+          }
+          cbOnReject={() =>
+            responseToFriendRequest(false, friendRequests[0].userId)
+          }
+          cbOnRequestClose={() => ignoreFriendRequest(friendRequests[0].userId)}
+        >
+          <p className="text-center capitalize">
+            <strong>
+              <Link to={`/user/${friendRequests[0].userId}`}>
+                {friendRequests[0].username}
+              </Link>
+            </strong>{" "}
+            has sent you friend request
+          </p>
+          <p className="p-2 mt-1 text-center capitalize bg-indigo-300 rounded-lg dark:bg-gray-600">
+            {friendRequests[0].msg}
+          </p>
+        </ConfirmModal>
+      )}
+
+      {/* modal for friendrequest response : accepted or rejected */}
+      {ackFriendRequest.length > 0 && (
+        <SmallScreenInfoModal
+          title="notification"
+          modalState={ackFriendRequest}
+          setModalState={ackFriendRequest}
+          cbOnRequestClose={() =>
+            setAckFriendRequest((old) => [...old.slice(1)])
+          }
+        >
+          <p className="p-2 text-center capitalize">
+            <strong>
+              <Link to={`/user/${ackFriendRequest[0].userId}`}>
+                {ackFriendRequest[0].username}
+              </Link>
+            </strong>
+            {ackFriendRequest[0].response
+              ? " has accepted you friend reques"
+              : " has reject you friend request"}
+          </p>
+        </SmallScreenInfoModal>
       )}
       <Navbar />
       <div className="py-4">

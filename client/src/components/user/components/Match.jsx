@@ -57,7 +57,7 @@ const Match = ({
             </>
           )}
 
-          {self && self.color !== winner && (
+          {self && self.color !== winner && winner !== "Draw" && (
             <>
               <h1 className="text-xl font-bold tracking-tight text-red-500 ">
                 -{Math.abs(self.ratingChange)}
@@ -71,7 +71,7 @@ const Match = ({
             </>
           )}
 
-          {winner === "Draw" && (
+          {self && winner === "Draw" && (
             <>
               <h1 className="text-xl font-bold tracking-tight text-yellow-500 ">
                 {self.ratingChange}
