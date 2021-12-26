@@ -47,7 +47,6 @@ exports.getGames = () => {
 // returns a game where the user with token belongs
 exports.getGameByUserId = (userId) => {
   return games.find((game) => {
-    console.log(`for ${game.id} players :${game.players}`);
     return game.players.find((p) => p.id.toString() === userId.toString());
   });
 };
@@ -236,6 +235,12 @@ exports.getColorOfPlayer = ({ player }) => {
 // ends the game : removes the game object from the games array & saves it into the db
 exports.endGame = async ({ player, winner }) => {
   const game = getGameForPlayer(player);
+  if (!game.isBot && game.players.length < 2) {
+    console.log("user abandoned the game...");
+    games.splice(games.indexOf(game), 1);
+    return game;
+  }
+
   if (game) {
     // handles condition for two different players
     if (game.isBot === false) {
@@ -245,7 +250,6 @@ exports.endGame = async ({ player, winner }) => {
         game.players[0].color === winner ? game.players[0] : game.players[1];
       let p2 = p1 === game.players[0] ? game.players[1] : game.players[0];
 
-      let isDraw = winner === "Draw" ? true : false;
       await saveMatch(
         p1,
         p2,

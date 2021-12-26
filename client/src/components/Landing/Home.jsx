@@ -15,10 +15,13 @@ import { GameSoundContext } from "../../context/GameSoundContext";
 import OnlineFriends from "../friend/components/OnlineFriends";
 import FindUser from "./components/others/FindUser";
 import GamePosters from "./components/others/GamePosters";
+import { UserContext } from "../../context/UserContext";
+
 Modal.setAppElement("#root");
 const Home = ({ games, setGames }) => {
   const [socket, setSocket] = useContext(SocketContext);
   const { welcomeSound, isMuted } = useContext(GameSoundContext);
+  const [userState, setUserState] = useContext(UserContext);
   const [snackBarContent, setSnackBarContent] = useState("");
   const [onGoingGameDetails, setOnGoingGameDetails] = useState(null);
   const [
@@ -26,7 +29,9 @@ const Home = ({ games, setGames }) => {
     setMultipleDeviceDetectedModalOpen,
   ] = useState(null);
   const history = useHistory();
+
   useEffect(() => {
+    console.log("home events mounted...");
     // receiving the ongoing games information
     socket.on("games", (games) => {
       setGames(games);
@@ -39,6 +44,14 @@ const Home = ({ games, setGames }) => {
     socket.on("user-error", (error) => {
       setMultipleDeviceDetectedModalOpen(error);
     });
+    socket.on("disconnect", () => {
+      setMultipleDeviceDetectedModalOpen({
+        title: "Multiple Devices/tabs Detected!!",
+        msg: "Attention! you can connect 1 device only, close all other connections & retry!!",
+        buttonText: "Close",
+        redirectTo: "/",
+      });
+    });
 
     introJs()
       .setOptions({
@@ -46,14 +59,14 @@ const Home = ({ games, setGames }) => {
       })
       .addHints();
     if (!isMuted) welcomeSound.play();
-    console.log("mounded");
     return () => {
-      console.log("home unmounted...");
+      console.log("home-events unomounting...");
       socket.off("games");
       socket.off("ongoing-game");
-      socket.on("user-error");
+      socket.off("user-error");
     };
   }, []);
+
   const rejoinPlayerToGame = () => {
     const token = getUserIdentification();
     socket.emit("join-game", onGoingGameDetails.id, token);
@@ -73,6 +86,10 @@ const Home = ({ games, setGames }) => {
       setMultipleDeviceDetectedModalOpen(null);
       signout(() => {
         history.push("/");
+        setUserState({
+          ...userState,
+          socketReinitialize: !userState.socketReinitialize,
+        });
       });
     }
   };
@@ -108,7 +125,7 @@ const Home = ({ games, setGames }) => {
         </SmallScreenInfoModal>
         */
       )}
-      <Navbar />
+      <Navbar socket={socket} />
       <div className="py-4">
         {/* ###################### grid 1 start ################################# */}
         <div className="grid grid-cols-12 mx-auto max-w-screen-2xl">

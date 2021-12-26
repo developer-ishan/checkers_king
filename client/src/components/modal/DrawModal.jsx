@@ -28,7 +28,7 @@ const DrawModal = ({ modalState, setModalState, socket, gameId }) => {
       cbOnRequestClose={modalClosedWithoutChoosingAnyOption}
       title="opponent offered draw"
     >
-      <div className="flex flex-col items-center justify-around p-2 md:flex-row ">
+      <div className="flex flex-col items-center justify-around p-2 md:flex-row capitalize">
         <button
           className="w-full max-w-xs px-4 py-2 m-2 text-xs font-bold text-white uppercase transition-all duration-150 bg-indigo-500 rounded shadow outline-none active:bg-red-600 hover:shadow-md hover:bg-indigo-600 focus:outline-none ease"
           onClick={() => acceptDraw()}

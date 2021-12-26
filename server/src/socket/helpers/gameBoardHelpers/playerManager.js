@@ -26,6 +26,15 @@ const getGamePlayersWithGameId = (game) => {
       photo: player.photo,
     })
   );
+
+  if (game.isBot) {
+    players.push({
+      id: `Bot_Lvl${game.botLevel}`,
+      color: players[0].color === "Red" ? "Black" : "Red",
+      username: `Bot_Lvl${game.botLevel}`,
+      photo: "/images/bot.png",
+    });
+  }
   return players;
 };
 

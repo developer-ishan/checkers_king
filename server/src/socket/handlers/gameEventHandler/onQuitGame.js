@@ -16,8 +16,8 @@ module.exports =
 
     const endedGame = await endGame({ player: socket, winner });
     if (endedGame === null) return;
-    const roomId = endedGame.id;
 
+    const roomId = endedGame.id;
     // emitting events to respective rooms
     io.to(roomId).emit("end-game", winner);
     await resetInGameStatus(io, endedGame);

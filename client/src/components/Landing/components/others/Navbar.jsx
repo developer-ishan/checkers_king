@@ -18,7 +18,7 @@ import LoginSignUpForm from "./LoginSignUpForm";
 Modal.setAppElement("#root");
 
 require("dotenv").config();
-const Navbar = () => {
+const Navbar = ({ socket }) => {
   const [userState, setUserState] = useContext(UserContext);
   const { clickSound, selectSound, isMuted } = useContext(GameSoundContext);
   const history = useHistory();
@@ -57,7 +57,7 @@ const Navbar = () => {
         setDarkMode(false);
       }
     }
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     let token = isAuthenticated();
@@ -71,8 +71,8 @@ const Navbar = () => {
         .catch((err) => {
           console.log(err);
         });
-    }
-  }, [auth]);
+    } else setAuth(false);
+  }, [socket]);
 
   const handleLogIn = (e) => {
     e.preventDefault();

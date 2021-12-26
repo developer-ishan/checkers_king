@@ -20,6 +20,7 @@ const Game = () => {
   const [socket, setSocket] = useContext(SocketContext);
   const { loseSound, winSound, isMuted } = useContext(GameSoundContext);
   const [game, setGame] = useState(null);
+  const [headCount, setHeadCount] = useState(0);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(true);
   const [drawDecision, setDrawDecision] = useState(null);
@@ -122,11 +123,14 @@ const Game = () => {
     });
 
     socket.on("end-game", (winner) => {
-      console.log("winner of end-game:", winner, color);
+      console.log("winner of end-game:", winner);
       console.log("playersinfo inside end-game game", playersInfo);
-      console.log("color in end-agme", color);
       let msgToUser, title;
-      if (!color) {
+
+      if (!opponentStatus) {
+        msgToUser = "See ya next time...";
+        title = "Game Abandoned!";
+      } else if (!color) {
         // let user;
         // user = winner === "Red" ? redPlayerInfo() : blackPlayerInfo();
 
@@ -177,6 +181,10 @@ const Game = () => {
       setMultipleDeviceDetectedModalOpen(error);
     });
 
+    socket.on("head-count", (roomHeadCount) => {
+      setHeadCount(roomHeadCount);
+    });
+
     return () => {
       console.log("removing listeners...");
       socket.off("game-status");
@@ -184,6 +192,7 @@ const Game = () => {
       socket.off("color");
       socket.off("winner");
       socket.off("end-game");
+      socket.off("head-count");
 
       socket.off("draw-offered");
       socket.off("draw-accepted");
@@ -218,7 +227,7 @@ const Game = () => {
   };
   const abandonGame = () => {
     // call a socket to tell to abandon the game
-    alert("yet to be implemented");
+    socket.emit("quit-game");
   };
   const onClosingMultipleDeviceDetectedModal = () => {
     const id = getUserIdentification();
@@ -360,6 +369,7 @@ const Game = () => {
             color={color}
           />
           <div className="grid grid-cols-12 px-2 mt-4">
+            <p>Head Count : {headCount}</p>
             {/* actual board where game is played */}
             <div className={boardClass()}>
               <div className="flex flex-col items-center">

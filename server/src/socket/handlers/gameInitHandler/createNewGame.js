@@ -56,7 +56,6 @@ module.exports =
       return;
     }
     // joining the room with name similar to the game id
-    console.log("emitting events...");
     socket.join(newGame.id);
     socket.emit("game-status", {
       id: newGame.id,
@@ -64,7 +63,7 @@ module.exports =
       turn: newGame.turn,
     });
     socket.emit("color", color);
-
+    socket.emit("head-count", 1);
     const user = findOnlineUserByToken(token);
     if (isBot) user.status = "IN_GAME";
     else user.status = "IN_LOBBY";
