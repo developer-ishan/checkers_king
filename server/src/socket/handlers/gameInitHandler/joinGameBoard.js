@@ -8,6 +8,7 @@ const {
   getGamePlayersWithGameId,
   rejoinGameWithGameId,
   isUserAlreadyInGame,
+  setInGameStatus,
 } = require("../../helpers/gameBoardHelpers/playerManager");
 
 module.exports =
@@ -61,6 +62,7 @@ module.exports =
       io.to(game.id).emit("players-info", getGamePlayersWithGameId(game));
       socket.emit("color", color);
       socket.to(gameId).emit("opponent-status", "ready");
+      await setInGameStatus(io, game);
     } else socket.emit("players-info", getGamePlayersWithGameId(game));
 
     sendGameStatus(io, gameId);

@@ -28,7 +28,8 @@ const getUserDetailsWithToken = async (token) => {
       userId: token,
       username: token,
       isGuest: true,
-      photo: "default.png",
+      photo: "http://localhost:3000/images/default.png",
+      status: "IDLE",
     };
   } else if (token) {
     // REGISTERED user
@@ -41,6 +42,7 @@ const getUserDetailsWithToken = async (token) => {
         username: userProfile.username,
         photo: filterPhoto(userProfile),
         isGuest: false,
+        status: "IDLE",
       };
     } catch (err) {
       console.log(err);
@@ -58,6 +60,11 @@ const findOnlineUserBySocketId = (socketId) => {
 // finding if a user with userId is online
 const findOnlineUserById = (userId) => {
   return users.find((user) => user.userId === userId);
+};
+
+const findOnlineUserByToken = (token) => {
+  const userId = getUserIdWithToken(token);
+  return findOnlineUserById(userId);
 };
 
 // checking if a user is already online
@@ -86,8 +93,11 @@ const removeUserFromList = (socketId) => {
   if (user) users.splice(users.indexOf(user), 1);
   return user;
 };
+
 const getOnlineFriends = async (userId) => {
-  const onlineUserIds = users.map((u) => u.userId);
+  const onlineUserIds = users.map((u) => {
+    if (!u.isGuest) return u.userId;
+  });
   const friends_doc = await Friend.find(
     { requester: userId, status: "FRIENDS", recipient: { $in: onlineUserIds } },
     "recipient"
@@ -99,10 +109,13 @@ const getOnlineFriends = async (userId) => {
   });
   return friends;
 };
+
 module.exports = {
   getUserDetailsWithToken,
   addUserToList,
   removeUserFromList,
   findOnlineUserById,
   getOnlineFriends,
+  getUserIdWithToken,
+  findOnlineUserByToken,
 };

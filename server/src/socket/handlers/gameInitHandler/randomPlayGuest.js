@@ -1,4 +1,7 @@
 const {
+  setInGameStatus,
+} = require("../../helpers/gameBoardHelpers/playerManager");
+const {
   randomPlayWithGuest,
 } = require("../../helpers/gameBoardHelpers/randomPlayManager");
 const {
@@ -11,6 +14,7 @@ module.exports =
   async (guestId, mandatoryMoves) => {
     console.log("Creating guest random game");
     const randomGame = await randomPlayWithGuest({
+      io,
       player: socket,
       guestId,
       mandatoryMoves,
@@ -21,6 +25,7 @@ module.exports =
         player.socket.join(randomGame.id);
         io.to(player.socket.id).emit("color", player.color);
       });
+      await setInGameStatus(io, randomGame);
 
       sendGameStatus(io, randomGame.id);
       sendAllGames(io);

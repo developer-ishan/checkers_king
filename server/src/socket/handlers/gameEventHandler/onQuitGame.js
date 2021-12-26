@@ -2,6 +2,9 @@ const {
   endGame,
   getColorOfPlayer,
 } = require("../../helpers/gameBoardHelpers/gamePlayManager");
+const {
+  resetInGameStatus,
+} = require("../../helpers/gameBoardHelpers/playerManager");
 const { sendAllGames } = require("../../helpers/gameStatusHelper");
 
 // user calling this function loses the game
@@ -17,6 +20,7 @@ module.exports =
 
     // emitting events to respective rooms
     io.to(roomId).emit("end-game", winner);
+    await resetInGameStatus(io, endedGame);
     // removing all the users of this room
     io.socketsLeave(roomId);
     sendAllGames(io);

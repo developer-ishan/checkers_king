@@ -45,20 +45,7 @@ exports.getGames = () => {
 };
 
 // returns a game where the user with token belongs
-exports.getGameByUserId = async (token) => {
-  let userId = null;
-
-  if (token.startsWith("guest")) userId = token;
-  else if (token) {
-    try {
-      var decoded = jwt.verify(token, JWT_SECRET).sub;
-      const user = await User.findById(decoded);
-      if (user) userId = user._id;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
+exports.getGameByUserId = (userId) => {
   return games.find((game) => {
     console.log(`for ${game.id} players :${game.players}`);
     return game.players.find((p) => p.id.toString() === userId.toString());

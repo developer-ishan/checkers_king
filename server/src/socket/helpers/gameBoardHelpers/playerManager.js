@@ -1,6 +1,10 @@
 const { getGamesList, getGameByID } = require("./gamePlayManager");
-const { getUserDetailsWithToken } = require("../userManager");
+const {
+  getUserDetailsWithToken,
+  findOnlineUserById,
+} = require("../userManager");
 const { parsePieceMove } = require("../gameHelper");
+const { sendUserStatus } = require("../userStatusHelper");
 
 // find a game with a player with a particular id
 const findPlayersWithID = (playerId) => {
@@ -41,6 +45,22 @@ const isUserAlreadyInGame = async (token) => {
   return userGame;
 };
 
+const setInGameStatus = async (io, game) => {
+  game.players.forEach(async (player) => {
+    const user = findOnlineUserById(player.id);
+    user.status = "IN_GAME";
+    await sendUserStatus(io, user.userId);
+  });
+};
+
+const resetInGameStatus = async (io, game) => {
+  game.players.forEach(async (player) => {
+    const user = findOnlineUserById(player.id);
+    user.status = "IDLE";
+    await sendUserStatus(io, user.userId);
+  });
+};
+
 // rejoining a player into an existing game
 const rejoinGameWithGameId = async (socket, gameId, token) => {
   const existingGame = await isUserAlreadyInGame(token);
@@ -76,4 +96,6 @@ module.exports = {
   getGamePlayersWithGameId,
   getGameWithGameId,
   rejoinGameWithGameId,
+  setInGameStatus,
+  resetInGameStatus,
 };
