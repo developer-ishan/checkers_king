@@ -19,8 +19,8 @@ const Profile = () => {
   ] = useState(null);
   const [previousMatches, setPreviousMatches] = useState([]);
   const [socket, setSocket] = useContext(SocketContext);
-  const [xLabels, setXLabels] = useState([]);
-  const [yLabels, setYLabels] = useState([]);
+  const [xLabels, setXLabels] = useState(["0"]);
+  const [yLabels, setYLabels] = useState([800]);
 
   useEffect(() => {
     socket.on("user-error", (error) => {
@@ -42,6 +42,7 @@ const Profile = () => {
   }, [userId, socket]);
 
   useEffect(() => {
+    console.log("running graph making...");
     let currRating = 800,
       matchNumber = 0;
     let xValues = [];
@@ -50,7 +51,10 @@ const Profile = () => {
     yValues.push(currRating);
 
     for (let itr = previousMatches.length - 1; itr >= 0; --itr) {
-      if (previousMatches[itr].players.length <= 2) {
+      if (
+        previousMatches[itr].players.length === 2 &&
+        previousMatches[itr].isRated
+      ) {
         matchNumber++;
         xValues.push(matchNumber.toString());
         if (previousMatches[itr].players[0].id === userId) {
@@ -62,10 +66,9 @@ const Profile = () => {
         }
       }
     }
-    if (xValues.length > 1) {
-      setXLabels(xValues);
-      setYLabels(yValues);
-    }
+
+    setXLabels(xValues);
+    setYLabels(yValues);
   }, [previousMatches]);
 
   const history = useHistory();

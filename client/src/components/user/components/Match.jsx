@@ -2,7 +2,15 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { GameSoundContext } from "../../../context/GameSoundContext";
 
-const Match = ({ matchId, players, userId }) => {
+const Match = ({
+  matchId,
+  players,
+  userId,
+  isRated,
+  mandatoryMoves,
+  winner,
+  botLevel,
+}) => {
   const [self, setSelf] = useState(null);
   const [opponent, setOpponent] = useState(null);
   const { clickSound, isMuted } = useContext(GameSoundContext);
@@ -21,7 +29,7 @@ const Match = ({ matchId, players, userId }) => {
     else
       setOpponent({
         photo: "/images/bot.png",
-        userName: "bot",
+        userName: "Bot_Lvl" + botLevel.toString(),
       });
   }, []);
 
@@ -35,7 +43,7 @@ const Match = ({ matchId, players, userId }) => {
     <div className="p-2 space-y-2 bg-yellow-300 rounded shadow-xl dark:bg-gray-600">
       <div className="flex flex-col items-center justify-around space-y-5 ">
         <div className="relative flex items-center justify-between w-full p-2 bg-yellow-100 rounded-lg shadow-xl dark:bg-gray-500">
-          {self && self.ratingChange > 0 && (
+          {self && self.color === winner && (
             <>
               <h1 className="text-xl font-bold tracking-tight text-green-500 ">
                 +{self.ratingChange}
@@ -49,10 +57,10 @@ const Match = ({ matchId, players, userId }) => {
             </>
           )}
 
-          {self && self.ratingChange < 0 && (
+          {self && self.color !== winner && (
             <>
               <h1 className="text-xl font-bold tracking-tight text-red-500 ">
-                {self.ratingChange}
+                -{Math.abs(self.ratingChange)}
               </h1>
               <h1
                 className="absolute text-xl font-bold tracking-tight text-red-500 uppercase transform md:text-3xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
@@ -63,7 +71,7 @@ const Match = ({ matchId, players, userId }) => {
             </>
           )}
 
-          {self && self.ratingChange === 0 && (
+          {winner === "Draw" && (
             <>
               <h1 className="text-xl font-bold tracking-tight text-yellow-500 ">
                 {self.ratingChange}
@@ -84,7 +92,7 @@ const Match = ({ matchId, players, userId }) => {
               if (!isMuted) clickSound.play();
             }}
           >
-            watch replay
+            Watch Replay
           </Link>
         </div>
         <div className="flex flex-row items-center justify-around w-full">
@@ -100,12 +108,25 @@ const Match = ({ matchId, players, userId }) => {
               </Link>
             </div>
           )}
-          <h1
-            className="flex-shrink-0 text-2xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
-            style={textStyle}
-          >
-            vs
-          </h1>
+          <div>
+            <h1
+              className="flex-shrink-0 text-2xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
+              style={textStyle}
+            >
+              vs
+            </h1>
+            <h3 className="block text-white font-bold">
+              {isRated ? <p>Rated</p> : <p>Unrated</p>}
+            </h3>
+            <h3 className="block text-white font-bold">
+              Force Jumps :{" "}
+              {mandatoryMoves ? (
+                <span className="text-green-500">ON</span>
+              ) : (
+                <span className="text-red-500">OFF</span>
+              )}
+            </h3>
+          </div>
           {opponent && (
             <div className="flex flex-col items-center flex-grow max-w-sm">
               <img
@@ -113,9 +134,16 @@ const Match = ({ matchId, players, userId }) => {
                 alt="player profile"
                 className="w-10 h-10 rounded-full sm:w-16 sm:h-16 md:w-32 md:h-32 lg:w-40 lg:h-40"
               />
-              <Link to={`/user/${opponent.id}`} className="hover:text-blue-500">
-                {opponent.userName}
-              </Link>
+              {botLevel === -1 ? (
+                <Link
+                  to={`/user/${opponent.id}`}
+                  className="hover:text-blue-500"
+                >
+                  {opponent.userName}
+                </Link>
+              ) : (
+                <p className="hover:text-blue-500">{opponent.userName}</p>
+              )}
             </div>
           )}
         </div>
@@ -124,7 +152,7 @@ const Match = ({ matchId, players, userId }) => {
         to={`/replay/${matchId}`}
         className="block w-full p-2 mx-auto font-medium text-center text-white bg-indigo-500 rounded shadow md:hidden hover:bg-purple-700"
       >
-        watch replay
+        Watch Replay
       </Link>
     </div>
   );

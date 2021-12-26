@@ -39,7 +39,13 @@ const Replay = () => {
       {chats && data ? (
         <>
           <Navbar />
-          <Board moves={data.moves} playersInfo={data.players} chats={chats} />
+          <Board
+            moves={data.moves}
+            playersInfo={data.players}
+            chats={chats}
+            winner={data.winner}
+            botLevel={data.botLevel}
+          />
         </>
       ) : (
         <Lobby heading="Loading replay" />

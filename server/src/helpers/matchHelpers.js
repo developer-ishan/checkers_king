@@ -21,6 +21,7 @@ const saveMatch = async (
   winner,
   isBot,
   isRated,
+  mandatoryMoves,
   botLevel
 ) => {
   let ratingsUpdate = null;
@@ -31,6 +32,7 @@ const saveMatch = async (
     moves,
     botLevel,
     isRated,
+    mandatoryMoves,
     winner,
     startTime,
     endTime,
