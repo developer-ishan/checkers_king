@@ -2,9 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../../../context/UserContext";
 import { SocketContext } from "../../../context/SocketContext";
+import { isAuthenticated } from "../../../helper/authHelper";
+import InviteButton from "./InviteButton";
 
 const RequestList = ({ heading }) => {
   const [socket, setSocket] = useContext(SocketContext);
+  const [userState, setUserState] = useContext(UserContext);
   const [friends, setFriends] = useState([]);
   useEffect(() => {
     socket.on("friend-online", (friends) => {
@@ -53,12 +56,7 @@ const RequestList = ({ heading }) => {
             <div className="text-sm">
               <span className="block font-semibold">{f.username}</span>
             </div>
-            <a
-              href="#"
-              className="block px-2 py-px mt-1 text-xs font-semibold tracking-wide uppercase border border-gray-400 rounded-full hover:bg-indigo-400 hover:text-white hover:border-transparent"
-            >
-              invite
-            </a>
+            <InviteButton friend = {f}/>
           </div>
         ))}
         {friends.length === 0 && (

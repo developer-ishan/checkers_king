@@ -36,7 +36,15 @@ const getGameWithGameId = (gameId) => {
 // checking if a user is already present in an ongoing game
 const isUserAlreadyInGame = async (token) => {
   const userDetails = await getUserDetailsWithToken(token);
+  if(!userDetails)
+    return [];
   const userGame = findPlayersWithID(userDetails.userId);
+  if (userGame) return userGame.id;
+  return userGame;
+};
+
+const isUserAlreadyInGameUserId = async (userId) => {
+  const userGame = findPlayersWithID(userId);
   if (userGame) return userGame.id;
   return userGame;
 };
@@ -76,4 +84,5 @@ module.exports = {
   getGamePlayersWithGameId,
   getGameWithGameId,
   rejoinGameWithGameId,
+  isUserAlreadyInGameUserId
 };

@@ -87,7 +87,8 @@ const removeUserFromList = (socketId) => {
   return user;
 };
 const getOnlineFriends = async (userId) => {
-  const onlineUserIds = users.map((u) => u.userId);
+  const onlineUsers = users.filter((u) => !u.isGuest);
+  const onlineUserIds = onlineUsers.map((u) => u.userId);
   const friends_doc = await Friend.find(
     { requester: userId, status: "FRIENDS", recipient: { $in: onlineUserIds } },
     "recipient"

@@ -76,7 +76,7 @@ const Game = () => {
     socket.on("playing-with-bot", (botLevel) => setBotLevel(botLevel));
 
     socket.on("players-info", (players) => {
-      console.log("setting players info");
+      console.log("setting players info", players);
       setPlayersInfo(players);
     });
 

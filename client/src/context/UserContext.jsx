@@ -7,6 +7,11 @@ export const UserProvider = (props) => {
   const [userState, setUserState] = useState({
     photo: `${BASE}/public/dp/default.png`,
     requests: [],
+    invites: [],
+    /**
+     * {userId, username, photo}
+     * to be reset if user accepts any invite 
+    */
     socketReinitialize: false,
   });
 

@@ -90,9 +90,11 @@ const Navbar = () => {
             setIsLoginModalOpen(false);
             console.log("reloading due to nav");
             history.push("/");
-            setUserState({
-              ...userState,
-              socketReinitialize: !userState.socketReinitialize,
+            setUserState((prevState) => {
+              return {
+                ...prevState,
+                socketReinitialize: !userState.socketReinitialize,
+              };
             });
           });
         } else {
@@ -262,9 +264,11 @@ const Navbar = () => {
                       f_photo: undefined,
                       g_photo: undefined,
                     });
-                    setUserState({
-                      ...userState,
-                      socketReinitialize: !userState.socketReinitialize,
+                    setUserState((prevState) => {
+                      return {
+                        ...prevState,
+                        socketReinitialize: !userState.socketReinitialize,
+                      };
                     });
                     history.push("/");
                   });
