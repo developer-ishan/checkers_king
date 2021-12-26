@@ -144,7 +144,11 @@ const UserInfo = ({ userId, matchesCount }) => {
           fileSelector.current.files.length !== 0 && (
             <DpEdit state={newDp} setState={setNewDp} />
           )}
-        {canEdit() ? <ManageFriends /> : <FriendshipButton userId={userId} />}
+        {canEdit() ? (
+          <ManageFriends />
+        ) : (
+          <FriendshipButton userId={userId} userName={userName} />
+        )}
       </div>
       <div className="flex-wrap items-center justify-around col-span-12 space-y-2 text-white sm:text-center lg:text-left sm:flex lg:block sm:col-span-8 lg:col-span-12">
         <div className="">
