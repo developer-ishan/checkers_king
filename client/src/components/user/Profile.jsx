@@ -97,7 +97,7 @@ const Profile = () => {
 
         <div className="col-span-12 lg:col-span-9">
           <div
-            data-title="player graph"
+            data-title="PLAYER GRAPH"
             data-intro="this show players performance in the past"
           >
             <RatingChart xLabels={xLabels} yLabels={yLabels} />

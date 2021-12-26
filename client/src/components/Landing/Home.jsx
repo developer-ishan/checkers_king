@@ -96,6 +96,17 @@ const Home = ({ games, setGames }) => {
           error={isMultipleDeviceDetectedModalOpen}
           cbOnRequestClose={onClosingMultipleDeviceDetectedModal}
         />
+        /*
+        <SmallScreenInfoModal
+          modalState={isMultipleDeviceDetectedModalOpen}
+          setModalState={setMultipleDeviceDetectedModalOpen}
+          title={isMultipleDeviceDetectedModalOpen.title}
+        >
+          <p className="max-w-sm p-4 mx-auto text-center">
+            {isMultipleDeviceDetectedModalOpen.msg}
+          </p>
+        </SmallScreenInfoModal>
+        */
       )}
       <Navbar />
       <div className="py-4">
@@ -118,7 +129,11 @@ const Home = ({ games, setGames }) => {
 
         <div className="grid grid-cols-12 pt-4 mx-auto space-y-4 max-w-screen-2xl lg:space-y-0">
           {/* left side */}
-          <div className="col-span-12 col-start-1 px-5 lg:col-span-8 ">
+          <div
+            className="col-span-12 col-start-1 px-5 lg:col-span-8 "
+            data-title="EVENT PROMOTION"
+            data-intro="here you can see ongoing events"
+          >
             <GamePosters />
           </div>
 

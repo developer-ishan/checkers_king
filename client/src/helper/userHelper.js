@@ -95,3 +95,18 @@ export const getChatsByMatchId = (matchId) => {
     .then((response) => response.json())
     .catch((error) => console.log("error", error));
 };
+export const getFriendShipStatus = (userId) => {
+  const token = isAuthenticated();
+  let myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  let requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  return fetch(`${BASE}/api/friend/status/${userId}`, requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};

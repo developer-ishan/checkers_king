@@ -19,7 +19,7 @@ const App = () => {
   const [socket, setSocket] = useContext(SocketContext);
   const [userState, setUserState] = useContext(UserContext);
   const [games, setGames] = useState([]);
-  const [gameInvites, setGameInvites] = useState([{}]);
+  const [gameInvites, setGameInvites] = useState([]);
   const { isMuted, toggleMute, clickSound } = useContext(GameSoundContext);
 
   // connecting socket-client to the socket server for communication
@@ -89,6 +89,7 @@ const App = () => {
           setModalState={setGameInvites}
           cbOnAccept={acceptGameInvite}
           cbOnReject={rejectGameInvite}
+          cbOnRequestClose={rejectGameInvite}
         >
           <p className="text-center capitalize">
             someone has invited you to play game

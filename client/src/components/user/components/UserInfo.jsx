@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import DpEdit from "./DpEdit";
 import BASE from "../../../config";
 import { GameSoundContext } from "../../../context/GameSoundContext";
+import FriendshipButton from "./FriendshipButton";
+import ManageFriends from "./ManageFriends";
 
 const UserInfo = ({ userId, matchesCount }) => {
   const [user, setUser] = useState({ username: "", active: true, photo: "" });
@@ -29,6 +31,7 @@ const UserInfo = ({ userId, matchesCount }) => {
   }, [userId]);
 
   const canEdit = () => {
+    // BUG: change it to some strong validation
     return Cookies.get("userId") === userId;
   };
   const onChangeHandler = (event) => {
@@ -141,12 +144,7 @@ const UserInfo = ({ userId, matchesCount }) => {
           fileSelector.current.files.length !== 0 && (
             <DpEdit state={newDp} setState={setNewDp} />
           )}
-        <button
-          type="button"
-          className="w-full px-4 py-2 mt-2 font-bold text-white capitalize bg-indigo-700 rounded  hover:bg-indigo-800"
-        >
-          add friend
-        </button>
+        {canEdit() ? <ManageFriends /> : <FriendshipButton userId={userId} />}
       </div>
       <div className="flex-wrap items-center justify-around col-span-12 space-y-2 text-white sm:text-center lg:text-left sm:flex lg:block sm:col-span-8 lg:col-span-12">
         <div className="">

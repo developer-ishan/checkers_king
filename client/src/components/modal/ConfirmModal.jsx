@@ -9,6 +9,7 @@ const ConfirmModal = ({
   rejectBtnText = "reject",
   cbOnAccept,
   cbOnReject,
+  cbOnRequestClose,
   children,
 }) => {
   //this function is when no option is chossen
@@ -18,7 +19,7 @@ const ConfirmModal = ({
     <SmallScreenInfoModal
       modalState={modalState}
       setModalState={setModalState}
-      cbOnRequestClose={cbOnReject}
+      cbOnRequestClose={cbOnRequestClose}
       title={title}
     >
       <div className="p-2">{children}</div>

@@ -83,13 +83,17 @@ exports.getFriendShipStatus = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     if (userId) {
-      const status = await Friend.findOne({requester: req.user._id, recipient: userId});
-      return res.json(status);
-    } else{
+      const status = await Friend.findOne({
+        requester: req.user._id,
+        recipient: userId,
+      });
+      if (status) return res.json(status);
+      return res.json({ status: "ADD" });
+    } else {
       return res.status(400).json({
         success: false,
-        msg: "give a user id"
-      })
+        msg: "give a user id",
+      });
     }
   } catch (err) {
     console.log(err);
