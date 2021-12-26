@@ -27,7 +27,7 @@ const SendRequest = ({ userId, setStatus }) => {
         {
           token: token,
           receiverId: userId,
-          text: { msg },
+          text: msg
         },
         (resp) => {
           console.log("sended request", resp);
