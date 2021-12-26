@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { isAuthenticated } from "../../../../helper/authHelper";
 import AutoCompleteInput from "../../../comm/AutoCompleteInput";
 import { Redirect, useHistory } from "react-router-dom";
+import BASE from "../../../../config";
 
 const FindUser = () => {
   const [selected, setSelected] = useState(null);
@@ -26,7 +27,7 @@ const FindUser = () => {
       <div className="grid px-2 py-4 rounded-b-lg place-content-center">
         <div className="space-y-5">
           <AutoCompleteInput
-            url="http://localhost:9500/api/user/search?q="
+            url={`${BASE}/api/user/search?q=`}
             selected={selected}
             setSelected={setSelected}
             placeholder="Type Username..."
