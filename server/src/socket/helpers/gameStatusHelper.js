@@ -17,7 +17,7 @@ exports.sendGameStatus = (io, gameId) => {
     id: game.id,
     board: game.board,
     turn: game.turn,
-    mandatoryMove: game.mandatoryMove,
+    mandatoryMoves: game.mandatoryMoves,
     isRated: game.isRated,
     lastMove,
   });

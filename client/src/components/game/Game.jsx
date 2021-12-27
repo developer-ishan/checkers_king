@@ -57,6 +57,7 @@ const Game = () => {
     });
 
     socket.on("game-status", (game) => {
+      console.log(game);
       setGame(game);
     });
 
