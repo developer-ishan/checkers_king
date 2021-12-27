@@ -26,34 +26,31 @@ const RequestList = ({ heading }) => {
   useEffect(() => {
     socket.on("friend-online", (onlineFriends) => {
       console.log("friend came online...", friends);
-      let oldFriendState = friends;
-      setFriends(handleDistinctMerge(oldFriendState, onlineFriends));
+      setFriends((oldFriendState) =>
+        handleDistinctMerge(oldFriendState, onlineFriends)
+      );
     });
 
-    socket.on("friend-offline", (onlineFriend) => {
-      console.log("offline-friend caught...");
-      let oldFriendState = friends;
-      let offlineFriend = findOnlineFriendWithId(
-        oldFriendState,
-        onlineFriend.userId
-      );
-      if (!offlineFriend) return;
-      oldFriendState.splice(oldFriendState.indexOf(offlineFriend, 1));
-      setFriends(oldFriendState);
+    socket.on("friend-offline", (offlineFriend) => {
+      console.log("offline-friend caught...", offlineFriend);
+      if (offlineFriend) {
+        setFriends((fs) => {
+          return fs.filter((f) => f.userId !== offlineFriend.userId);
+        });
+      }
     });
 
     socket.on("user-status", (userStatus) => {
       console.log("user-status caught");
       console.log(userStatus);
-      let oldFriendState = friends;
-      let newFriendState = findOnlineFriendWithId(
-        oldFriendState,
-        userStatus.id
-      );
-
-      if (!newFriendState) return;
-      newFriendState.status = userStatus.status;
-      setFriends(oldFriendState);
+      if (userStatus)
+        setFriends((fs) => {
+          return fs.map((f) => {
+            if (f.userId === userStatus.id)
+              return { ...f, status: userStatus.status };
+            else return f;
+          });
+        });
     });
 
     return () => {
@@ -89,8 +86,12 @@ const RequestList = ({ heading }) => {
             <div className="text-sm">
               <span className="block font-semibold">{f.username}</span>
             </div>
-            <h2>{f.status}</h2>
-            <InviteButton friend={f} />
+            {/* IDLE IN_GAME IN_LOBBY */}
+            {f.status === "IDLE" ? (
+              <InviteButton friend={f} />
+            ) : (
+              <p>{f.status}</p>
+            )}
           </div>
         ))}
         {friends.length === 0 && (
