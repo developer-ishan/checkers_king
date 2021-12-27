@@ -79,6 +79,19 @@ Format :-
 }
 ```
 
+#### User-Status-Events
+
+```
+1. user-status - {sends the status of online friends or users}
+Format :-
+{
+    userId,
+    status,
+    gameId - {only when user is in game}
+}
+USER STATUS : ["IDLE", "IN_LOBBY", "IN_GAME"]
+```
+
 #### Friend Events
 
 ```
@@ -182,5 +195,56 @@ token
 
 ```
 1. send-friend-request
+Format :-
+{
+    token: "",
+    receiverId: "",
+    text: ""
+}
+
 2. respond-friend-request
+Format :-
+{
+    token: "",
+    senderId: "",
+    response: boolean,
+}
+```
+
+#### Game-Invite-Events
+
+```
+1. friend-game-invite-send
+Format :-
+{
+    {
+        gameOptions: {},
+        token,
+        friend
+    },
+    cb()
+}
+
+2. friend-game-invite-accept
+Format :-
+{
+    {
+        color: "",
+        mandatoryMoves: boolean,
+        isRated: boolean,
+        token: "",
+        friend: ""
+    },
+    cb()
+}
+
+
+3.friend-game-invite-reject
+Format :-
+{
+    {
+        token: "",
+        friend: "",
+    }
+}
 ```
