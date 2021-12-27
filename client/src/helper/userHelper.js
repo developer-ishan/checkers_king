@@ -110,3 +110,48 @@ export const getFriendShipStatus = (userId) => {
     .then((response) => response.json())
     .catch((error) => console.log("error", error));
 };
+export const getAllFriendsOfUser = () => {
+  const token = isAuthenticated();
+  let myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  let requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  return fetch(`${BASE}/api/friend/`, requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};
+export const getAllFriendRequestsToUser = () => {
+  const token = isAuthenticated();
+  let myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  let requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  return fetch(`${BASE}/api/friend/requests`, requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};
+export const getAllSentRequestByUser = () => {
+  const token = isAuthenticated();
+  let myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  let requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  return fetch(`${BASE}/api/friend/requestssent`, requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};
