@@ -6,7 +6,6 @@ module.exports =
   () => {
     console.log("User Disconnected :- " + socket.id);
     const removedUser = removeUserFromList(socket.id);
-    console.log(removedUser);
     if (!removedUser) return;
     if (!removedUser.isGuest) emitOfflineInfoToFriends(io, socket, removedUser);
   };

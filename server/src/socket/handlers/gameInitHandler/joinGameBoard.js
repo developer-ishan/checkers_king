@@ -8,6 +8,7 @@ const {
   getGamePlayersWithGameId,
   rejoinGameWithGameId,
   isUserAlreadyInGame,
+  setInGameStatus,
 } = require("../../helpers/gameBoardHelpers/playerManager");
 
 module.exports =
@@ -47,7 +48,7 @@ module.exports =
 
     console.log("game exists... joining room!!");
     socket.join(gameId);
-    if (game.players.length < 2) {
+    if (!game.isBot && game.players.length < 2) {
       // if the players < 2, user joins as opponent, othewise as spectator
       console.log("joining game as opponent...");
       const color = await addPlayerToGame({
@@ -56,12 +57,13 @@ module.exports =
         token,
       });
 
-      const roomSocketCnt = io.sockets.adapter.rooms.get(game.id).size;
-      io.to(game.id).emit("head-count", roomSocketCnt);
       io.to(game.id).emit("players-info", getGamePlayersWithGameId(game));
       socket.emit("color", color);
       socket.to(gameId).emit("opponent-status", "ready");
+      await setInGameStatus(io, game);
     } else socket.emit("players-info", getGamePlayersWithGameId(game));
 
+    const roomSocketCnt = io.sockets.adapter.rooms.get(game.id).size;
+    io.to(game.id).emit("head-count", roomSocketCnt);
     sendGameStatus(io, gameId);
   };

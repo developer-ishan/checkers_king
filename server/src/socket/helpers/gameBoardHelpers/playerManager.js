@@ -1,6 +1,10 @@
 const { getGamesList, getGameByID } = require("./gamePlayManager");
-const { getUserDetailsWithToken } = require("../userManager");
+const {
+  getUserDetailsWithToken,
+  findOnlineUserById,
+} = require("../userManager");
 const { parsePieceMove } = require("../gameHelper");
+const { sendUserStatus } = require("../userStatusHelper");
 
 // find a game with a player with a particular id
 const findPlayersWithID = (playerId) => {
@@ -22,6 +26,15 @@ const getGamePlayersWithGameId = (game) => {
       photo: player.photo,
     })
   );
+
+  if (game.isBot) {
+    players.push({
+      id: `Bot_Lvl${game.botLevel}`,
+      color: players[0].color === "Red" ? "Black" : "Red",
+      username: `Bot_Lvl${game.botLevel}`,
+      photo: "/images/bot.png",
+    });
+  }
   return players;
 };
 
@@ -36,9 +49,33 @@ const getGameWithGameId = (gameId) => {
 // checking if a user is already present in an ongoing game
 const isUserAlreadyInGame = async (token) => {
   const userDetails = await getUserDetailsWithToken(token);
+  if(!userDetails)
+    return [];
   const userGame = findPlayersWithID(userDetails.userId);
   if (userGame) return userGame.id;
   return userGame;
+};
+
+const isUserAlreadyInGameUserId = async (userId) => {
+  const userGame = findPlayersWithID(userId);
+  if (userGame) return userGame.id;
+  return userGame;
+}
+
+const setInGameStatus = async (io, game) => {
+  game.players.forEach(async (player) => {
+    const user = findOnlineUserById(player.id);
+    user.status = "IN_GAME";
+    await sendUserStatus(io, user.userId);
+  });
+};
+
+const resetInGameStatus = async (io, game) => {
+  game.players.forEach(async (player) => {
+    const user = findOnlineUserById(player.id);
+    user.status = "IDLE";
+    await sendUserStatus(io, user.userId);
+  });
 };
 
 // rejoining a player into an existing game
@@ -76,4 +113,7 @@ module.exports = {
   getGamePlayersWithGameId,
   getGameWithGameId,
   rejoinGameWithGameId,
+  isUserAlreadyInGameUserId,
+  setInGameStatus,
+  resetInGameStatus,
 };

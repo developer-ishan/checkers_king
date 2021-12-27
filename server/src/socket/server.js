@@ -30,6 +30,9 @@ const {
 const sendFriendRequest = require("./handlers/friendEventHandler/sendFriendRequest");
 const respondFriendRequest = require("./handlers/friendEventHandler/respondFriendRequest");
 const emitMyInfoToFriends = require("./helpers/friendEventHelpers/emitMyInfoToFriends");
+const sendGameInviteToFriend = require("./handlers/friendEventHandler/sendGameInviteToFriend");
+const acceptGameInviteToFriend = require("./handlers/friendEventHandler/acceptGameInviteToFriend");
+const rejectGameInviteToFriend = require("./handlers/friendEventHandler/rejectGameInviteToFriend");
 
 exports.SocketServer = (io) => {
   console.log("socket server has started running...");
@@ -87,7 +90,11 @@ exports.SocketServer = (io) => {
     /* Friend requests*/
     socket.on("send-friend-request", sendFriendRequest({ io, socket }));
     socket.on("respond-friend-request", respondFriendRequest({ io, socket }));
-
+    socket.on("friend-game-invite-send", sendGameInviteToFriend({ io, socket }));
+    //also emit "friend-game-invite-receive"
+    socket.on("friend-game-invite-accept", acceptGameInviteToFriend({ io, socket }));
+    socket.on("friend-game-invite-reject", rejectGameInviteToFriend({ io, socket }));
+    
     /* game event handler calls BEGIN */
     /*  -- game chats handler calls BEGIN */
     socket.on("send-msg", ({ gameId, msg }) => {

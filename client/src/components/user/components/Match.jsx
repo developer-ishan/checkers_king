@@ -74,7 +74,7 @@ const Match = ({
           {self && winner === "Draw" && (
             <>
               <h1 className="text-xl font-bold tracking-tight text-yellow-500 ">
-                {self.ratingChange}
+                {self?.ratingChange}
               </h1>
               <h1
                 className="absolute text-xl font-bold tracking-tight text-yellow-500 uppercase transform md:text-3xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"

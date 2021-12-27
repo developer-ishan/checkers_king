@@ -8,6 +8,11 @@ export const UserProvider = (props) => {
     photo: `${BASE}/public/dp/default.png`,
     requests: [],
     userId: null,
+    invites: [],
+    /**
+     * {userId, username, photo}
+     * to be reset if user accepts any invite
+     */
     socketReinitialize: false,
   });
 

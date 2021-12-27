@@ -7,15 +7,13 @@ const {
   sendAllGames,
 } = require("../../helpers/gameStatusHelper");
 const { aiBotMove } = require("../../helpers/gameBotHelpers/gameBot");
-const {
-  userAlreadyExistsInOtherGame,
-  emitGameError,
-  emitUserError,
-} = require("../../helpers/errorHelper");
+const { emitGameError, emitUserError } = require("../../helpers/errorHelper");
+const { findOnlineUserByToken } = require("../../helpers/userManager");
 const {
   isUserAlreadyInGame,
   getGamePlayersWithGameId,
 } = require("../../helpers/gameBoardHelpers/playerManager");
+const { sendUserStatus } = require("../../helpers/userStatusHelper");
 
 module.exports =
   ({ io, socket }) =>
@@ -65,6 +63,12 @@ module.exports =
       turn: newGame.turn,
     });
     socket.emit("color", color);
+    socket.emit("head-count", 1);
+    const user = findOnlineUserByToken(token);
+    if (isBot) user.status = "IN_GAME";
+    else user.status = "IN_LOBBY";
+    await sendUserStatus(io, user.userId);
+
     if (newGame.isBot) {
       socket.emit("playing-with-bot", newGame.botLevel);
       socket.emit("players-info", getGamePlayersWithGameId(newGame));

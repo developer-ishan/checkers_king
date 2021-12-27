@@ -5,10 +5,10 @@ const {
 
 module.exports =
   ({ io, socket }) =>
-  (token) => {
+  async (token) => {
     console.log("exiting game lobby for user ");
     if (!token) return;
 
-    if (token.startsWith("guest")) exitGuestLobby(token);
-    else exitUserLobby(token);
+    if (token.startsWith("guest")) await exitGuestLobby(io, token);
+    else await exitUserLobby(io, token);
   };

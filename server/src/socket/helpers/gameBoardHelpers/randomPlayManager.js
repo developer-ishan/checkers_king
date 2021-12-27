@@ -1,8 +1,9 @@
 const { createNewGame, addPlayerToGame } = require("./gamePlayManager");
-var jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../../../config/keys");
-const User = require("../../../models/User");
-const { getUserDetailsWithToken } = require("../userManager");
+const {
+  getUserDetailsWithToken,
+  findOnlineUserByToken,
+} = require("../userManager");
+const { sendUserStatus } = require("../userStatusHelper");
 
 var waitingGuests = [];
 var waitingPlayers = [];
@@ -20,8 +21,21 @@ const get_league = (rating) => {
   return ["Champion", 8, 2400, "🏆🏅"];
 };
 
+const setStatusToLobby = async (io, token) => {
+  const user = findOnlineUserByToken(token);
+  user.status = "IN_LOBBY";
+  await sendUserStatus(io, user.userId);
+};
+
+const setStatusToIdle = async (io, token) => {
+  const user = findOnlineUserByToken(token);
+  user.status = "IDLE";
+  await sendUserStatus(io, user.userId);
+};
+
 /* ------------------------------------------------ Guest Player Functions ------------------------------------------------ */
-const randomPlayWithGuest = async ({ player, guestId, mandatoryMoves }) => {
+const randomPlayWithGuest = async ({ io, player, guestId, mandatoryMoves }) => {
+  await setStatusToLobby(io, guestId);
   // searching for player in queue with similar specifications
   for (let i = 0; i < waitingGuests.length; ++i) {
     let guest = waitingGuests[i];
@@ -67,14 +81,16 @@ const findGuestWithGuestId = (guestId) => {
 };
 
 // removing the guest on exit from the lobby
-const exitGuestLobby = (guestId) => {
+const exitGuestLobby = async (io, guestId) => {
+  await setStatusToIdle(io, guestId);
   const lobbyPlayer = findGuestWithGuestId(guestId);
   if (lobbyPlayer) waitingGuests.splice(waitingGuests.indexOf(lobbyPlayer));
 };
 /* ------------------------------------------------ Guest Player Functions ------------------------------------------------ */
 
 /* ------------------------------------------------ User Player Functions ------------------------------------------------ */
-const randomPlayWithUser = async ({ player, token, mandatoryMoves }) => {
+const randomPlayWithUser = async ({ io, player, token, mandatoryMoves }) => {
+  await setStatusToLobby(io, token);
   let user = await getUserDetailsWithToken(token);
   if (!user) return;
   const playerLeague = get_league(user.rating)[0];
@@ -131,7 +147,8 @@ const findUserWithToken = (token) => {
 };
 
 // exiting the user lobby on lobby exit
-const exitUserLobby = (token) => {
+const exitUserLobby = async (io, token) => {
+  await setStatusToIdle(io, token);
   const lobbyPlayer = findUserWithToken(token);
   if (lobbyPlayer) waitingPlayers.splice(waitingPlayers.indexOf(lobbyPlayer));
 };
