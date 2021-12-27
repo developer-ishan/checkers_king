@@ -2,6 +2,7 @@ const { getGamesList, getGameByID } = require("./gamePlayManager");
 const {
   getUserDetailsWithToken,
   findOnlineUserById,
+  findOnlineUserByToken,
 } = require("../userManager");
 const { parsePieceMove } = require("../gameHelper");
 const { sendUserStatus } = require("../userStatusHelper");
@@ -106,6 +107,11 @@ const rejoinGameWithGameId = async (io, socket, gameId, token) => {
   const roomSocketCnt = io.sockets.adapter.rooms.get(game.id).size;
   io.to(game.id).emit("head-count", roomSocketCnt);
   await new Promise((resolve) => setTimeout(resolve, 20));
+
+  const user = findOnlineUserByToken(token);
+  user.status = "IN_GAME";
+  await sendUserStatus(io, user.userId);
+
   socket.emit("old-chats-on-rejoin", game.chat);
 };
 
