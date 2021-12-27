@@ -6,63 +6,6 @@ import InviteButton from "./InviteButton";
 const RequestList = ({ heading }) => {
   const [socket, setSocket] = useContext(SocketContext);
   const [userState, setUserState] = useContext(UserContext);
-  const [friends, setFriends] = useState([]);
-
-  const handleDistinctMerge = (oArr1, oArr2) => {
-    for (let i = 0; i < oArr2.length; ++i) {
-      let found = false;
-      for (let j = 0; j < oArr1.length && !found; ++j) {
-        if (oArr1[i].userId === oArr2[j].userId) found = true;
-      }
-      if (!found) oArr1.push(oArr2[i]);
-    }
-    return oArr1;
-  };
-
-  const findOnlineFriendWithId = (oldFriendState, userId) => {
-    return oldFriendState.find((friend) => friend.userId === userId);
-  };
-
-  useEffect(() => {
-    socket.on("friend-online", (onlineFriends) => {
-      console.log("friend came online...", friends);
-      let oldFriendState = friends;
-      setFriends(handleDistinctMerge(oldFriendState, onlineFriends));
-    });
-
-    socket.on("friend-offline", (onlineFriend) => {
-      console.log("offline-friend caught...");
-      let oldFriendState = friends;
-      let offlineFriend = findOnlineFriendWithId(
-        oldFriendState,
-        onlineFriend.userId
-      );
-      if (!offlineFriend) return;
-      oldFriendState.splice(oldFriendState.indexOf(offlineFriend, 1));
-      setFriends(oldFriendState);
-    });
-
-    socket.on("user-status", (userStatus) => {
-      console.log("user-status caught");
-      console.log(userStatus);
-      let oldFriendState = friends;
-      let newFriendState = findOnlineFriendWithId(
-        oldFriendState,
-        userStatus.id
-      );
-
-      if (!newFriendState) return;
-      newFriendState.status = userStatus.status;
-      setFriends(oldFriendState);
-    });
-
-    return () => {
-      socket.off("friend-online");
-      socket.off("friend-offline");
-      socket.off("user-status");
-    };
-  }, [socket]);
-
   return (
     <div
       data-title="ONLINE FRIENDS"
@@ -75,7 +18,7 @@ const RequestList = ({ heading }) => {
         </h2>
       </div>
       <div className="p-4 pt-0 text-gray-800 divide-y divide-gray-400 rounded-b-lg dark:text-white ">
-        {friends.map((f) => (
+        {userState.friends.map((f) => (
           <div
             className="flex flex-row items-center justify-between py-4"
             data-title="players info"
@@ -89,11 +32,15 @@ const RequestList = ({ heading }) => {
             <div className="text-sm">
               <span className="block font-semibold">{f.username}</span>
             </div>
-            <h2>{f.status}</h2>
-            <InviteButton friend={f} />
+            {/* IDLE IN_GAME IN_LOBBY */}
+            {f.status === "IDLE" ? (
+              <InviteButton friend={f} />
+            ) : (
+              <p>{f.status}</p>
+            )}
           </div>
         ))}
-        {friends.length === 0 && (
+        {userState.friends.length === 0 && (
           <div className="text-center capitalize">
             <p className="p-2 text-sm font-bold dark:text-white">
               no friend online

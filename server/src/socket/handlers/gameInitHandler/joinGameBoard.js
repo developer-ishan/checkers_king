@@ -17,7 +17,7 @@ module.exports =
     console.log("inside join game handler... trying to join game...");
     const existingGameId = await isUserAlreadyInGame(token);
     if (existingGameId) {
-      await rejoinGameWithGameId(socket, existingGameId, token);
+      await rejoinGameWithGameId(io, socket, existingGameId, token);
       return;
     }
 

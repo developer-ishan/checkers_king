@@ -21,6 +21,21 @@ const AppWrapper = (props) => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [ackFriendRequest, setAckFriendRequest] = useState([]);
 
+  const handleDistinctMerge = (oArr1, oArr2) => {
+    for (let i = 0; i < oArr2.length; ++i) {
+      let found = false;
+      for (let j = 0; j < oArr1.length && !found; ++j) {
+        if (oArr1[i].userId === oArr2[j].userId) found = true;
+      }
+      if (!found) oArr1.push(oArr2[i]);
+    }
+    return oArr1;
+  };
+
+  const findOnlineFriendWithId = (oldFriendState, userId) => {
+    return oldFriendState.find((friend) => friend.userId === userId);
+  };
+
   // connecting socket-client to the socket server for communication
   useEffect(() => {
     if (socket) socket.disconnect();
@@ -64,12 +79,50 @@ const AppWrapper = (props) => {
         ]);
       }
     );
+
+    clientSocket.on("friend-online", (onlineFriends) => {
+      console.log("friend came online...", onlineFriends);
+      setUserState((u) => {
+        const friends = handleDistinctMerge(u.friends, onlineFriends);
+        return { ...u, friends: friends };
+      });
+    });
+
+    clientSocket.on("friend-offline", (offlineFriend) => {
+      console.log("offline-friend caught...", offlineFriend);
+      if (offlineFriend) {
+        setUserState((u) => {
+          const friends = u.friends.filter(
+            (f) => f.userId !== offlineFriend.userId
+          );
+          return { ...u, friends: friends };
+        });
+      }
+    });
+
+    clientSocket.on("user-status", (userStatus) => {
+      console.log("user-status caught");
+      console.log(userStatus);
+      if (userStatus)
+        setUserState((u) => {
+          const friends = u.friends.map((f) => {
+            if (f.userId === userStatus.id)
+              return { ...f, status: userStatus.status };
+            else return f;
+          });
+          return { ...u, friends: friends };
+        });
+    });
+
     return () => {
       clientSocket.off("friend-game-invite-receive");
       clientSocket.off("friend-game-invite-accepted");
       clientSocket.off("join-game");
       clientSocket.off("got-friend-request");
       clientSocket.off("ack-friend-request");
+      clientSocket.off("friend-online");
+      clientSocket.off("friend-offline");
+      clientSocket.off("user-status");
     };
   }, [userState.socketReinitialize]);
 
