@@ -33,6 +33,11 @@ const setStatusToIdle = async (io, token) => {
   await sendUserStatus(io, user.userId);
 };
 
+const sendHeadCount = (io, gameId) => {
+  const roomSocketCnt = io.sockets.adapter.rooms.get(gameId).size;
+  io.to(gameId).emit("head-count", roomSocket);
+};
+
 /* ------------------------------------------------ Guest Player Functions ------------------------------------------------ */
 const randomPlayWithGuest = async ({ io, player, guestId, mandatoryMoves }) => {
   await setStatusToLobby(io, guestId);

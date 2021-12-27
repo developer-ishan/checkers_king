@@ -6,8 +6,7 @@ const Leaderboard = () => {
   const [leaderBoardData, setLeaderBoardData] = useState(null);
   useEffect(() => {
     getLeaderBoard(1, 4).then((res) => {
-      console.log("leaderboard data", res);
-      setLeaderBoardData([...res.data]);
+      if (res) setLeaderBoardData([...res.data]);
     });
   }, []);
   const listLeaderboard = () => {

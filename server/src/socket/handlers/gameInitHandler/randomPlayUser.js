@@ -35,6 +35,9 @@ module.exports =
       }
       // sending the game status to appropriate clients
       sendGameStatus(io, randomGame.id);
+      const roomSocketCnt = io.sockets.adapter.rooms.get(gameId).size;
+      io.to(gameId).emit("head-count", roomSocketCnt);
+
       sendAllGames(io);
       await setInGameStatus(io, randomGame);
     }

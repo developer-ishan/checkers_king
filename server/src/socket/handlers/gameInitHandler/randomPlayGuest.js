@@ -26,6 +26,8 @@ module.exports =
         io.to(player.socket.id).emit("color", player.color);
       });
       await setInGameStatus(io, randomGame);
+      const roomSocketCnt = io.sockets.adapter.rooms.get(gameId).size;
+      io.to(gameId).emit("head-count", roomSocketCnt);
 
       sendGameStatus(io, randomGame.id);
       sendAllGames(io);
