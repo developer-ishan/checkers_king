@@ -55,14 +55,14 @@ const Home = ({ games, setGames }) => {
     socket.on("user-error", (error) => {
       setMultipleDeviceDetectedModalOpen(error);
     });
-    socket.on("disconnect", () => {
-      setMultipleDeviceDetectedModalOpen({
-        title: "Server Disconnected!!",
-        msg: "the server got disconnected... try refreshing the window after sometime!!",
-        buttonText: "Close",
-        redirectTo: "/",
-      });
-    });
+    // socket.on("disconnect", () => {
+    //   setMultipleDeviceDetectedModalOpen({
+    //     title: "Multiple Devices/tabs Detected!!",
+    //     msg: "Attention! you can connect 1 device only, close all other connections & retry!!",
+    //     buttonText: "Close",
+    //     redirectTo: "/",
+    //   });
+    // });
 
     socket.on("got-friend-request", ({ userId, username, photo, msg }) => {
       console.log(`${username} sent friend request`);

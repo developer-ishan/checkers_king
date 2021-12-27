@@ -21,6 +21,7 @@ module.exports = {
       },
       animation: {
         "float-up": "float-up 25s infinite",
+        floating: "floating 4s ease-in-out infinite",
       },
       keyframes: {
         "float-up": {
@@ -28,6 +29,17 @@ module.exports = {
             bottom: "110%",
             transform: "rotateZ(180deg)",
             opacity: "0",
+          },
+        },
+        floating: {
+          "0%": {
+            transform: "translatey(0px)",
+          },
+          "50%": {
+            transform: "translatey(-10px)",
+          },
+          "100%": {
+            transform: "translatey(0px)",
           },
         },
       },

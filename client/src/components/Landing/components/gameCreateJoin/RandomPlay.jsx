@@ -69,9 +69,8 @@ const RandomPlay = ({ socket }) => {
         <div className="absolute top-0 bottom-0 right-0 hidden transform scale-125 -rotate-12 md:block ">
           <img
             alt="people playing games"
-            // src="https://cdn.devdojo.com/images/september2020/cta-1.png"
             src="/images/gamepad.svg"
-            className="h-full max-w-xs opacity-75 "
+            className="h-full max-w-xs opacity-75 animate-floating"
           />
         </div>
       </div>

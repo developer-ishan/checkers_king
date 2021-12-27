@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import Modal from "react-modal";
 import { Link, useHistory } from "react-router-dom";
 import { GameSoundContext } from "../../../../context/GameSoundContext";
+import { SocketContext } from "../../../../context/SocketContext";
 import { UserContext } from "../../../../context/UserContext";
 import {
   authenticate,
@@ -18,8 +19,9 @@ import LoginSignUpForm from "./LoginSignUpForm";
 Modal.setAppElement("#root");
 
 require("dotenv").config();
-const Navbar = ({ socket }) => {
+const Navbar = () => {
   const [userState, setUserState] = useContext(UserContext);
+  const [socket, setSocket] = useContext(SocketContext);
   const { clickSound, selectSound, isMuted } = useContext(GameSoundContext);
   const history = useHistory();
   const [darkMode, setDarkMode] = useState(false);
