@@ -25,7 +25,7 @@ const AppWrapper = (props) => {
     for (let i = 0; i < oArr2.length; ++i) {
       let found = false;
       for (let j = 0; j < oArr1.length && !found; ++j) {
-        if (oArr1[i].userId === oArr2[j].userId) found = true;
+        if (oArr1[j].userId === oArr2[i].userId) found = true;
       }
       if (!found) oArr1.push(oArr2[i]);
     }
@@ -106,9 +106,12 @@ const AppWrapper = (props) => {
       if (userStatus)
         setUserState((u) => {
           const friends = u.friends.map((f) => {
-            if (f.userId === userStatus.id)
+            if (f.userId === userStatus.id) {
+              if(userStatus.status === "IN_GAME"){
+                return {...f, status: userStatus.status, gameId: userStatus.gameId};
+              }
               return { ...f, status: userStatus.status };
-            else return f;
+            } else return f;
           });
           return { ...u, friends: friends };
         });
