@@ -68,6 +68,8 @@ const Navbar = ({ socket }) => {
         .then((data) => {
           if (!data.photo) setUser({ ...data, photo: "/images/default.png" });
           else setUser(data);
+          console.log("direct login data", data);
+          setUserState({ ...userState, userId: data._id });
         })
         .catch((err) => {
           console.log(err);
@@ -89,13 +91,12 @@ const Navbar = ({ socket }) => {
             setPassword("");
             setLoginLoading(false);
             setIsLoginModalOpen(false);
-            console.log("reloading due to nav");
+            console.log("reloading due to nav", result.userId);
             history.push("/");
-            setUserState((prevState) => {
-              return {
-                ...prevState,
-                socketReinitialize: !userState.socketReinitialize,
-              };
+            setUserState({
+              ...userState,
+              userId: result.userId,
+              socketReinitialize: !userState.socketReinitialize,
             });
           });
         } else {

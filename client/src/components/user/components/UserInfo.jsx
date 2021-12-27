@@ -7,6 +7,7 @@ import BASE from "../../../config";
 import { GameSoundContext } from "../../../context/GameSoundContext";
 import FriendshipButton from "./FriendshipButton";
 import ManageFriends from "./ManageFriends";
+import { UserContext } from "../../../context/UserContext";
 
 const UserInfo = ({ userId, matchesCount }) => {
   const [user, setUser] = useState({ username: "", active: true, photo: "" });
@@ -17,6 +18,7 @@ const UserInfo = ({ userId, matchesCount }) => {
   const [newDp, setNewDp] = useState({ selectedFile: null, loaded: 0 });
   const fileSelector = useRef(null);
   const { clickSound, isMuted } = useContext(GameSoundContext);
+  const [userState, setUserState] = useContext(UserContext);
 
   useEffect(() => {
     console.log("MOUNTED");
@@ -31,8 +33,8 @@ const UserInfo = ({ userId, matchesCount }) => {
   }, [userId]);
 
   const canEdit = () => {
-    // BUG: change it to some strong validation
-    return Cookies.get("userId") === userId;
+    // return Cookies.get("userId") === userId;
+    return userState.userId === userId;
   };
   const onChangeHandler = (event) => {
     var files = event.target.files;

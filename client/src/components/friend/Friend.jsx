@@ -9,10 +9,10 @@ const Friend = ({ userId }) => {
   const [selected, setSelected] = useState({});
   const [requests, setRequests] = useState([]);
   useEffect(() => {
-    socket.on("got-friend-request", ({ userId, username, photo }) => {
-      alert(`${username} sent friend request`);
-      setRequests((old) => [...old, { userId, username, photo }]);
-    });
+    // socket.on("got-friend-request", ({ userId, username, photo }) => {
+    //   alert(`${username} sent friend request`);
+    //   setRequests((old) => [...old, { userId, username, photo }]);
+    // });
     socket.on("ack-friend-request", ({ userId, username, photo, response }) => {
       if (response) alert(`${username} accepted friend request`);
       else alert(`${username} rejected friend request`);

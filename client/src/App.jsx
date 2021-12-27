@@ -14,7 +14,7 @@ const App = () => {
   const [userState, setUserState] = useContext(UserContext);
   const [games, setGames] = useState([]);
   const [socket, setSocket] = useContext(SocketContext);
-  useEffect(() => {}, [userState.socketReinitialize])
+  useEffect(() => {}, [userState.socketReinitialize]);
   return (
     <>
       <BrowserRouter>
