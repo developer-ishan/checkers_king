@@ -69,7 +69,7 @@ const Lobby = ({ heading }) => {
   return (
     <div
       style={{ width: "100vw", height: "100vh" }}
-      className="relative bg-yellow-300 dark:bg-gray-900"
+      className="relative bg-yellow-300 dark:bg-gray-900 capitalize"
     >
       <ul className="absolute inset-0 overflow-hidden list-none no-underline">
         {floatingObjects.map((object, index) => {
