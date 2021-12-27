@@ -133,10 +133,10 @@ const Board = ({
                 move:{moveNum + 1}/{moves.length}
               </p>
               <p className="font-bold capitalize">
-                Rated Match:{isRated ? "yes" : "no"}
+                {isRated ? "Rated" : "Unrated"}
               </p>
               <p className="font-bold capitalize">
-                madatoryMoves:{mandatoryMoves ? "yes" : "no"}
+                madatoryMoves:{mandatoryMoves ? "ON" : "OFF"}
               </p>
             </div>
             <button
