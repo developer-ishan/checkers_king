@@ -66,13 +66,14 @@ const Navbar = ({ socket }) => {
       setAuth(token);
       getMySummary(token)
         .then((data) => {
-          setUser(data);
+          if (!data.photo) setUser({ ...data, photo: "/images/default.png" });
+          else setUser(data);
         })
         .catch((err) => {
           console.log(err);
         });
     } else setAuth(false);
-  }, [socket]);
+  }, [auth, socket]);
 
   const handleLogIn = (e) => {
     e.preventDefault();

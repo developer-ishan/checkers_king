@@ -1,4 +1,5 @@
 const { getOnlineFriends } = require("../userManager");
+
 const emitMyInfoToFriends = async (io, socket, addedUser) => {
   const onlineFriends = await getOnlineFriends(addedUser.userId);
   onlineFriends.forEach((onlineFriend) => {
@@ -7,14 +8,21 @@ const emitMyInfoToFriends = async (io, socket, addedUser) => {
         {
           userId: addedUser.userId,
           username: addedUser.username,
+          status: addedUser.status,
           photo: addedUser.photo,
         },
       ]);
   });
+
   socket.emit(
     "friend-online",
     onlineFriends.map((o) => {
-      return { userId: o.userId, username: o.username, photo: o.photo };
+      return {
+        userId: o.userId,
+        username: o.username,
+        photo: o.photo,
+        status: o.status,
+      };
     })
   );
   /**

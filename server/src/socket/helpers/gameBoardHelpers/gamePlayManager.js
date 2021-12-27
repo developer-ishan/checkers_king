@@ -226,8 +226,9 @@ exports.saveChatToGame = (gameId, msgObject) => {
 
 // gets the color of the piece of player playing the game
 exports.getColorOfPlayer = ({ player }) => {
-  const game = getGameForPlayer(player),
-    pc = game.players[0].color;
+  const game = getGameForPlayer(player);
+  if (!game) return false;
+  const pc = game.players[0].color;
   if (game.players[0].socket === player) return pc === "Red" ? "Black" : "Red";
   return pc;
 };
@@ -235,6 +236,7 @@ exports.getColorOfPlayer = ({ player }) => {
 // ends the game : removes the game object from the games array & saves it into the db
 exports.endGame = async ({ player, winner }) => {
   const game = getGameForPlayer(player);
+  if (!game) return game;
   if (!game.isBot && game.players.length < 2) {
     console.log("user abandoned the game...");
     games.splice(games.indexOf(game), 1);

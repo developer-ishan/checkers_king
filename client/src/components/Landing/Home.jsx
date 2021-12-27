@@ -15,6 +15,7 @@ import { GameSoundContext } from "../../context/GameSoundContext";
 import OnlineFriends from "../friend/components/OnlineFriends";
 import FindUser from "./components/others/FindUser";
 import GamePosters from "./components/others/GamePosters";
+import Footer from "./components/others/Footer";
 import { UserContext } from "../../context/UserContext";
 
 Modal.setAppElement("#root");
@@ -46,8 +47,8 @@ const Home = ({ games, setGames }) => {
     });
     socket.on("disconnect", () => {
       setMultipleDeviceDetectedModalOpen({
-        title: "Multiple Devices/tabs Detected!!",
-        msg: "Attention! you can connect 1 device only, close all other connections & retry!!",
+        title: "Server Disconnected!!",
+        msg: "the server got disconnected... try refreshing the window after sometime!!",
         buttonText: "Close",
         redirectTo: "/",
       });
@@ -159,6 +160,7 @@ const Home = ({ games, setGames }) => {
             <OnlineFriends />
           </div>
         </div>
+        <Footer />
         {/* <div
         className="relative mx-4 my-4 bg-white shadow-xl mt-14 max-w-screen-2xl h-44"
         id="shapedDiv"

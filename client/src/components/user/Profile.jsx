@@ -5,6 +5,7 @@ import { getUserIdentification, signout } from "../../helper/authHelper";
 import { getPreviousMatches } from "../../helper/userHelper";
 
 import Navbar from "../Landing/components/others/Navbar";
+import Footer from "../Landing/components/others/Footer";
 import ErrorModal from "../modal/ErrorModal";
 import PreviousMatches from "./components/PreviousMatches";
 import UserInfo from "./components/UserInfo";
@@ -118,6 +119,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      <Footer />
 
       {isMultipleDeviceDetectedModalOpen && (
         <ErrorModal

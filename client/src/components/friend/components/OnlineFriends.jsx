@@ -9,12 +9,25 @@ const RequestList = ({ heading }) => {
   const [socket, setSocket] = useContext(SocketContext);
   const [userState, setUserState] = useContext(UserContext);
   const [friends, setFriends] = useState([]);
+
+  const handleDistinctMerge = (oArr1, oArr2) => {
+    for (let i = 0; i < oArr2.length; ++i) {
+      let found = false;
+      for (let j = 0; j < oArr1.length && !found; ++j) {
+        if (oArr1[i].userId === oArr2[j].userId) found = true;
+      }
+      if (!found) oArr1.push(oArr2[i]);
+    }
+    return oArr1;
+  };
+
   useEffect(() => {
     socket.on("friend-online", (friends) => {
-      setFriends((old) => {
-        return [...old, ...friends];
-      });
+      console.log("Friends Online : ");
+      let oldFriendState = friends;
+      setFriends(handleDistinctMerge(oldFriendState, friends));
     });
+
     socket.on("friend-offline", (friend) => {
       setFriends((old) => {
         const i = friends.indexOf(friend);
@@ -25,11 +38,13 @@ const RequestList = ({ heading }) => {
         return newArr;
       });
     });
+
     return () => {
       socket.off("friend-online");
       socket.off("friend-offline");
     };
   }, []);
+
   return (
     <div
       data-title="ONLINE FRIENDS"
@@ -56,7 +71,7 @@ const RequestList = ({ heading }) => {
             <div className="text-sm">
               <span className="block font-semibold">{f.username}</span>
             </div>
-            <InviteButton friend = {f}/>
+            <InviteButton friend={f} />
           </div>
         ))}
         {friends.length === 0 && (
