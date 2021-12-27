@@ -55,6 +55,7 @@ const FriendshipButton = ({ userId, userName }) => {
         );
 
       default:
+        // the default is add friend button
         return <SendRequest userId={userId} setStatus={setFriendship} />;
     }
   };

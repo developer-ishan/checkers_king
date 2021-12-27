@@ -75,8 +75,8 @@ const Navbar = () => {
         .catch((err) => {
           console.log(err);
         });
-    } else setAuth(false);
-  }, [auth, socket]);
+    }
+  }, [socket]);
 
   const handleLogIn = (e) => {
     e.preventDefault();
