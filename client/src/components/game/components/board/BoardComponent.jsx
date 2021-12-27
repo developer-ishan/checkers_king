@@ -147,12 +147,13 @@ const BoardComponent = ({ board, color, turn, movePiece, lastMove }) => {
   //this function will return one of the sytle
   //from above depending upon coordinate
   const getStyle = (i, j) => {
-    const { selectedPiece, destination } = lastMove;
-    if (i === selectedPiece.i && j === selectedPiece.j)
-      return moveStartPosStyle;
+    if (lastMove) {
+      const { selectedPiece, destination } = lastMove;
+      if (i === selectedPiece.i && j === selectedPiece.j)
+        return moveStartPosStyle;
 
-    if (i === destination.i && j === destination.j) return moveEndPosStyle;
-
+      if (i === destination.i && j === destination.j) return moveEndPosStyle;
+    }
     if ((i + j) % 2 === 0) return blackBoxStyle;
     else return whiteBoxStyle;
   };
