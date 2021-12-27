@@ -78,7 +78,7 @@ const resetInGameStatus = async (io, game) => {
 };
 
 // rejoining a player into an existing game
-const rejoinGameWithGameId = async (socket, gameId, token) => {
+const rejoinGameWithGameId = async (io, socket, gameId, token) => {
   const existingGame = await isUserAlreadyInGame(token);
   const userDetails = await getUserDetailsWithToken(token);
   let socketPlayer = null;
@@ -103,6 +103,8 @@ const rejoinGameWithGameId = async (socket, gameId, token) => {
   });
   socket.emit("color", socketPlayer.color);
   socket.emit("players-info", getGamePlayersWithGameId(game));
+  const roomSocketCnt = io.sockets.adapter.rooms.get(game.id).size;
+  io.to(game.id).emit("head-count", roomSocketCnt);
   await new Promise((resolve) => setTimeout(resolve, 20));
   socket.emit("old-chats-on-rejoin", game.chat);
 };

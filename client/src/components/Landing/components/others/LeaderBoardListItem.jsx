@@ -15,7 +15,7 @@ const LeaderBoardListItem = ({ user }) => {
       />
       <div className="text-sm">
         <span className="block font-semibold">
-          <Link to={`${user._id}`}>{`${user.username}`}</Link>
+          <Link to={`/user/${user._id}`}>{`${user.username}`}</Link>
         </span>
       </div>
       <p className="block px-2 py-px mt-1 text-xs font-semibold tracking-wide uppercase border border-gray-400 rounded-full hover:bg-indigo-400 hover:text-white hover:border-transparent">
