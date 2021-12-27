@@ -108,7 +108,11 @@ const getAllMovesCountByPlayer = ({ board, color }) => {
 };
 
 const parsePieceMove = (moveString) => {
-  if (!moveString) return;
+  if (!moveString)
+    return {
+      selectedPiece: { i: -1, j: -1 },
+      destination: { i: -1, j: -1 },
+    };
   return {
     selectedPiece: {
       i: parseInt(moveString.substring(1, 2)),

@@ -424,12 +424,14 @@ const Game = () => {
                     {/* video call component */}
                     {color && <GameCall socket={socket} gameId={game.id} />}
                     {/* chat component */}
-                    <Chat
-                      gameId={game.id}
-                      playerId={getMyId()}
-                      color={color}
-                      playersInfo={playersInfo}
-                    />
+                    {color && (
+                      <Chat
+                        gameId={game.id}
+                        playerId={getMyId()}
+                        color={color}
+                        playersInfo={playersInfo}
+                      />
+                    )}
                   </div>
                 </div>
               </>

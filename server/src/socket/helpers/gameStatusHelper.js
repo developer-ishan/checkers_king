@@ -13,7 +13,6 @@ exports.sendAllGames = (io) => {
 exports.sendGameStatus = (io, gameId) => {
   const game = getGameByID(gameId);
   const lastMove = parsePieceMove(game.pieceMoves[game.pieceMoves.length - 1]);
-
   io.to(gameId).emit("game-status", {
     id: game.id,
     board: game.board,
