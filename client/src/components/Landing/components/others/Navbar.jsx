@@ -68,7 +68,11 @@ const Navbar = ({ socket }) => {
         .then((data) => {
           console.log("direct login data", data);
           setUser(data);
-          setUserState({ ...userState, userId: data._id });
+          setUserState({
+            ...userState,
+            userId: data._id,
+            socketReinitialize: !userState.socketReinitialize,
+          });
         })
         .catch((err) => {
           console.log(err);

@@ -155,3 +155,15 @@ export const getAllSentRequestByUser = () => {
     .then((response) => response.json())
     .catch((error) => console.log("error", error));
 };
+export const getLeaderBoard = (pageno = 1, quantity = 10) => {
+  let requestOptions = {
+    method: "GET",
+    redirect: "follow",
+  };
+  return fetch(
+    `${BASE}/api/game/leaderboard?pageNo=${pageno}&size=${quantity}`,
+    requestOptions
+  )
+    .then((response) => response.json())
+    .catch((error) => console.log("error", error));
+};
