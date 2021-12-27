@@ -7,12 +7,14 @@ import { getUserIdentification, isAuthenticated } from "./helper/authHelper";
 import { GameSoundContext } from "./context/GameSoundContext";
 import ConfirmModal from "./components/modal/ConfirmModal";
 import GameOptionsDisplay from "./components/game/components/GameOptionsDisplay";
+import { UserContext } from "./context/UserContext";
 
 const AppWrapper = (props) => {
   const history = useHistory();
   const [socket, setSocket] = useContext(SocketContext);
   const [gameInvites, setGameInvites] = useState([]);
   const { isMuted, toggleMute, clickSound } = useContext(GameSoundContext);
+  const [userState, setUserState] = useContext(UserContext);
 
   // connecting socket-client to the socket server for communication
   useEffect(() => {
@@ -39,8 +41,12 @@ const AppWrapper = (props) => {
     clientSocket.on("friend-game-invite-rejected", (user) => {
       alert(`${user} rejected your request.`);
     });
-    return () => {};
-  }, []);
+    return () => {
+      clientSocket.off("friend-game-invite-receive");
+      clientSocket.off("friend-game-invite-accepted");
+      clientSocket.off("join-game");
+    };
+  }, [userState.socketReinitialize]);
   const acceptGameInvite = () => {
     setGameInvites([]);
     const { gameOptions, invitedBy: friend } = gameInvites[0];
