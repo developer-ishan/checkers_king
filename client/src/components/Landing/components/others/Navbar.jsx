@@ -73,7 +73,6 @@ const Navbar = () => {
           setUserState({
             ...userState,
             userId: data._id,
-            socketReinitialize: !userState.socketReinitialize,
           });
         })
         .catch((err) => {
