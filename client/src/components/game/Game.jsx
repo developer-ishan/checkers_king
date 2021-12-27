@@ -369,10 +369,22 @@ const Game = () => {
             color={color}
           />
           <div className="grid grid-cols-12 px-2 mt-4">
-            <p>Head Count : {headCount}</p>
             {/* actual board where game is played */}
             <div className={boardClass()}>
               <div className="flex flex-col items-center">
+                <div
+                  className="flex items-center justify-between p-1 mb-1 capitalize bg-gray-500"
+                  style={{ width: "90vmin" }}
+                  data-title="GAME INFO"
+                  data-intro="information about the game"
+                >
+                  <p>Head Count:{headCount}</p>
+                  <p>
+                    Mandatory Moves:
+                    {game ? (game.mandatoryMoves ? "yes" : "no") : ""}
+                  </p>
+                  <p>is Rated:{game ? (game.isRated ? "yes" : "no") : ""}</p>
+                </div>
                 {playersInfo !== null && playersInfo !== undefined && (
                   <div
                     className="flex items-center justify-between p-1 bg-indigo-500"
