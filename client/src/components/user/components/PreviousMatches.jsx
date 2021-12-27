@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Match from "./Match";
 
 const PreviousMatches = ({ userId, previousMatches }) => {
+  useEffect(() => {
+    console.log("rendering previous matches...");
+  }, [userId]);
+
   return (
     <div className="w-full grid-cols-12 gap-4 p-4 mx-auto space-y-3 rounded-lg shadow-lg indigo-gradient dark:dark-gradient">
       <h1

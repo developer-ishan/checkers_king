@@ -309,6 +309,6 @@ exports.isGameOver = ({ player }) => {
     getAllMovesCountByPlayer({ board: game.board, color: "Black" }) === 0
   )
     return "Red";
-  else if (game.withoutAttack > 40) return "Draw";
+  else if (game.withoutAttack > 50) return "Draw";
   else return false;
 };
