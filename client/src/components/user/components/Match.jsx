@@ -31,7 +31,7 @@ const Match = ({
         photo: "/images/bot.png",
         userName: "Bot_Lvl" + botLevel.toString(),
       });
-  }, []);
+  }, [userId]);
 
   const textStyle = {
     borderColor: "#403750",

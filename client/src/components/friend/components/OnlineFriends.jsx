@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../context/UserContext";
 import { SocketContext } from "../../../context/SocketContext";
 import InviteButton from "./InviteButton";
+import SpectateButton from "./SpectateButton";
 
 const RequestList = ({ heading }) => {
   const [socket, setSocket] = useContext(SocketContext);
@@ -35,7 +36,7 @@ const RequestList = ({ heading }) => {
             {/* IDLE IN_GAME IN_LOBBY */}
             {f.status === "IDLE" ? (
               <InviteButton friend={f} />
-            ) : (
+            ) : f.status === "IN_GAME"? <SpectateButton gameId={f.gameId} /> : (
               <p>{f.status}</p>
             )}
           </div>

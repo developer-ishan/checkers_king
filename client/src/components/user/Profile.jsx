@@ -70,7 +70,7 @@ const Profile = () => {
 
     setXLabels(xValues);
     setYLabels(yValues);
-  }, [previousMatches]);
+  }, [userId, previousMatches]);
 
   const history = useHistory();
 
