@@ -139,9 +139,20 @@ const BoardComponent = ({ board, color, turn, movePiece, lastMove }) => {
   const blackBoxStyle =
     "grid relative place-items-center text-white bg-indigo-600";
 
+  const moveStartPosStyle =
+    "grid relative place-items-center text-black bg-yellow-300";
+  const moveEndPosStyle =
+    "grid relative place-items-center text-black bg-green-400";
+
   //this function will return one of the sytle
   //from above depending upon coordinate
   const getStyle = (i, j) => {
+    const { selectedPiece, destination } = lastMove;
+    if (i === selectedPiece.i && j === selectedPiece.j)
+      return moveStartPosStyle;
+
+    if (i === destination.i && j === destination.j) return moveEndPosStyle;
+
     if ((i + j) % 2 === 0) return blackBoxStyle;
     else return whiteBoxStyle;
   };
