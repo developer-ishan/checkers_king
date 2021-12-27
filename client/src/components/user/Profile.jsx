@@ -114,9 +114,9 @@ const Profile = () => {
             />
           </div>
 
-          <div className="col-span-12 lg:col-span-9">
+          {/* <div className="col-span-12 lg:col-span-9">
             <Friend userId={userId} />
-          </div>
+          </div> */}
         </div>
       </div>
       <Footer />
