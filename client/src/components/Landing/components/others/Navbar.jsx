@@ -68,7 +68,6 @@ const Navbar = ({ socket }) => {
         .then((data) => {
           if (!data.photo) setUser({ ...data, photo: "/images/default.png" });
           else setUser(data);
-          console.log("direct login data", data);
           setUserState({ ...userState, userId: data._id });
         })
         .catch((err) => {

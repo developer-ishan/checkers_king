@@ -79,9 +79,9 @@ const addUserToList = async (socket, token) => {
   try {
     const userDetails = await getUserDetailsWithToken(token);
     if (!userDetails) return userDetails;
-    const { userId, username, isGuest, photo } = userDetails;
-    users.push({ userId, username, photo, isGuest, id: socket.id });
-    return { userId, username, photo, isGuest, id: socket.id };
+    const { userId, username, isGuest, photo, status } = userDetails;
+    users.push({ userId, username, photo, isGuest, id: socket.id, status });
+    return { userId, username, photo, isGuest, id: socket.id, status };
   } catch (err) {
     console.log(err);
   }

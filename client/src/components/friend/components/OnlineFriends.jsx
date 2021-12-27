@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { UserContext } from "../../../context/UserContext";
 import { SocketContext } from "../../../context/SocketContext";
-import { isAuthenticated } from "../../../helper/authHelper";
 import InviteButton from "./InviteButton";
 
 const RequestList = ({ heading }) => {
@@ -21,28 +19,49 @@ const RequestList = ({ heading }) => {
     return oArr1;
   };
 
+  const findOnlineFriendWithId = (oldFriendState, userId) => {
+    return oldFriendState.find((friend) => friend.userId === userId);
+  };
+
   useEffect(() => {
-    socket.on("friend-online", (friends) => {
-      console.log("Friends Online : ");
+    socket.on("friend-online", (onlineFriends) => {
+      console.log("friend came online...", friends);
       let oldFriendState = friends;
-      setFriends(handleDistinctMerge(oldFriendState, friends));
+      setFriends(handleDistinctMerge(oldFriendState, onlineFriends));
     });
 
-    socket.on("friend-offline", (friend) => {
-      setFriends((old) => {
-        const i = friends.indexOf(friend);
-        console.log("new array before:", old);
-        const newArr = [...old.slice(0, i), ...old.slice(i + 1)];
-        console.log("new array:", newArr);
-        return newArr;
-      });
+    socket.on("friend-offline", (onlineFriend) => {
+      console.log("offline-friend caught...");
+      let oldFriendState = friends;
+      let offlineFriend = findOnlineFriendWithId(
+        oldFriendState,
+        onlineFriend.userId
+      );
+      if (!offlineFriend) return;
+      oldFriendState.splice(oldFriendState.indexOf(offlineFriend, 1));
+      setFriends(oldFriendState);
+    });
+
+    socket.on("user-status", (userStatus) => {
+      console.log("user-status caught");
+      console.log(userStatus);
+      let oldFriendState = friends;
+      let newFriendState = findOnlineFriendWithId(
+        oldFriendState,
+        userStatus.id
+      );
+
+      if (!newFriendState) return;
+      newFriendState.status = userStatus.status;
+      setFriends(oldFriendState);
     });
 
     return () => {
       socket.off("friend-online");
       socket.off("friend-offline");
+      socket.off("user-status");
     };
-  }, []);
+  }, [socket]);
 
   return (
     <div
@@ -70,6 +89,7 @@ const RequestList = ({ heading }) => {
             <div className="text-sm">
               <span className="block font-semibold">{f.username}</span>
             </div>
+            <h2>{f.status}</h2>
             <InviteButton friend={f} />
           </div>
         ))}

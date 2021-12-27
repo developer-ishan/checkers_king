@@ -8,6 +8,7 @@ const emitOfflineInfoToFriends = async (io, socket, removedUser) => {
         userId: removedUser.userId,
         username: removedUser.username,
         photo: removedUser.photo,
+        status: removedUser.status,
       });
   });
   /**

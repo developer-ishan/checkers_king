@@ -63,7 +63,7 @@ exports.SocketServer = (io) => {
         "/"
       );
     } else {
-      if (!addedUser.isGuest) emitMyInfoToFriends(io, socket, addedUser);
+      if (!addedUser.isGuest) await emitMyInfoToFriends(io, socket, addedUser);
     }
     /* ---------------------------------- Check For Multiple Devices ----------------------------------*/
 
@@ -90,11 +90,20 @@ exports.SocketServer = (io) => {
     /* Friend requests*/
     socket.on("send-friend-request", sendFriendRequest({ io, socket }));
     socket.on("respond-friend-request", respondFriendRequest({ io, socket }));
-    socket.on("friend-game-invite-send", sendGameInviteToFriend({ io, socket }));
+    socket.on(
+      "friend-game-invite-send",
+      sendGameInviteToFriend({ io, socket })
+    );
     //also emit "friend-game-invite-receive"
-    socket.on("friend-game-invite-accept", acceptGameInviteToFriend({ io, socket }));
-    socket.on("friend-game-invite-reject", rejectGameInviteToFriend({ io, socket }));
-    
+    socket.on(
+      "friend-game-invite-accept",
+      acceptGameInviteToFriend({ io, socket })
+    );
+    socket.on(
+      "friend-game-invite-reject",
+      rejectGameInviteToFriend({ io, socket })
+    );
+
     /* game event handler calls BEGIN */
     /*  -- game chats handler calls BEGIN */
     socket.on("send-msg", ({ gameId, msg }) => {
