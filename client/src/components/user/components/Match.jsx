@@ -108,17 +108,17 @@ const Match = ({
               </Link>
             </div>
           )}
-          <div>
+          <div className="flex flex-col items-center">
             <h1
               className="flex-shrink-0 text-2xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
               style={textStyle}
             >
               vs
             </h1>
-            <h3 className="block text-white font-bold">
+            <h3 className="block font-bold text-white">
               {isRated ? <p>Rated</p> : <p>Unrated</p>}
             </h3>
-            <h3 className="block text-white font-bold">
+            <h3 className="block font-bold text-white">
               Force Jumps :{" "}
               {mandatoryMoves ? (
                 <span className="text-green-500">ON</span>

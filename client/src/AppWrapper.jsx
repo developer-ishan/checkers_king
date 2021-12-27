@@ -8,13 +8,18 @@ import { GameSoundContext } from "./context/GameSoundContext";
 import ConfirmModal from "./components/modal/ConfirmModal";
 import GameOptionsDisplay from "./components/game/components/GameOptionsDisplay";
 import { UserContext } from "./context/UserContext";
+import { Link } from "react-router-dom";
+import SmallScreenInfoModal from "./components/modal/SmallScreenInfoModal";
 
 const AppWrapper = (props) => {
   const history = useHistory();
   const [socket, setSocket] = useContext(SocketContext);
   const [gameInvites, setGameInvites] = useState([]);
-  const { isMuted, toggleMute, clickSound } = useContext(GameSoundContext);
+  const { isMuted, toggleMute, clickSound, notificationSound } =
+    useContext(GameSoundContext);
   const [userState, setUserState] = useContext(UserContext);
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [ackFriendRequest, setAckFriendRequest] = useState([]);
 
   const handleDistinctMerge = (oArr1, oArr2) => {
     for (let i = 0; i < oArr2.length; ++i) {
@@ -56,6 +61,24 @@ const AppWrapper = (props) => {
     clientSocket.on("friend-game-invite-rejected", (user) => {
       alert(`${user} rejected your request.`);
     });
+    clientSocket.on(
+      "got-friend-request",
+      ({ userId, username, photo, msg }) => {
+        console.log(`${username} sent you a friend request`);
+        if (!isMuted) notificationSound.play();
+        setFriendRequests((old) => [...old, { userId, username, photo, msg }]);
+      }
+    );
+    clientSocket.on(
+      "ack-friend-request",
+      ({ userId, username, photo, response }) => {
+        if (!isMuted) notificationSound.play();
+        setAckFriendRequest((old) => [
+          ...old,
+          { userId, username, photo, response },
+        ]);
+      }
+    );
 
     clientSocket.on("friend-online", (onlineFriends) => {
       console.log("friend came online...", onlineFriends);
@@ -95,11 +118,15 @@ const AppWrapper = (props) => {
       clientSocket.off("friend-game-invite-receive");
       clientSocket.off("friend-game-invite-accepted");
       clientSocket.off("join-game");
+      clientSocket.off("got-friend-request");
+      clientSocket.off("ack-friend-request");
       clientSocket.off("friend-online");
       clientSocket.off("friend-offline");
       clientSocket.off("user-status");
     };
   }, [userState.socketReinitialize]);
+
+  //accepting an invite for a game
   const acceptGameInvite = () => {
     setGameInvites([]);
     const { gameOptions, invitedBy: friend } = gameInvites[0];
@@ -116,6 +143,7 @@ const AppWrapper = (props) => {
       history.push("/game");
     }
   };
+  //rejecting an invite for a game
   const rejectGameInvite = () => {
     setGameInvites((old) => {
       return [...old.slice(1)];
@@ -125,11 +153,48 @@ const AppWrapper = (props) => {
       friend: gameInvites[0].invitedBy,
     });
   };
+
+  //when modal for friend request is show
+  //the response is handled in this function
+  const responseToFriendRequest = (decision, id) => {
+    console.log("responded to friend request", decision);
+
+    socket.emit(
+      "respond-friend-request",
+      {
+        token: isAuthenticated(),
+        senderId: id,
+        response: decision,
+      },
+      (resp) => {
+        alert(resp.msg);
+      }
+    );
+
+    //removing the first request from the request array
+    //as the user took the action, no more need to show it
+    setFriendRequests((old) => {
+      return [...old.slice(1)];
+    });
+  };
+
+  //if the user currently dont want to take
+  //decision on friend request
+  const ignoreFriendRequest = () => {
+    console.log("friend request ignored by user");
+    //removing the first request from the request array
+    //as the user ignored it
+    setFriendRequests((old) => {
+      return [...old.slice(1)];
+    });
+  };
   return (
     <div>
       {props.children}
 
-      {/* All the global modals come below */}
+      {/* ######################### All the global modals come below #######################*/}
+
+      {/* game invite modal */}
       {gameInvites.length > 0 && (
         <ConfirmModal
           title="game invite"
@@ -149,6 +214,59 @@ const AppWrapper = (props) => {
           </div>
         </ConfirmModal>
       )}
+
+      {/* friend request modal */}
+      {friendRequests.length > 0 && (
+        <ConfirmModal
+          title="friend Request"
+          modalState={friendRequests}
+          setModalState={setFriendRequests}
+          cbOnAccept={() =>
+            responseToFriendRequest(true, friendRequests[0].userId)
+          }
+          cbOnReject={() =>
+            responseToFriendRequest(false, friendRequests[0].userId)
+          }
+          cbOnRequestClose={() => ignoreFriendRequest(friendRequests[0].userId)}
+        >
+          <p className="text-center capitalize">
+            <strong>
+              <Link to={`/user/${friendRequests[0].userId}`}>
+                {friendRequests[0].username}
+              </Link>
+            </strong>{" "}
+            has sent you friend request
+          </p>
+          <p className="p-2 mt-1 text-center capitalize bg-indigo-300 rounded-lg dark:bg-gray-600">
+            {friendRequests[0].msg}
+          </p>
+        </ConfirmModal>
+      )}
+
+      {/* friend request acknowledge modal */}
+      {ackFriendRequest.length > 0 && (
+        <SmallScreenInfoModal
+          title="notification"
+          modalState={ackFriendRequest}
+          setModalState={ackFriendRequest}
+          cbOnRequestClose={() =>
+            setAckFriendRequest((old) => [...old.slice(1)])
+          }
+        >
+          <p className="p-2 text-center capitalize">
+            <strong>
+              <Link to={`/user/${ackFriendRequest[0].userId}`}>
+                {ackFriendRequest[0].username}
+              </Link>
+            </strong>
+            {ackFriendRequest[0].response
+              ? " has accepted you friend reques"
+              : " has reject you friend request"}
+          </p>
+        </SmallScreenInfoModal>
+      )}
+
+      {/* global sound control button */}
       <button
         data-title="SOUND CONTROL"
         data-intro="you can toggle the sound by clicking this button"

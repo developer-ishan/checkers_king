@@ -45,6 +45,8 @@ const Replay = () => {
             chats={chats}
             winner={data.winner}
             botLevel={data.botLevel}
+            isRated={data.isRated}
+            mandatoryMoves={data.mandatoryMoves}
           />
         </>
       ) : (

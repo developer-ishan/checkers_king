@@ -378,17 +378,17 @@ const Game = () => {
                     className="flex items-center justify-between p-1 bg-indigo-500"
                     style={{ width: "90vmin" }}
                     data-title="PLAYERS INFO"
-                    data-intro="you can see player's profile and their timer"
+                    data-intro="you can see player's profile"
                   >
                     {color === undefined || color === "Black"
                       ? redPlayerInfo()
                       : blackPlayerInfo()}
-                    <p
+                    {/* <p
                       data-title="Timer"
                       data-intro="if player didn't play a move before the timer end,will lose the game"
                     >
                       00:57 s
-                    </p>
+                    </p> */}
                   </div>
                 )}
                 <BoardComponent
@@ -406,7 +406,7 @@ const Game = () => {
                     {color === undefined || color === "Black"
                       ? blackPlayerInfo()
                       : redPlayerInfo()}
-                    <p>00:57 s</p>
+                    {/* <p>00:57 s</p> */}
                   </div>
                 )}
               </div>

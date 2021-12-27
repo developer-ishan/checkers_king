@@ -10,7 +10,15 @@ const BLACK_QUEEN = 4;
 const TOP_ROW = 0;
 const BOTTOM_ROW = 7;
 
-const Board = ({ moves, playersInfo, chats, winner, botLevel }) => {
+const Board = ({
+  moves,
+  playersInfo,
+  chats,
+  winner,
+  botLevel,
+  isRated,
+  mandatoryMoves,
+}) => {
   const initialBoard = [
     [1, 0, 1, 0, 1, 0, 1, 0],
     [0, 1, 0, 1, 0, 1, 0, 1],
@@ -116,13 +124,19 @@ const Board = ({ moves, playersInfo, chats, winner, botLevel }) => {
             data-title="REPLAY CONTROLS"
             data-intro="you can go backward and forward several times using these buttons"
           >
-            <div className="">
+            <div className="text-center">
               <p
-                className="text-center "
+                className="font-bold text-center"
                 data-title="MOVES"
                 data-intro="this will show the current move and the total moves"
               >
                 move:{moveNum + 1}/{moves.length}
+              </p>
+              <p className="font-bold capitalize">
+                Rated Match:{isRated ? "yes" : "no"}
+              </p>
+              <p className="font-bold capitalize">
+                madatoryMoves:{mandatoryMoves ? "yes" : "no"}
               </p>
             </div>
             <button

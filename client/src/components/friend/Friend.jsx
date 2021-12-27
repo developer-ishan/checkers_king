@@ -13,13 +13,13 @@ const Friend = ({ userId }) => {
     //   alert(`${username} sent friend request`);
     //   setRequests((old) => [...old, { userId, username, photo }]);
     // });
-    socket.on("ack-friend-request", ({ userId, username, photo, response }) => {
-      if (response) alert(`${username} accepted friend request`);
-      else alert(`${username} rejected friend request`);
-    });
+    // socket.on("ack-friend-request", ({ userId, username, photo, response }) => {
+    //   if (response) alert(`${username} accepted friend request`);
+    //   else alert(`${username} rejected friend request`);
+    // });
     return () => {
-      socket.off("got-friend-request");
-      socket.off("ack-friend-request");
+      // socket.off("got-friend-request");
+      // socket.off("ack-friend-request");
     };
   }, [requests]);
   return (
