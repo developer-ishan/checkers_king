@@ -41,7 +41,8 @@ touch .env
 
 backend setup done, now hit the most favourite command `npm start`
 
-##### for better understatnding of project see [socket documentation](/server/src/socket/Documentation.md)
+##### for better understatnding of project see [socket documentation](/server/src/socket/Documentation.md) and [API documentation](/server/README.md)
+
 
 ## Features :-
 
